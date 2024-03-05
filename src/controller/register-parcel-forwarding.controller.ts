@@ -4,16 +4,30 @@ import {
   Controller,
   HttpCode,
   Post,
+  UsePipes,
 } from '@nestjs/common'
+import { hash } from 'bcryptjs'
+import { ZodValidationPipe } from 'src/pipe/zod-validation-pipe'
 import { PrismaService } from 'src/prisma/prisma.service'
+import { z } from 'zod'
 
-@Controller('/accounts')
+const createAccountBodySchema = z.object({
+  name: z.string(),
+  initials: z.string().length(3),
+  email: z.string().email(),
+  password: z.string(),
+})
+
+type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>
+
+@Controller('/parcel-forwarding/register')
 export class RegisterParcelForwardingController {
   constructor(private prisma: PrismaService) {}
 
   @Post()
   @HttpCode(201)
-  async handle(@Body() body: any) {
+  @UsePipes(new ZodValidationPipe(createAccountBodySchema))
+  async handle(@Body() body: CreateAccountBodySchema) {
     const { name, initials, email, password } = body
 
     const userWithSameEmail = await this.prisma.parcelForwarding.findUnique({
@@ -28,12 +42,14 @@ export class RegisterParcelForwardingController {
       )
     }
 
+    const hashedPassword = await hash(password, 8)
+
     await this.prisma.parcelForwarding.create({
       data: {
         name,
         initials,
         email,
-        password,
+        password: hashedPassword,
       },
     })
   }
