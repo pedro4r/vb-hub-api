@@ -1,12 +1,13 @@
 @baseUrl = http://localhost:3333
 
 # @name create_account
-POST {{baseUrl}}/accounts
+POST {{baseUrl}}/parcel-forwarding/register
 Content-Type: application/json
 
 {
-  "name": "Diego Fernandes",
-  "email": "diego@rocketseat.com.br",
+  "name": "Voabox",
+  "initials": "VXS",
+  "email": "contato@voabox.com",
   "password": "123456"
 }
 
@@ -17,6 +18,6 @@ POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
-  "email": "diego@rocketseat.com.br",
+  "email": "contato@voabox.com",
   "password": "123456"
 }
