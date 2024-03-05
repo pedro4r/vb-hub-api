@@ -3,6 +3,7 @@ import { PrismaService } from './prisma/prisma.service'
 import { RegisterParcelForwardingController } from './controller/register-parcel-forwarding.controller'
 import { ConfigModule } from '@nestjs/config'
 import { envSchema } from './env'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { envSchema } from './env'
       validate: (env) => envSchema.parse(env),
       isGlobal: true,
     }),
+    AuthModule,
   ],
   controllers: [RegisterParcelForwardingController],
   providers: [PrismaService],
