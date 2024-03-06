@@ -1,4 +1,5 @@
 @baseUrl = http://localhost:3333
+@authToken = {{authenticate.response.body.access_token}}
 
 # @name create_account
 POST {{baseUrl}}/parcel-forwarding/register
@@ -7,7 +8,7 @@ Content-Type: application/json
 {
   "name": "Voabox",
   "initials": "VXS",
-  "email": "contato@voabox.com",
+  "email": "contato1@voabox.com",
   "password": "123456"
 }
 
@@ -18,6 +19,18 @@ POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
-  "email": "contato@voabox.com",
+  "email": "contato1@voabox.com",
   "password": "123456"
+}
+
+###
+
+# @name create_check_in
+POST {{baseUrl}}/check-in
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "details": "Everything is ok with the items",
+  "weight": 6
 }

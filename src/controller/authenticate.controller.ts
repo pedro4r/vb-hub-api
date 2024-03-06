@@ -30,23 +30,23 @@ export class AuthenticateController {
   async handle(@Body() body: AuthenticateBodySchema) {
     const { email, password } = body
 
-    const parcelForwarding = await this.prisma.parcelForwarding.findUnique({
+    const user = await this.prisma.parcelForwarding.findUnique({
       where: {
         email,
       },
     })
 
-    if (!parcelForwarding) {
+    if (!user) {
       throw new UnauthorizedException('User credentials do not match.')
     }
 
-    const isPasswordValid = await compare(password, parcelForwarding.password)
+    const isPasswordValid = await compare(password, user.password)
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('User credentials do not match.')
     }
 
-    const accessToken = this.jwt.sign({ sub: parcelForwarding.id })
+    const accessToken = this.jwt.sign({ sub: user.id })
 
     return {
       access_token: accessToken,

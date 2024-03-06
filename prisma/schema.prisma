@@ -7,12 +7,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Customer {
+  id       String    @id @default(uuid())
+  name     String
+  email    String    @unique
+  password String
+  CheckIn  CheckIn[]
+
+  @@map("customers")
+}
+
 model ParcelForwarding {
-  id       String @id @default(uuid())
+  id       String    @id @default(uuid())
   name     String
   initials String
-  email    String @unique
+  email    String    @unique
   password String
+  CheckIn  CheckIn[]
 
   @@map("parcel_forwarding")
+}
+
+model CheckIn {
+  id                   String    @id @default(uuid())
+  details              String
+  weight               Int
+  parcel_forwarding_id String    @map("parcel_forwarding_id")
+  customer_id          String    @map("customer_id")
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime? @updatedAt @map("updated_at")
+
+  parcel_forwarding ParcelForwarding @relation(fields: [parcel_forwarding_id], references: [id])
+  customer          Customer         @relation(fields: [customer_id], references: [id])
+  Attachment        Attachment[]
+
+  @@map("check_ins")
+}
+
+model Attachment {
+  id          String   @id @default(uuid())
+  check_in_id String   @map("check_in_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  check_in CheckIn @relation(fields: [check_in_id], references: [id])
+
+  @@map("attachments")
 }
