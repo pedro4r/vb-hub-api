@@ -32,5 +32,12 @@ Authorization: Bearer {{authToken}}
 
 {
   "details": "Everything is ok with the items",
-  "weight": 6
+  "weight": "6"
 }
+
+###
+
+# @name fetch_recent_check_ins
+GET {{baseUrl}}/check-ins?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}

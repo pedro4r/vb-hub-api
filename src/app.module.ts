@@ -6,6 +6,7 @@ import { envSchema } from './env'
 import { AuthModule } from './auth/auth.module'
 import { AuthenticateController } from './controller/authenticate.controller'
 import { CreateCheckInController } from './controller/create-check-in.controller'
+import { FetchRecentCheckInsController } from './controller/fetch-recent-check-ins.controller'
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CreateCheckInController } from './controller/create-check-in.controller
     AuthenticateController,
     AuthenticateController,
     CreateCheckInController,
+    FetchRecentCheckInsController,
   ],
   providers: [PrismaService],
 })

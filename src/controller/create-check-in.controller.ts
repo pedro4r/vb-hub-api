@@ -8,7 +8,12 @@ import { z } from 'zod'
 
 const createCheckInBodySchema = z.object({
   details: z.string(),
-  weight: z.number(),
+  weight: z
+    .string()
+    .optional()
+    .default('0')
+    .transform(Number)
+    .pipe(z.number().min(0)),
 })
 
 const bodyValidationPipe = new ZodValidationPipe(createCheckInBodySchema)
