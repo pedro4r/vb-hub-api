@@ -7,6 +7,7 @@ import { PrismaService } from '@/prisma/prisma.service'
 import { z } from 'zod'
 
 const createCheckInBodySchema = z.object({
+  customerId: z.string(),
   details: z.string(),
   weight: z
     .string()
@@ -30,13 +31,13 @@ export class CreateCheckInController {
     @Body(bodyValidationPipe) body: CreateCheckInBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
-    const { details, weight } = body
+    const { customerId, details, weight } = body
     const userId = user.sub
 
     await this.prisma.checkIn.create({
       data: {
         parcel_forwarding_id: userId,
-        customer_id: '951a88f8-a4f9-42ce-83b1-afa20ab0d9e6',
+        customer_id: customerId,
         details,
         weight,
       },

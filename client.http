@@ -31,6 +31,7 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
+  "customerId": "951a88f8-a4f9-42ce-83b1-afa20ab0d9e6",
   "details": "Everything is ok with the items",
   "weight": "6"
 }
