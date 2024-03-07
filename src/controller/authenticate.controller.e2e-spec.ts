@@ -2,9 +2,10 @@ import { AppModule } from '@/app.module'
 import { PrismaService } from '@/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
+import { hash } from 'bcryptjs'
 import request from 'supertest'
 
-describe('Create Account (E2E)', () => {
+describe('Authenticate (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
 
@@ -21,23 +22,23 @@ describe('Create Account (E2E)', () => {
   })
 
   test('[POST] /parcel-forwarding/register', async () => {
-    const response = await request(app.getHttpServer())
-      .post('/parcel-forwarding/register')
-      .send({
+    await prisma.parcelForwarding.create({
+      data: {
         name: 'Voabox',
         initials: 'VBX',
         email: 'contato@voabox.com',
-        password: '123456',
-      })
-
-    expect(response.statusCode).toBe(201)
-
-    const userOnDatabase = await prisma.parcelForwarding.findUnique({
-      where: {
-        email: 'contato@voabox.com',
+        password: await hash('123456', 8),
       },
     })
 
-    expect(userOnDatabase).toBeTruthy()
+    const response = await request(app.getHttpServer()).post('/sessions').send({
+      email: 'contato@voabox.com',
+      password: '123456',
+    })
+
+    expect(response.statusCode).toBe(201)
+    expect(response.body).toEqual({
+      access_token: expect.any(String),
+    })
   })
 })
