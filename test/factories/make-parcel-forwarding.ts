@@ -3,7 +3,10 @@ import {
   ParcelForwarding,
   ParcelForwardingProps,
 } from '@/domain/parcel-forwarding/enterprise/entities/parcel-forwarding'
+import { PrismaParcelForwardingMapper } from '@/infra/database/prisma/mappers/prisma-parcel-forwarding-mapper'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { faker } from '@faker-js/faker'
+import { Injectable } from '@nestjs/common'
 
 export function makeParcelForwarding(
   override: Partial<ParcelForwardingProps> = {},
@@ -21,4 +24,21 @@ export function makeParcelForwarding(
   )
 
   return student
+}
+
+@Injectable()
+export class ParcelForwardingFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaParcelForwarding(
+    data: Partial<ParcelForwardingProps> = {},
+  ): Promise<ParcelForwarding> {
+    const parcelForwarding = makeParcelForwarding(data)
+
+    await this.prisma.parcelForwarding.create({
+      data: PrismaParcelForwardingMapper.toPrisma(parcelForwarding),
+    })
+
+    return parcelForwarding
+  }
 }

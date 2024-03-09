@@ -4,10 +4,21 @@ import { CheckInAttachmentList } from './check-in-attachment-list'
 import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { CheckInCreatedEvent } from '../events/check-in-created-event'
 
+export enum CheckInStatus {
+  RECEIVED = 1,
+  PENDING = 2,
+  SHIPPED = 3,
+  DELIVERED = 4,
+  WITHDRAWN = 5,
+  ABANDONED = 6,
+  RETURNED = 7,
+}
+
 export interface CheckInProps {
   parcelForwardingId: UniqueEntityID
   customerId: UniqueEntityID
   details?: string | null
+  status: CheckInStatus
   attachments: CheckInAttachmentList
   weight?: number | null
   createdAt: Date
@@ -40,6 +51,15 @@ export class CheckIn extends AggregateRoot<CheckInProps> {
       return 0
     }
     return this.props.weight
+  }
+
+  get status() {
+    return this.props.status
+  }
+
+  set status(status: CheckInStatus) {
+    this.props.status = status
+    this.touch()
   }
 
   get attachments() {

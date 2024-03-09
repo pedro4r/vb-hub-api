@@ -8,28 +8,34 @@ datasource db {
 }
 
 model Customer {
-  id       String    @id @default(uuid())
-  name     String
-  email    String    @unique
-  password String
-  CheckIn  CheckIn[]
+  id                   String    @id @default(uuid())
+  hubId                String    @unique
+  parcel_forwarding_id String    @map("parcel_forwarding_id")
+  name                 String
+  email                String    @unique
+  password             String
+  CheckIn              CheckIn[]
+
+  parcel_forwarding ParcelForwarding @relation(fields: [parcel_forwarding_id], references: [id])
 
   @@map("customers")
 }
 
 model ParcelForwarding {
-  id       String    @id @default(uuid())
+  id       String     @id @default(uuid())
   name     String
   initials String
-  email    String    @unique
+  email    String     @unique
   password String
   CheckIn  CheckIn[]
+  Customer Customer[]
 
   @@map("parcel_forwarding")
 }
 
 model CheckIn {
   id                   String    @id @default(uuid())
+  status               Int
   details              String
   weight               Int
   parcel_forwarding_id String    @map("parcel_forwarding_id")

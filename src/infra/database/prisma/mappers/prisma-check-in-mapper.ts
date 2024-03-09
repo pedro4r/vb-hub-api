@@ -8,6 +8,7 @@ export class PrismaCheckInMapper {
       {
         parcelForwardingId: new UniqueEntityID(raw.parcel_forwarding_id),
         customerId: new UniqueEntityID(raw.customer_id),
+        status: raw.status,
         details: raw.details,
         weight: raw.weight,
         createdAt: raw.createdAt,
@@ -20,6 +21,7 @@ export class PrismaCheckInMapper {
   static toPrisma(checkIn: CheckIn): Prisma.CheckInUncheckedCreateInput {
     return {
       id: checkIn.id.toString(),
+      status: checkIn.status,
       parcel_forwarding_id: checkIn.parcelForwardingId.toString(),
       customer_id: checkIn.customerId.toString(),
       details: checkIn.details,

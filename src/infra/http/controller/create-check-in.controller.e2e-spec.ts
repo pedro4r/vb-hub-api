@@ -24,19 +24,21 @@ describe('Create Check-in (E2E)', () => {
   })
 
   test('[POST] /check-in', async () => {
-    const customer = await prisma.customer.create({
-      data: {
-        name: 'Pedro',
-        email: 'alonsofts@gmail.com',
-        password: '123456',
-      },
-    })
-
     const parcelForwarding = await prisma.parcelForwarding.create({
       data: {
         name: 'Voabox',
         initials: 'VBX',
         email: 'contato@voabox.com',
+        password: '123456',
+      },
+    })
+
+    const customer = await prisma.customer.create({
+      data: {
+        parcel_forwarding_id: parcelForwarding.id,
+        hubId: 'VBX-123',
+        name: 'Pedro',
+        email: 'alonsofts@gmail.com',
         password: '123456',
       },
     })
