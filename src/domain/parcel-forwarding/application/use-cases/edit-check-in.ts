@@ -2,10 +2,10 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { CheckIn } from '../../enterprise/entities/check-in'
 import { CheckInAttachment } from '../../enterprise/entities/check-in-attachment'
 import { Either, left, right } from '@/core/either'
-import { CheckInRepository } from '../repositories/check-in-repository'
+import { CheckInsRepository } from '../repositories/check-ins-repository'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
-import { CheckInAttachmentsRepository } from '../repositories/check-in-attachment-repository'
+import { CheckInAttachmentsRepository } from '../repositories/check-in-attachments-repository'
 import { CheckInAttachmentList } from '../../enterprise/entities/check-in-attachment-list'
 
 interface EditCheckInUseCaseRequest {
@@ -25,7 +25,7 @@ type EditCheckInUseCaseResponse = Either<
 
 export class EditCheckInUseCase {
   constructor(
-    private checkInRepository: CheckInRepository,
+    private checkInsRepository: CheckInsRepository,
     private checkInAttachmentsRepository: CheckInAttachmentsRepository,
   ) {}
 
@@ -35,7 +35,7 @@ export class EditCheckInUseCase {
     details,
     attachmentsIds,
   }: EditCheckInUseCaseRequest): Promise<EditCheckInUseCaseResponse> {
-    const checkin = await this.checkInRepository.findById(checkInId)
+    const checkin = await this.checkInsRepository.findById(checkInId)
 
     if (!checkin) {
       return left(new ResourceNotFoundError())
@@ -64,7 +64,7 @@ export class EditCheckInUseCase {
     checkin.attachments = checkInAttachmentList
     details ? (checkin.details = details) : (details = null)
 
-    await this.checkInRepository.save(checkin)
+    await this.checkInsRepository.save(checkin)
 
     return right({
       checkin,

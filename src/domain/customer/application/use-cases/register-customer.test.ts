@@ -1,10 +1,10 @@
 import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
 import { RegisterCustomerUseCase } from './register-customer'
-import { InMemoryParcelForwardingRepository } from 'test/repositories/in-memory-parcel-forwarding-repository'
+import { InMemoryParcelForwardingsRepository } from 'test/repositories/in-memory-parcel-forwarding-repository'
 import { makeParcelForwarding } from 'test/factories/make-parcel-forwarding'
 
-let inMemoryParcelForwardingRepository: InMemoryParcelForwardingRepository
+let inMemoryParcelForwardingsRepository: InMemoryParcelForwardingsRepository
 let inMemoryCustomerRepository: InMemoryCustomerRepository
 let fakeHasher: FakeHasher
 
@@ -12,14 +12,14 @@ let sut: RegisterCustomerUseCase
 
 describe('Register Customer', () => {
   beforeEach(() => {
-    inMemoryParcelForwardingRepository =
-      new InMemoryParcelForwardingRepository()
+    inMemoryParcelForwardingsRepository =
+      new InMemoryParcelForwardingsRepository()
     inMemoryCustomerRepository = new InMemoryCustomerRepository()
     fakeHasher = new FakeHasher()
 
     sut = new RegisterCustomerUseCase(
       inMemoryCustomerRepository,
-      inMemoryParcelForwardingRepository,
+      inMemoryParcelForwardingsRepository,
       fakeHasher,
     )
   })
@@ -30,7 +30,7 @@ describe('Register Customer', () => {
       password: await fakeHasher.hash('123456'),
     })
 
-    inMemoryParcelForwardingRepository.items.push(parcelforwarding)
+    inMemoryParcelForwardingsRepository.items.push(parcelforwarding)
 
     const result = await sut.execute({
       parcelForwardingId: parcelforwarding.id.toString(),
@@ -51,7 +51,7 @@ describe('Register Customer', () => {
       password: await fakeHasher.hash('123456'),
     })
 
-    inMemoryParcelForwardingRepository.items.push(parcelforwarding)
+    inMemoryParcelForwardingsRepository.items.push(parcelforwarding)
 
     const result = await sut.execute({
       parcelForwardingId: parcelforwarding.id.toString(),

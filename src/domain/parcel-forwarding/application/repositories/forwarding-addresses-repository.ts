@@ -1,6 +1,6 @@
 import { ParcelForwardingAddress } from '../../enterprise/entities/forwarding-address'
 
-export abstract class ParcelForwardingAddressRepository {
+export abstract class ParcelForwardingAddressesRepository {
   abstract findByParcelForwardingId(
     parcelForwardingId: string,
   ): Promise<ParcelForwardingAddress | null>

@@ -1,7 +1,7 @@
 import { Either, left, right } from '@/core/either'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
-import { CheckInRepository } from '../repositories/check-in-repository'
+import { CheckInsRepository } from '../repositories/check-ins-repository'
 
 interface DeleteCheckInUseCaseRequest {
   checkInId: string
@@ -15,14 +15,14 @@ type DeleteCheckInUseCaseResponse = Either<
 >
 
 export class DeleteCheckInUseCase {
-  constructor(private checkInRepository: CheckInRepository) {}
+  constructor(private checkInsRepository: CheckInsRepository) {}
 
   async execute({
     checkInId,
     parcelForwardingId,
     customerId,
   }: DeleteCheckInUseCaseRequest): Promise<DeleteCheckInUseCaseResponse> {
-    const checkin = await this.checkInRepository.findById(checkInId)
+    const checkin = await this.checkInsRepository.findById(checkInId)
 
     if (!checkin) {
       return left(new ResourceNotFoundError())
@@ -36,7 +36,7 @@ export class DeleteCheckInUseCase {
       return left(new NotAllowedError())
     }
 
-    await this.checkInRepository.delete(checkin)
+    await this.checkInsRepository.delete(checkin)
 
     return right(null)
   }

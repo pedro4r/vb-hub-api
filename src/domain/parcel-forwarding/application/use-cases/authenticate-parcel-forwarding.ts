@@ -1,7 +1,7 @@
 import { Encrypter } from '@/core/cryptography/encrypter'
 import { HashComparer } from '@/core/cryptography/hash-compare'
 import { Either, left, right } from '@/core/either'
-import { ParcelForwardingRepository } from '../repositories/parcel-forwarding-repository'
+import { ParcelForwardingsRepository } from '../repositories/parcel-forwardings-repository'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
 
 interface AuthenticateParcelForwardingUseCaseRequest {
@@ -18,7 +18,7 @@ type AuthenticateParcelForwardingUseCaseResponse = Either<
 
 export class AuthenticateParcelForwardingUseCase {
   constructor(
-    private parcelforwardingsRepository: ParcelForwardingRepository,
+    private parcelforwardingsRepository: ParcelForwardingsRepository,
     private hashComparer: HashComparer,
     private encrypter: Encrypter,
   ) {}

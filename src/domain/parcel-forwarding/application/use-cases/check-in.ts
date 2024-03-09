@@ -3,7 +3,8 @@ import { CheckIn } from '../../enterprise/entities/check-in'
 import { CheckInAttachment } from '../../enterprise/entities/check-in-attachment'
 import { CheckInAttachmentList } from '../../enterprise/entities/check-in-attachment-list'
 import { Either, right } from '@/core/either'
-import { CheckInRepository } from '../repositories/check-in-repository'
+import { CheckInsRepository } from '../repositories/check-ins-repository'
+import { Injectable } from '@nestjs/common'
 
 interface CheckInUseCaseRequest {
   parcelForwardingId: string
@@ -19,9 +20,9 @@ type CheckInUseCaseResponse = Either<
     checkin: CheckIn
   }
 >
-
+@Injectable()
 export class CheckInUseCase {
-  constructor(private checkInRepository: CheckInRepository) {}
+  constructor(private checkInsRepository: CheckInsRepository) {}
 
   async execute({
     parcelForwardingId,
@@ -46,7 +47,7 @@ export class CheckInUseCase {
 
     checkin.attachments = new CheckInAttachmentList(checkInAttachments)
 
-    await this.checkInRepository.create(checkin)
+    await this.checkInsRepository.create(checkin)
 
     return right({
       checkin,

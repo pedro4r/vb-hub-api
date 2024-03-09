@@ -1,20 +1,20 @@
 import { FakeHasher } from 'test/cryptography/fake-hasher'
-import { InMemoryParcelForwardingRepository } from 'test/repositories/in-memory-parcel-forwarding-repository'
+import { InMemoryParcelForwardingsRepository } from 'test/repositories/in-memory-parcel-forwarding-repository'
 import { RegisterParcelForwardingUseCase } from './register-parcel-forwarding'
 
-let inMemoryParcelForwardingRepository: InMemoryParcelForwardingRepository
+let inMemoryParcelForwardingsRepository: InMemoryParcelForwardingsRepository
 let fakeHasher: FakeHasher
 
 let sut: RegisterParcelForwardingUseCase
 
 describe('Register Parcel Forwarding', () => {
   beforeEach(() => {
-    inMemoryParcelForwardingRepository =
-      new InMemoryParcelForwardingRepository()
+    inMemoryParcelForwardingsRepository =
+      new InMemoryParcelForwardingsRepository()
     fakeHasher = new FakeHasher()
 
     sut = new RegisterParcelForwardingUseCase(
-      inMemoryParcelForwardingRepository,
+      inMemoryParcelForwardingsRepository,
       fakeHasher,
     )
   })
@@ -29,7 +29,7 @@ describe('Register Parcel Forwarding', () => {
 
     expect(result.isRight()).toBe(true)
     expect(result.value).toEqual({
-      parcelforwarding: inMemoryParcelForwardingRepository.items[0],
+      parcelforwarding: inMemoryParcelForwardingsRepository.items[0],
     })
   })
 
@@ -44,7 +44,7 @@ describe('Register Parcel Forwarding', () => {
     const hashedPassword = await fakeHasher.hash('123456')
 
     expect(result.isRight()).toBe(true)
-    expect(inMemoryParcelForwardingRepository.items[0].password).toEqual(
+    expect(inMemoryParcelForwardingsRepository.items[0].password).toEqual(
       hashedPassword,
     )
   })

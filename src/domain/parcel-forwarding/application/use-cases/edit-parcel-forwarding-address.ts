@@ -2,7 +2,7 @@ import { Either, left, right } from '@/core/either'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { ParcelForwardingAddress } from '../../enterprise/entities/forwarding-address'
-import { ParcelForwardingAddressRepository } from '../repositories/forwarding-address-repository'
+import { ParcelForwardingAddressesRepository } from '../repositories/forwarding-addresses-repository'
 import { Address } from '@/core/value-objects/address'
 
 interface EditParcelForwardingAddressUseCaseRequest {
@@ -26,7 +26,7 @@ type EditParcelForwardingAddressUseCaseResponse = Either<
 
 export class EditParcelForwardingAddressUseCase {
   constructor(
-    private parcelForwardingAddressRepository: ParcelForwardingAddressRepository,
+    private parcelForwardingAddressesRepository: ParcelForwardingAddressesRepository,
   ) {}
 
   async execute({
@@ -41,7 +41,7 @@ export class EditParcelForwardingAddressUseCase {
     phoneNumber,
   }: EditParcelForwardingAddressUseCaseRequest): Promise<EditParcelForwardingAddressUseCaseResponse> {
     const parcelForwardingAddress =
-      await this.parcelForwardingAddressRepository.findById(
+      await this.parcelForwardingAddressesRepository.findById(
         parcelForwardingAddressId,
       )
 
@@ -68,7 +68,7 @@ export class EditParcelForwardingAddressUseCase {
 
     parcelForwardingAddress.address = newAddress
 
-    await this.parcelForwardingAddressRepository.save(parcelForwardingAddress)
+    await this.parcelForwardingAddressesRepository.save(parcelForwardingAddress)
 
     return right({
       parcelForwardingAddress,

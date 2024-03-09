@@ -1,6 +1,6 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { GetHubAddressUseCase } from './get-hub-address'
-import { InMemoryParcelForwardingAddressRepository } from 'test/repositories/in-memory-parcel-forwarding-address-repository'
+import { InMemoryParcelForwardingAddressesRepository } from 'test/repositories/in-memory-parcel-forwarding-address-repository'
 import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
 import { makeParcelForwardingAddress } from 'test/factories/make-forwarding-address'
 import { makeCustomer } from 'test/factories/make-customer'
@@ -8,21 +8,21 @@ import { InMemoryShippingAddressRepository } from 'test/repositories/in-memory-s
 import { makeShippingAddress } from 'test/factories/make-shipping-address'
 
 let inMemoryCustomerRepository: InMemoryCustomerRepository
-let inMemoryParcelForwardingAddressRepository: InMemoryParcelForwardingAddressRepository
+let inMemoryParcelForwardingAddressesRepository: InMemoryParcelForwardingAddressesRepository
 let inMemoryShippingAddressRepository: InMemoryShippingAddressRepository
 let sut: GetHubAddressUseCase
 
 describe('Get Hub Address', () => {
   beforeEach(() => {
     inMemoryCustomerRepository = new InMemoryCustomerRepository()
-    inMemoryParcelForwardingAddressRepository =
-      new InMemoryParcelForwardingAddressRepository()
+    inMemoryParcelForwardingAddressesRepository =
+      new InMemoryParcelForwardingAddressesRepository()
 
     inMemoryShippingAddressRepository = new InMemoryShippingAddressRepository()
 
     sut = new GetHubAddressUseCase(
       inMemoryCustomerRepository,
-      inMemoryParcelForwardingAddressRepository,
+      inMemoryParcelForwardingAddressesRepository,
       inMemoryShippingAddressRepository,
     )
   })
@@ -40,7 +40,7 @@ describe('Get Hub Address', () => {
       new UniqueEntityID('forwarding-address-1'),
     )
 
-    inMemoryParcelForwardingAddressRepository.items.push(
+    inMemoryParcelForwardingAddressesRepository.items.push(
       parcelForwardingAddress,
     )
 
@@ -87,7 +87,7 @@ describe('Get Hub Address', () => {
       new UniqueEntityID('forwarding-address-1'),
     )
 
-    inMemoryParcelForwardingAddressRepository.items.push(
+    inMemoryParcelForwardingAddressesRepository.items.push(
       parcelForwardingAddress,
     )
 
@@ -115,7 +115,7 @@ describe('Get Hub Address', () => {
       new UniqueEntityID('forwarding-address-1'),
     )
 
-    inMemoryParcelForwardingAddressRepository.items.push(
+    inMemoryParcelForwardingAddressesRepository.items.push(
       parcelForwardingAddress,
     )
 

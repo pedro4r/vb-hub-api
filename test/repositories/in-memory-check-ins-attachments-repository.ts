@@ -1,4 +1,4 @@
-import { CheckInAttachmentsRepository } from '@/domain/parcel-forwarding/application/repositories/check-in-attachment-repository'
+import { CheckInAttachmentsRepository } from '@/domain/parcel-forwarding/application/repositories/check-in-attachments-repository'
 import { CheckInAttachment } from '@/domain/parcel-forwarding/enterprise/entities/check-in-attachment'
 
 export class InMemoryCheckInsAttachmentsRepository

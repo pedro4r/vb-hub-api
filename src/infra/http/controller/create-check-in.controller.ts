@@ -3,8 +3,8 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipe/zod-validation-pipe'
-import { PrismaService } from '@/infra/prisma/prisma.service'
 import { z } from 'zod'
+import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/check-in'
 
 const createCheckInBodySchema = z.object({
   customerId: z.string(),
@@ -24,7 +24,7 @@ type CreateCheckInBodySchema = z.infer<typeof createCheckInBodySchema>
 @Controller('/check-in')
 @UseGuards(JwtAuthGuard)
 export class CreateCheckInController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private checkInUseCase: CheckInUseCase) {}
 
   @Post()
   async handle(
@@ -34,13 +34,12 @@ export class CreateCheckInController {
     const { customerId, details, weight } = body
     const userId = user.sub
 
-    await this.prisma.checkIn.create({
-      data: {
-        parcel_forwarding_id: userId,
-        customer_id: customerId,
-        details,
-        weight,
-      },
+    await this.checkInUseCase.execute({
+      customerId,
+      details,
+      weight,
+      parcelForwardingId: userId,
+      attachmentsIds: [],
     })
   }
 }

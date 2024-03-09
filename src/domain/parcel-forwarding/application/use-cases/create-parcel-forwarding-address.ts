@@ -1,6 +1,6 @@
 import { Either, right } from '@/core/either'
 import { ParcelForwardingAddress } from '../../enterprise/entities/forwarding-address'
-import { ParcelForwardingAddressRepository } from '../repositories/forwarding-address-repository'
+import { ParcelForwardingAddressesRepository } from '../repositories/forwarding-addresses-repository'
 import { Address } from '@/core/value-objects/address'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
@@ -24,7 +24,7 @@ type CreateParcelForwardingAddressUseCaseResponse = Either<
 
 export class CreateParcelForwardingAddressUseCase {
   constructor(
-    private parcelForwardingAddressRepository: ParcelForwardingAddressRepository,
+    private parcelForwardingAddressesRepository: ParcelForwardingAddressesRepository,
   ) {}
 
   async execute({
@@ -52,7 +52,7 @@ export class CreateParcelForwardingAddressUseCase {
       address: addressInfo,
     })
 
-    await this.parcelForwardingAddressRepository.create(parcelForwardingAddress)
+    await this.parcelForwardingAddressesRepository.create(parcelForwardingAddress)
 
     return right({
       parcelForwardingAddress,

@@ -1,12 +1,12 @@
 import { DomainEvents } from '@/core/events/domain-events'
 import { EventHandler } from '@/core/events/event-handler'
-import { CheckInRepository } from '@/domain/parcel-forwarding/application/repositories/check-in-repository'
+import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repositories/check-ins-repository'
 import { SendNotificationUseCase } from '../use-cases/send-notification'
 import { CheckInCreatedEvent } from '@/domain/parcel-forwarding/enterprise/events/check-in-created-event'
 
 export class OnCheckInCreated implements EventHandler {
   constructor(
-    private checkInRepository: CheckInRepository,
+    private checkInsRepository: CheckInsRepository,
     private sendNotification: SendNotificationUseCase,
   ) {
     this.setupSubscriptions()

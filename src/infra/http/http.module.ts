@@ -4,9 +4,11 @@ import { AuthenticateController } from './controller/authenticate.controller'
 import { CreateCheckInController } from './controller/create-check-in.controller'
 import { FetchRecentCheckInsController } from './controller/fetch-recent-check-ins.controller'
 
-import { PrismaService } from '../prisma/prisma.service'
+import { DatabseModule } from '../database/database.module'
+import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/check-in'
 
 @Module({
+  imports: [DatabseModule],
   controllers: [
     RegisterParcelForwardingController,
     AuthenticateController,
@@ -14,6 +16,6 @@ import { PrismaService } from '../prisma/prisma.service'
     CreateCheckInController,
     FetchRecentCheckInsController,
   ],
-  providers: [PrismaService],
+  providers: [CheckInUseCase],
 })
 export class HttpModule {}

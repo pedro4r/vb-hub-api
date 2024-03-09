@@ -15,6 +15,7 @@ export function makeCheckIn(
       customerId: new UniqueEntityID(),
       details: faker.lorem.text(),
       weight: faker.number.float(),
+      createdAt: new Date(),
       ...override,
     },
     id,

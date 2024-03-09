@@ -4,7 +4,7 @@ import { Customer } from '../../enterprise/entities/customer'
 import { CustomerRepository } from '../repositories/customer-repository'
 import { HashGenerator } from '@/core/cryptography/hash-generator'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { ParcelForwardingRepository } from '@/domain/parcel-forwarding/application/repositories/parcel-forwarding-repository'
+import { ParcelForwardingsRepository } from '@/domain/parcel-forwarding/application/repositories/parcel-forwardings-repository'
 import { HubId } from '../../enterprise/entities/value-objects/hub-id'
 
 interface RegisterCustomerUseCaseRequest {
@@ -24,7 +24,7 @@ type RegisterCustomerUseCaseResponse = Either<
 export class RegisterCustomerUseCase {
   constructor(
     private customersRepository: CustomerRepository,
-    private parcelForwardingRepository: ParcelForwardingRepository,
+    private parcelForwardingsRepository: ParcelForwardingsRepository,
     private hashGenerator: HashGenerator,
   ) {}
 
@@ -36,7 +36,7 @@ export class RegisterCustomerUseCase {
     creatingCustomerCode ? creatingCustomerCode++ : (creatingCustomerCode = 1)
 
     const parcelForwarding =
-      await this.parcelForwardingRepository.findById(parcelForwardingId)
+      await this.parcelForwardingsRepository.findById(parcelForwardingId)
 
     if (!parcelForwarding) {
       throw new Error('Parcel forwarding not found')

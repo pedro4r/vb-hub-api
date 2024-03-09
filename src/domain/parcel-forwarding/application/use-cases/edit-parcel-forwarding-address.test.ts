@@ -1,17 +1,17 @@
-import { InMemoryParcelForwardingAddressRepository } from 'test/repositories/in-memory-parcel-forwarding-address-repository'
+import { InMemoryParcelForwardingAddressesRepository } from 'test/repositories/in-memory-parcel-forwarding-address-repository'
 import { EditParcelForwardingAddressUseCase } from './edit-parcel-forwarding-address'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { makeParcelForwardingAddress } from 'test/factories/make-forwarding-address'
 
-let inMemoryParcelForwardingAddressRepository: InMemoryParcelForwardingAddressRepository
+let inMemoryParcelForwardingAddressesRepository: InMemoryParcelForwardingAddressesRepository
 let sut: EditParcelForwardingAddressUseCase
 
 describe('Edit Forwarding Address', () => {
   beforeEach(() => {
-    inMemoryParcelForwardingAddressRepository =
-      new InMemoryParcelForwardingAddressRepository()
+    inMemoryParcelForwardingAddressesRepository =
+      new InMemoryParcelForwardingAddressesRepository()
     sut = new EditParcelForwardingAddressUseCase(
-      inMemoryParcelForwardingAddressRepository,
+      inMemoryParcelForwardingAddressesRepository,
     )
   })
 
@@ -23,7 +23,7 @@ describe('Edit Forwarding Address', () => {
       new UniqueEntityID('forwarding-address-1'),
     )
 
-    await inMemoryParcelForwardingAddressRepository.create(
+    await inMemoryParcelForwardingAddressesRepository.create(
       newParcelForwardingAddress,
     )
 
@@ -41,7 +41,7 @@ describe('Edit Forwarding Address', () => {
     })
 
     expect(
-      inMemoryParcelForwardingAddressRepository.items[0].address,
+      inMemoryParcelForwardingAddressesRepository.items[0].address,
     ).toMatchObject({
       zipcode: 'New zipcode',
     })
@@ -55,7 +55,7 @@ describe('Edit Forwarding Address', () => {
       new UniqueEntityID('forwarding-address-1'),
     )
 
-    await inMemoryParcelForwardingAddressRepository.create(
+    await inMemoryParcelForwardingAddressesRepository.create(
       newParcelForwardingAddress,
     )
 

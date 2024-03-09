@@ -1,15 +1,15 @@
-import { InMemoryParcelForwardingAddressRepository } from 'test/repositories/in-memory-parcel-forwarding-address-repository'
+import { InMemoryParcelForwardingAddressesRepository } from 'test/repositories/in-memory-parcel-forwarding-address-repository'
 import { CreateParcelForwardingAddressUseCase } from './create-parcel-forwarding-address'
 
-let inMemoryParcelForwardingAddressRepository: InMemoryParcelForwardingAddressRepository
+let inMemoryParcelForwardingAddressesRepository: InMemoryParcelForwardingAddressesRepository
 let sut: CreateParcelForwardingAddressUseCase
 
 describe('Create Forwarding Address', () => {
   beforeEach(() => {
-    inMemoryParcelForwardingAddressRepository =
-      new InMemoryParcelForwardingAddressRepository()
+    inMemoryParcelForwardingAddressesRepository =
+      new InMemoryParcelForwardingAddressesRepository()
     sut = new CreateParcelForwardingAddressUseCase(
-      inMemoryParcelForwardingAddressRepository,
+      inMemoryParcelForwardingAddressesRepository,
     )
   })
 
@@ -27,7 +27,7 @@ describe('Create Forwarding Address', () => {
 
     expect(result.isRight()).toBe(true)
 
-    expect(inMemoryParcelForwardingAddressRepository.items[0]).toEqual(
+    expect(inMemoryParcelForwardingAddressesRepository.items[0]).toEqual(
       result.value?.parcelForwardingAddress,
     )
   })

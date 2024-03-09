@@ -1,8 +1,8 @@
 import { ParcelForwardingAddress } from '@/domain/parcel-forwarding/enterprise/entities/forwarding-address'
-import { ParcelForwardingAddressRepository } from '@/domain/parcel-forwarding/application/repositories/forwarding-address-repository'
+import { ParcelForwardingAddressesRepository } from '@/domain/parcel-forwarding/application/repositories/forwarding-addresses-repository'
 
-export class InMemoryParcelForwardingAddressRepository
-  implements ParcelForwardingAddressRepository
+export class InMemoryParcelForwardingAddressesRepository
+  implements ParcelForwardingAddressesRepository
 {
   public items: ParcelForwardingAddress[] = []
 

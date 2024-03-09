@@ -35,6 +35,13 @@ export class CheckIn extends AggregateRoot<CheckInProps> {
     this.touch()
   }
 
+  get weight() {
+    if (!this.props.weight) {
+      return 0
+    }
+    return this.props.weight
+  }
+
   get attachments() {
     return this.props.attachments
   }
@@ -42,6 +49,10 @@ export class CheckIn extends AggregateRoot<CheckInProps> {
   set attachments(attachments: CheckInAttachmentList) {
     this.props.attachments = attachments
     this.touch()
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt
   }
 
   get createdAt() {

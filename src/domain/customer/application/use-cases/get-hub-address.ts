@@ -3,7 +3,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { CustomerHubAddress } from '../../enterprise/entities/value-objects/customer-hub-address'
 import { CustomerRepository } from '../repositories/customer-repository'
-import { ParcelForwardingAddressRepository } from '@/domain/parcel-forwarding/application/repositories/forwarding-address-repository'
+import { ParcelForwardingAddressesRepository } from '@/domain/parcel-forwarding/application/repositories/forwarding-addresses-repository'
 import { ShippingAddressRepository } from '../repositories/shipping-address-repository'
 
 interface GetHubAddressUseCaseRequest {
@@ -20,7 +20,7 @@ type GetHubAddressUseCaseResponse = Either<
 export class GetHubAddressUseCase {
   constructor(
     private customerRepository: CustomerRepository,
-    private parcelForwardingAddressRepository: ParcelForwardingAddressRepository,
+    private parcelForwardingAddressesRepository: ParcelForwardingAddressesRepository,
     private shippingAddressRepository: ShippingAddressRepository,
   ) {}
 
@@ -48,18 +48,18 @@ export class GetHubAddressUseCase {
       return left(new NotAllowedError())
     }
 
-    const parcelForwardingAddressRepository =
-      await this.parcelForwardingAddressRepository.findByParcelForwardingId(
+    const parcelForwardingAddressesRepository =
+      await this.parcelForwardingAddressesRepository.findByParcelForwardingId(
         customer.parcelForwardingId.toString(),
       )
 
-    if (!parcelForwardingAddressRepository) {
+    if (!parcelForwardingAddressesRepository) {
       return left(new ResourceNotFoundError())
     }
 
     const hubAddress = CustomerHubAddress.create({
       customerHubId: customer.hubId,
-      parcelForwardingAddress: parcelForwardingAddressRepository,
+      parcelForwardingAddress: parcelForwardingAddressesRepository,
     })
 
     return right({
