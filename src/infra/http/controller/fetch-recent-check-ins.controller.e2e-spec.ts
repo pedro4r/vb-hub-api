@@ -42,7 +42,7 @@ describe('Fetch Recent Check-ins (E2E)', () => {
       parcelForwardingId: parcelForwarding.id,
     })
 
-    Promise.all([
+    await Promise.all([
       checkInFactory.makePrismaCheckIn({
         parcelForwardingId: parcelForwarding.id,
         customerId: customer1.id,
@@ -61,5 +61,11 @@ describe('Fetch Recent Check-ins (E2E)', () => {
       .send()
 
     expect(response.statusCode).toBe(200)
+    expect(response.body).toEqual({
+      checkIns: expect.arrayContaining([
+        expect.objectContaining({ id: expect.any(String) }),
+        expect.objectContaining({ id: expect.any(String) }),
+      ]),
+    })
   })
 })

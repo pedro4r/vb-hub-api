@@ -9,6 +9,7 @@ import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases
 import { AuthenticateUseCase } from '@/domain/parcel-forwarding/application/use-cases/authenticate-parcel-forwarding'
 import { RegisterParcelForwardingUseCase } from '@/domain/parcel-forwarding/application/use-cases/register-parcel-forwarding'
 import { CryptographyModule } from '../cryptograph/cryptograph.module'
+import { FetchRecentCheckInsUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-check-ins'
 
 @Module({
   imports: [DatabseModule, CryptographyModule],
@@ -23,6 +24,7 @@ import { CryptographyModule } from '../cryptograph/cryptograph.module'
     CheckInUseCase,
     AuthenticateUseCase,
     RegisterParcelForwardingUseCase,
+    FetchRecentCheckInsUseCase,
   ],
 })
 export class HttpModule {}

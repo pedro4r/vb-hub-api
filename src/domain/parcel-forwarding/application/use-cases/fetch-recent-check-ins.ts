@@ -3,6 +3,7 @@ import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { CheckInsRepository } from '../repositories/check-ins-repository'
 import { CheckIn } from '../../enterprise/entities/check-in'
+import { Injectable } from '@nestjs/common'
 
 interface FetchCheckInsUseCaseRequest {
   parcelForwardingId: string
@@ -11,9 +12,9 @@ interface FetchCheckInsUseCaseRequest {
 
 type FetchCheckInsUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
-  CheckIn[]
+  { checkIns: CheckIn[] }
 >
-
+@Injectable()
 export class FetchRecentCheckInsUseCase {
   constructor(private checkInsRepository: CheckInsRepository) {}
 
@@ -34,6 +35,6 @@ export class FetchRecentCheckInsUseCase {
       return left(new NotAllowedError())
     }
 
-    return right(checkIns)
+    return right({ checkIns })
   }
 }

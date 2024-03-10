@@ -1,8 +1,17 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common'
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Query,
+  UseGuards,
+} from '@nestjs/common'
 import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { ZodValidationPipe } from '@/infra/http/pipe/zod-validation-pipe'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { z } from 'zod'
+import { FetchRecentCheckInsUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-check-ins'
+import { CurrentUser } from '@/infra/auth/current-user-decorator'
+import { UserPayload } from '@/infra/auth/jwt.strategy'
+import { CheckInPresenter } from '../presenters/check-in-presenter'
 
 const pageQueryParamSchema = z
   .string()
@@ -18,20 +27,25 @@ type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 @Controller('/check-ins')
 @UseGuards(JwtAuthGuard)
 export class FetchRecentCheckInsController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private fetchRecentCheckIns: FetchRecentCheckInsUseCase) {}
 
   @Get()
-  async handle(@Query('page', queryValidationPipe) page: PageQueryParamSchema) {
-    const perPage = 1
-
-    const checkIns = await this.prisma.checkIn.findMany({
-      take: perPage,
-      skip: (page - 1) * perPage,
-      orderBy: {
-        createdAt: 'desc',
-      },
+  async handle(
+    @CurrentUser() user: UserPayload,
+    @Query('page', queryValidationPipe) page: PageQueryParamSchema,
+  ) {
+    const userId = user.sub
+    const result = await this.fetchRecentCheckIns.execute({
+      parcelForwardingId: userId,
+      page,
     })
 
-    return { checkIns }
+    if (result.isLeft()) {
+      throw new BadRequestException()
+    }
+
+    const checkIns = result.value.checkIns
+
+    return { checkIns: checkIns.map(CheckInPresenter.toHTTP) }
   }
 }

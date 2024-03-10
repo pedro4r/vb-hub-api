@@ -1,7 +1,16 @@
 import { RegisterParcelForwardingUseCase } from '@/domain/parcel-forwarding/application/use-cases/register-parcel-forwarding'
-import { Body, Controller, HttpCode, Post, UsePipes } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  ConflictException,
+  Controller,
+  HttpCode,
+  Post,
+  UsePipes,
+} from '@nestjs/common'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipe/zod-validation-pipe'
+import { AccountAlreadyExistsError } from '@/domain/parcel-forwarding/application/use-cases/errors/account-already-exists-error'
 
 const createAccountBodySchema = z.object({
   name: z.string(),
@@ -32,7 +41,14 @@ export class RegisterParcelForwardingController {
     })
 
     if (result.isLeft()) {
-      throw new Error()
+      const error = result.value
+
+      switch (error.constructor) {
+        case AccountAlreadyExistsError:
+          throw new ConflictException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
     }
   }
 }

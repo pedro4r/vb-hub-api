@@ -24,7 +24,6 @@ export class PrismaParcelForwardingRepository
   }
 
   async findByEmail(email: string): Promise<ParcelForwarding | null> {
-    console.log('email', email)
     const parcelForwarding = await this.prisma.parcelForwarding.findUnique({
       where: {
         email,
