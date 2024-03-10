@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  Controller,
-  Get,
-  Query,
-  UseGuards,
-} from '@nestjs/common'
-import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
+import { BadRequestException, Controller, Get, Query } from '@nestjs/common'
 import { ZodValidationPipe } from '@/infra/http/pipe/zod-validation-pipe'
 import { z } from 'zod'
 import { FetchRecentCheckInsUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-check-ins'
@@ -25,7 +18,6 @@ const queryValidationPipe = new ZodValidationPipe(pageQueryParamSchema)
 type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 
 @Controller('/check-ins')
-@UseGuards(JwtAuthGuard)
 export class FetchRecentCheckInsController {
   constructor(private fetchRecentCheckIns: FetchRecentCheckInsUseCase) {}
 

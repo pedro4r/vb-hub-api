@@ -1,12 +1,5 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Post,
-  UseGuards,
-} from '@nestjs/common'
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
-import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipe/zod-validation-pipe'
 import { z } from 'zod'
@@ -30,7 +23,6 @@ const bodyValidationPipe = new ZodValidationPipe(createCheckInBodySchema)
 type CreateCheckInBodySchema = z.infer<typeof createCheckInBodySchema>
 
 @Controller('/check-in')
-@UseGuards(JwtAuthGuard)
 export class CreateCheckInController {
   constructor(private checkInUseCase: CheckInUseCase) {}
 

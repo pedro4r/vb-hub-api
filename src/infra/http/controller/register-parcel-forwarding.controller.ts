@@ -11,6 +11,7 @@ import {
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipe/zod-validation-pipe'
 import { AccountAlreadyExistsError } from '@/domain/parcel-forwarding/application/use-cases/errors/account-already-exists-error'
+import { Public } from '@/infra/auth/public'
 
 const createAccountBodySchema = z.object({
   name: z.string(),
@@ -24,6 +25,7 @@ type RegisterParcelForwardingBodySchema = z.infer<
 >
 
 @Controller('/parcel-forwarding/register')
+@Public()
 export class RegisterParcelForwardingController {
   constructor(private registerStudent: RegisterParcelForwardingUseCase) {}
 
