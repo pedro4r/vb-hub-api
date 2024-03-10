@@ -19,7 +19,7 @@ POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
-  "email": "contato3@voabox.com",
+  "email": "contato4@voabox.com",
   "password": "123456"
 }
 
