@@ -7,15 +7,9 @@ import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases
 import { CheckInStatus } from '@/domain/parcel-forwarding/enterprise/entities/check-in'
 
 const createCheckInBodySchema = z.object({
-  customerId: z.string().uuid(),
-  details: z.string(),
-  status: z.string().transform(Number).pipe(z.nativeEnum(CheckInStatus)),
-  weight: z
-    .string()
-    .optional()
-    .default('0')
-    .transform(Number)
-    .pipe(z.number().min(0)),
+  shippingAddressId: z.string(),
+  hasBattery: z.boolean(),
+  checkInsId: z.array(z.string().uuid()),
 })
 
 const bodyValidationPipe = new ZodValidationPipe(createCheckInBodySchema)
