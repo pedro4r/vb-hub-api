@@ -9,6 +9,7 @@ import { Injectable } from '@nestjs/common'
 interface CheckInUseCaseRequest {
   parcelForwardingId: string
   customerId: string
+  status: number
   details?: string
   weight?: number
   attachmentsIds: string[]
@@ -29,11 +30,13 @@ export class CheckInUseCase {
     customerId,
     details,
     weight,
+    status,
     attachmentsIds,
   }: CheckInUseCaseRequest): Promise<CheckInUseCaseResponse> {
     const checkin = CheckIn.create({
       parcelForwardingId: new UniqueEntityID(parcelForwardingId),
       customerId: new UniqueEntityID(customerId),
+      status,
       details,
       weight,
     })

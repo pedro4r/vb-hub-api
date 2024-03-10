@@ -8,6 +8,7 @@ export class CheckInPresenter {
       weight: checkIn.weight,
       customerId: checkIn.customerId,
       parcelForwardingId: checkIn.parcelForwardingId,
+      createdAt: checkIn.createdAt,
     }
   }
 }

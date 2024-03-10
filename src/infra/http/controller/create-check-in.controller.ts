@@ -5,10 +5,12 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipe/zod-validation-pipe'
 import { z } from 'zod'
 import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/check-in'
+import { CheckInStatus } from '@/domain/parcel-forwarding/enterprise/entities/check-in'
 
 const createCheckInBodySchema = z.object({
   customerId: z.string(),
   details: z.string(),
+  status: z.string().transform(Number).pipe(z.nativeEnum(CheckInStatus)),
   weight: z
     .string()
     .optional()
@@ -31,13 +33,14 @@ export class CreateCheckInController {
     @Body(bodyValidationPipe) body: CreateCheckInBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
-    const { customerId, details, weight } = body
+    const { customerId, details, weight, status } = body
     const userId = user.sub
 
     await this.checkInUseCase.execute({
       customerId,
       details,
       weight,
+      status,
       parcelForwardingId: userId,
       attachmentsIds: [],
     })

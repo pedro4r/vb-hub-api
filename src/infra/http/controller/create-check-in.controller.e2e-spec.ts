@@ -51,6 +51,7 @@ describe('Create Check-in (E2E)', () => {
       .send({
         parcel_forwarding_id: parcelForwarding.id,
         customerId: customer.id,
+        status: '1',
         details: 'New Check-in',
         weight: '10',
       })
