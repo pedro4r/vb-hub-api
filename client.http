@@ -7,8 +7,8 @@ Content-Type: application/json
 
 {
   "name": "Voabox",
-  "initials": "VXS",
-  "email": "contato1@voabox.com",
+  "initials": "Vbs",
+  "email": "contato3@voabox.com",
   "password": "123456"
 }
 
@@ -19,7 +19,7 @@ POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
-  "email": "contato1@voabox.com",
+  "email": "contato2@voabox.com",
   "password": "123456"
 }
 

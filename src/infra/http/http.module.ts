@@ -6,9 +6,12 @@ import { FetchRecentCheckInsController } from './controller/fetch-recent-check-i
 
 import { DatabseModule } from '../database/database.module'
 import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/check-in'
+import { AuthenticateUseCase } from '@/domain/parcel-forwarding/application/use-cases/authenticate-parcel-forwarding'
+import { RegisterParcelForwardingUseCase } from '@/domain/parcel-forwarding/application/use-cases/register-parcel-forwarding'
+import { CryptographyModule } from '../cryptograph/cryptograph.module'
 
 @Module({
-  imports: [DatabseModule],
+  imports: [DatabseModule, CryptographyModule],
   controllers: [
     RegisterParcelForwardingController,
     AuthenticateController,
@@ -16,6 +19,10 @@ import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases
     CreateCheckInController,
     FetchRecentCheckInsController,
   ],
-  providers: [CheckInUseCase],
+  providers: [
+    CheckInUseCase,
+    AuthenticateUseCase,
+    RegisterParcelForwardingUseCase,
+  ],
 })
 export class HttpModule {}

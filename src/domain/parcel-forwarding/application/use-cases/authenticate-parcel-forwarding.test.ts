@@ -1,5 +1,5 @@
 import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
-import { AuthenticateParcelForwardingUseCase } from './authenticate-parcel-forwarding'
+import { AuthenticateUseCase } from './authenticate-parcel-forwarding'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { InMemoryParcelForwardingsRepository } from 'test/repositories/in-memory-parcel-forwarding-repository'
 import { makeParcelForwarding } from 'test/factories/make-parcel-forwarding'
@@ -8,7 +8,7 @@ let inMemoryParcelForwardingsRepository: InMemoryParcelForwardingsRepository
 let fakeHasher: FakeHasher
 let encrypter: FakeEncrypter
 
-let sut: AuthenticateParcelForwardingUseCase
+let sut: AuthenticateUseCase
 
 describe('Authenticate Parcel Forwarding', () => {
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe('Authenticate Parcel Forwarding', () => {
     fakeHasher = new FakeHasher()
     encrypter = new FakeEncrypter()
 
-    sut = new AuthenticateParcelForwardingUseCase(
+    sut = new AuthenticateUseCase(
       inMemoryParcelForwardingsRepository,
       fakeHasher,
       encrypter,

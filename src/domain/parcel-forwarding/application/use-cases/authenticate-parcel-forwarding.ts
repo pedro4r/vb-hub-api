@@ -3,20 +3,22 @@ import { HashComparer } from '@/core/cryptography/hash-compare'
 import { Either, left, right } from '@/core/either'
 import { ParcelForwardingsRepository } from '../repositories/parcel-forwardings-repository'
 import { WrongCredentialsError } from './errors/wrong-credentials-error'
+import { Injectable } from '@nestjs/common'
 
-interface AuthenticateParcelForwardingUseCaseRequest {
+interface AuthenticateUseCaseRequest {
   email: string
   password: string
 }
 
-type AuthenticateParcelForwardingUseCaseResponse = Either<
+type AuthenticateUseCaseResponse = Either<
   WrongCredentialsError,
   {
     accessToken: string
   }
 >
 
-export class AuthenticateParcelForwardingUseCase {
+@Injectable()
+export class AuthenticateUseCase {
   constructor(
     private parcelforwardingsRepository: ParcelForwardingsRepository,
     private hashComparer: HashComparer,
@@ -26,7 +28,7 @@ export class AuthenticateParcelForwardingUseCase {
   async execute({
     email,
     password,
-  }: AuthenticateParcelForwardingUseCaseRequest): Promise<AuthenticateParcelForwardingUseCaseResponse> {
+  }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
     const parcelforwarding =
       await this.parcelforwardingsRepository.findByEmail(email)
 

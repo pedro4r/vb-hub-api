@@ -3,6 +3,7 @@ import { ParcelForwardingsRepository } from '../repositories/parcel-forwardings-
 import { ParcelForwarding } from '../../enterprise/entities/parcel-forwarding'
 import { HashGenerator } from '@/core/cryptography/hash-generator'
 import { UserAlreadyExistsError } from '@/core/errors/errors/user-already-exists-error'
+import { Injectable } from '@nestjs/common'
 
 interface RegisterParcelForwardingUseCaseRequest {
   name: string
@@ -17,7 +18,7 @@ type RegisterParcelForwardingUseCaseResponse = Either<
     parcelforwarding: ParcelForwarding
   }
 >
-
+@Injectable()
 export class RegisterParcelForwardingUseCase {
   constructor(
     private parcelforwardingsRepository: ParcelForwardingsRepository,

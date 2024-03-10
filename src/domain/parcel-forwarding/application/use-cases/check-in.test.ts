@@ -22,6 +22,7 @@ describe('Check-in', () => {
     const result = await sut.execute({
       parcelForwardingId: 'A1',
       customerId: 'A2',
+      status: 1,
       details: 'Package details',
       attachmentsIds: ['1', '2'],
     })
@@ -42,6 +43,7 @@ describe('Check-in', () => {
     const result = await sut.execute({
       parcelForwardingId: 'A1',
       customerId: 'A2',
+      status: 1,
       details: 'Package details',
       attachmentsIds: ['1', '2'],
     })
