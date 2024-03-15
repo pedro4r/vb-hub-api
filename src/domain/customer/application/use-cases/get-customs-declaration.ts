@@ -18,7 +18,7 @@ type GetCustomsDeclarationResponse = Either<
 
 export class GetCustomsDeclaration {
   constructor(
-    private customDeclarationRepository: CustomsDeclarationRepository,
+    private customsDeclarationRepository: CustomsDeclarationRepository,
   ) {}
 
   async execute({
@@ -26,7 +26,7 @@ export class GetCustomsDeclaration {
     packageId,
   }: GetCustomsDeclarationRequest): Promise<GetCustomsDeclarationResponse> {
     const customsDeclaration =
-      await this.customDeclarationRepository.findById(packageId)
+      await this.customsDeclarationRepository.findById(packageId)
 
     if (!customsDeclaration) {
       return left(new ResourceNotFoundError())

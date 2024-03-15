@@ -8,17 +8,17 @@ datasource db {
 }
 
 model Customer {
-  id                   String    @id @default(uuid())
-  hubId                String    @unique
-  parcel_forwarding_id String    @map("parcel_forwarding_id")
+  id                   String            @id @default(uuid())
+  hubId                String            @unique
+  parcel_forwarding_id String            @map("parcel_forwarding_id")
   name                 String
-  email                String    @unique
+  email                String            @unique
   password             String
   CheckIn              CheckIn[]
+  Package              Package[]
+  ShippingAddress      ShippingAddress[]
 
-  parcel_forwarding ParcelForwarding  @relation(fields: [parcel_forwarding_id], references: [id])
-  Package           Package[]
-  ShippingAddress   ShippingAddress[]
+  parcel_forwarding ParcelForwarding @relation(fields: [parcel_forwarding_id], references: [id])
 
   @@map("customers")
 }
@@ -42,15 +42,15 @@ model CheckIn {
   details              String
   weight               Int
   parcel_forwarding_id String    @map("parcel_forwarding_id")
+  package_id           String?   @map("package_id")
   customer_id          String    @map("customer_id")
   createdAt            DateTime  @default(now()) @map("created_at")
   updatedAt            DateTime? @updatedAt @map("updated_at")
 
   parcel_forwarding ParcelForwarding @relation(fields: [parcel_forwarding_id], references: [id])
   customer          Customer         @relation(fields: [customer_id], references: [id])
+  Package           Package?         @relation(fields: [package_id], references: [id])
   Attachment        Attachment[]
-  Package           Package?         @relation(fields: [packageId], references: [id])
-  packageId         String?
 
   @@map("check_ins")
 }
@@ -78,10 +78,25 @@ model Package {
 
   CheckIn CheckIn[]
 
-  parcel_forwarding ParcelForwarding @relation(fields: [parcel_forwarding_id], references: [id])
-  customer          Customer         @relation(fields: [customer_id], references: [id])
+  parcel_forwarding       ParcelForwarding         @relation(fields: [parcel_forwarding_id], references: [id])
+  customer                Customer                 @relation(fields: [customer_id], references: [id])
+  CustomDeclaractionItems CustomDeclaractionItem[]
 
   @@map("packages")
+}
+
+model CustomDeclaractionItem {
+  id          String    @id @default(uuid())
+  description String    @map("description")
+  value       Int       @map("value")
+  quantity    Int       @map("quantity")
+  package_id  String    @map("package_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+
+  Package Package @relation(fields: [package_id], references: [id])
+
+  @@map("custom_declaraction_items")
 }
 
 model ShippingAddress {

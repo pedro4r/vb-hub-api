@@ -4,6 +4,7 @@ import { InMemoryCheckInsRepository } from 'test/repositories/in-memory-check-in
 import { InMemoryCheckInsAttachmentsRepository } from 'test/repositories/in-memory-check-ins-attachments-repository'
 
 import { makeCheckIn } from 'test/factories/make-check-in'
+import { CheckIn } from '../../enterprise/entities/check-in'
 
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
@@ -38,10 +39,12 @@ describe('Fetch Recent Check-ins', () => {
       createdAt: new Date('2021-01-04'),
     })
 
-    await inMemoryCheckInsRepository.create(checkIn1)
-    await inMemoryCheckInsRepository.create(checkIn2)
-    await inMemoryCheckInsRepository.create(checkIn3)
-    await inMemoryCheckInsRepository.create(checkIn4)
+    await Promise.all([
+      inMemoryCheckInsRepository.create(checkIn1),
+      inMemoryCheckInsRepository.create(checkIn2),
+      inMemoryCheckInsRepository.create(checkIn3),
+      inMemoryCheckInsRepository.create(checkIn4),
+    ])
 
     const result = await sut.execute({
       parcelForwardingId: 'parcel-forwarding-1',
@@ -49,7 +52,9 @@ describe('Fetch Recent Check-ins', () => {
     })
 
     expect(inMemoryCheckInsRepository.items.length).toEqual(4)
-    expect(result.value[0].id.toString()).toBe(checkIn4.id.toString())
+    expect(
+      (result.value as { checkIns: CheckIn[] }).checkIns[0].id.toString(),
+    ).toBe(checkIn4.id.toString())
   })
 
   it('should not be able to fetch recent check-ins', async () => {

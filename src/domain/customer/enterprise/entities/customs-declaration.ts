@@ -1,33 +1,47 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-
-export interface ItemInfo {
-  description: string
-  value: number
-  quantity: number
-}
+import { CustomsDeclarationList } from './customs-declaration-list'
+import { Optional } from '@/core/types/opitional'
 
 export interface CustomsDeclarationProps {
+  title: string
   customerId: UniqueEntityID
-  packageId: UniqueEntityID
-  itemsList: ItemInfo[]
+  items: CustomsDeclarationList
 }
 
 export class CustomsDeclaration extends Entity<CustomsDeclarationProps> {
   get customerId() {
-    return this.props.packageId
+    return this.props.customerId
   }
 
-  get packageId() {
-    return this.props.packageId
+  get title() {
+    return this.props.title
   }
 
-  get itemList() {
-    return this.props.itemsList
+  set title(title: string) {
+    this.props.title = title
   }
 
-  static create(props: CustomsDeclarationProps, id?: UniqueEntityID) {
-    const customsDeclaration = new CustomsDeclaration(props, id)
+  get items() {
+    return this.props.items
+  }
+
+  set items(items: CustomsDeclarationList) {
+    this.props.items = items
+  }
+
+  static create(
+    props: Optional<CustomsDeclarationProps, 'items'>,
+    id?: UniqueEntityID,
+  ) {
+    const customsDeclaration = new CustomsDeclaration(
+      {
+        ...props,
+        items: new CustomsDeclarationList(),
+      },
+      id,
+    )
+
     return customsDeclaration
   }
 }

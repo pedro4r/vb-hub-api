@@ -17,6 +17,7 @@ export enum CheckInStatus {
 export interface CheckInProps {
   parcelForwardingId: UniqueEntityID
   customerId: UniqueEntityID
+  packageId?: UniqueEntityID | null
   details?: string | null
   status: CheckInStatus
   attachments: CheckInAttachmentList
@@ -32,6 +33,15 @@ export class CheckIn extends AggregateRoot<CheckInProps> {
 
   get customerId() {
     return this.props.customerId
+  }
+
+  get packageId() {
+    return this.props.packageId
+  }
+
+  set packageId(packageId: UniqueEntityID | null | undefined) {
+    this.props.packageId = packageId
+    this.touch()
   }
 
   get details() {

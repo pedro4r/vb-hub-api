@@ -18,7 +18,7 @@ type DeleteCustomsDeclarationResponse = Either<
 
 export class DeleteCustomsDeclaration {
   constructor(
-    private customDeclarationRepository: CustomsDeclarationRepository,
+    private customsDeclarationRepository: CustomsDeclarationRepository,
   ) {}
 
   async execute({
@@ -26,7 +26,7 @@ export class DeleteCustomsDeclaration {
     packageId,
   }: DeleteCustomsDeclarationRequest): Promise<DeleteCustomsDeclarationResponse> {
     const customsDeclaration =
-      await this.customDeclarationRepository.findById(packageId)
+      await this.customsDeclarationRepository.findById(packageId)
 
     if (!customsDeclaration) {
       return left(new ResourceNotFoundError())
@@ -36,7 +36,7 @@ export class DeleteCustomsDeclaration {
       return left(new NotAllowedError())
     }
 
-    await this.customDeclarationRepository.delete(packageId)
+    await this.customsDeclarationRepository.delete(packageId)
 
     return right({
       customsDeclaration,

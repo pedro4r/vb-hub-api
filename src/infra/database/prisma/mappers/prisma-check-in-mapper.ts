@@ -24,6 +24,7 @@ export class PrismaCheckInMapper {
       status: checkIn.status,
       parcel_forwarding_id: checkIn.parcelForwardingId.toString(),
       customer_id: checkIn.customerId.toString(),
+      package_id: checkIn.packageId?.toString(),
       details: checkIn.details,
       weight: checkIn.weight,
       createdAt: checkIn.createdAt,

@@ -2,6 +2,7 @@ import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/opitional'
 import { PackageCreatedEvent } from '../events/package-created-event'
+import { CustomsDeclarationList } from './customs-declaration-list'
 
 export interface PackageProps {
   customerId: UniqueEntityID
@@ -9,7 +10,7 @@ export interface PackageProps {
   freightProviderId?: UniqueEntityID | null
   shippingAddressId: UniqueEntityID
   checkInsId: UniqueEntityID[]
-  customsDeclarationId?: UniqueEntityID
+  customDeclaration: CustomsDeclarationList
   taxId?: UniqueEntityID | null
   weight?: number | null
   hasBattery: boolean
@@ -55,12 +56,12 @@ export class Package extends AggregateRoot<PackageProps> {
     this.touch()
   }
 
-  get customsDeclarationId() {
-    return this.props.customsDeclarationId
+  get customDeclaration() {
+    return this.props.customDeclaration
   }
 
-  set customsDeclarationId(id: UniqueEntityID | undefined) {
-    this.props.customsDeclarationId = id
+  set customDeclaration(customDeclaration) {
+    this.props.customDeclaration = customDeclaration
     this.touch()
   }
 
@@ -122,12 +123,14 @@ export class Package extends AggregateRoot<PackageProps> {
   }
 
   static create(
-    props: Optional<PackageProps, 'createdAt'>,
+    props: Optional<PackageProps, 'createdAt' | 'customDeclaration'>,
     id?: UniqueEntityID,
   ) {
     const pkg = new Package(
       {
         ...props,
+        customDeclaration:
+          props.customDeclaration ?? new CustomsDeclarationList(),
         createdAt: props.createdAt ?? new Date(),
       },
       id,

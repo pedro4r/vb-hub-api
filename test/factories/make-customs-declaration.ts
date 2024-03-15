@@ -9,26 +9,14 @@ export function makeCustomsDeclaration(
   override: Partial<CustomsDeclarationProps> = {},
   id?: UniqueEntityID,
 ) {
-  const checkin = CustomsDeclaration.create(
+  const customsDeclaration = CustomsDeclaration.create(
     {
       customerId: new UniqueEntityID(),
-      packageId: new UniqueEntityID(),
-      itemsList: [
-        {
-          description: faker.lorem.text(),
-          quantity: faker.number.int(),
-          value: faker.number.int(),
-        },
-        {
-          description: faker.lorem.text(),
-          quantity: faker.number.int(),
-          value: faker.number.int(),
-        },
-      ],
+      title: faker.lorem.words(3),
       ...override,
     },
     id,
   )
 
-  return checkin
+  return customsDeclaration
 }

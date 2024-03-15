@@ -52,7 +52,9 @@ export class CreateParcelForwardingAddressUseCase {
       address: addressInfo,
     })
 
-    await this.parcelForwardingAddressesRepository.create(parcelForwardingAddress)
+    await this.parcelForwardingAddressesRepository.create(
+      parcelForwardingAddress,
+    )
 
     return right({
       parcelForwardingAddress,

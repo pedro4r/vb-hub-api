@@ -2,13 +2,14 @@ import { Either, right } from '@/core/either'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Package } from '../../enterprise/entities/package'
 import { PackageRepository } from '../repositories/package-repository'
+import { CustomDeclarationItems } from '../../enterprise/entities/customs-declaration'
 
 interface CreatePackageUseCaseRequest {
   customerId: string
   parcelForwardingId: string
   shippingAddressId: string
   checkInsId: string[]
-  customsDeclarationId: string
+  customsDeclarationItemsIds: string
   taxId?: string
   hasBattery: boolean
 }
@@ -28,7 +29,7 @@ export class CreatePackageUseCase {
     parcelForwardingId,
     shippingAddressId,
     checkInsId,
-    customsDeclarationId,
+    customsDeclarationItemsIds,
     taxId,
     hasBattery,
   }: CreatePackageUseCaseRequest): Promise<CreatePackageUseCaseResponse> {
@@ -37,9 +38,14 @@ export class CreatePackageUseCase {
       parcelForwardingId: new UniqueEntityID(parcelForwardingId),
       shippingAddressId: new UniqueEntityID(shippingAddressId),
       checkInsId: checkInsId.map((id) => new UniqueEntityID(id)),
-      customsDeclarationId: new UniqueEntityID(customsDeclarationId),
       taxId: taxId ? new UniqueEntityID(taxId) : null,
       hasBattery,
+    })
+
+    const customsDeclaration = customsDeclarationItemsIds.map((itemId) => {
+      return CustomDeclarationItems.create({
+        packageId: pkg.id,
+      })
     })
 
     await this.packageRepository.create(pkg)

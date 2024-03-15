@@ -2,7 +2,6 @@ import { CustomsDeclaration } from '../../enterprise/entities/customs-declaratio
 
 export abstract class CustomsDeclarationRepository {
   abstract create(customsDeclaration: CustomsDeclaration): Promise<void>
-  abstract findById(packageId: string): Promise<CustomsDeclaration | null>
-  abstract delete(packageId: string): Promise<void>
+  abstract findById(id: string): Promise<CustomsDeclaration | null>
   abstract save(customsDeclaration: CustomsDeclaration): Promise<void>
 }

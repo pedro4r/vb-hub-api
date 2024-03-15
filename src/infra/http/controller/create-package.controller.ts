@@ -3,38 +3,41 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipe/zod-validation-pipe'
 import { z } from 'zod'
-import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/check-in'
-import { CheckInStatus } from '@/domain/parcel-forwarding/enterprise/entities/check-in'
+import { CreatePackageUseCase } from '@/domain/customer/application/use-cases/create-package'
 
-const createCheckInBodySchema = z.object({
+const createPackageBodySchema = z.object({
   shippingAddressId: z.string(),
   hasBattery: z.boolean(),
   checkInsId: z.array(z.string().uuid()),
+  customsDeclarationItems: z.array(z.string().uuid()),
 })
 
-const bodyValidationPipe = new ZodValidationPipe(createCheckInBodySchema)
+const bodyValidationPipe = new ZodValidationPipe(createPackageBodySchema)
 
-type CreateCheckInBodySchema = z.infer<typeof createCheckInBodySchema>
+type CreatePackageBodySchema = z.infer<typeof createPackageBodySchema>
 
-@Controller('/check-in')
-export class CreateCheckInController {
-  constructor(private checkInUseCase: CheckInUseCase) {}
+@Controller('/package')
+export class CreatePackageController {
+  constructor(private createPackageUseCase: CreatePackageUseCase) {}
 
   @Post()
   async handle(
-    @Body(bodyValidationPipe) body: CreateCheckInBodySchema,
+    @Body(bodyValidationPipe) body: CreatePackageBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
-    const { customerId, details, weight, status } = body
+    const {
+      shippingAddressId,
+      hasBattery,
+      checkInsId,
+      customsDeclarationItems,
+    } = body
     const userId = user.sub
 
-    const result = await this.checkInUseCase.execute({
-      customerId,
-      details,
-      weight,
-      status,
-      parcelForwardingId: userId,
-      attachmentsIds: [],
+    const result = await this.createPackageUseCase.execute({
+      shippingAddressId,
+      hasBattery,
+      checkInsId,
+      customsDeclarationItems,
     })
 
     if (result.isLeft()) {

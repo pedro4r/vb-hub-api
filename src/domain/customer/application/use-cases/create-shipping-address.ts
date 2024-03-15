@@ -7,6 +7,7 @@ import { ShippingAddress } from '../../enterprise/entities/shipping-address'
 interface CreateShippingAddressUseCaseRequest {
   customerId: string
   recipientName: string
+  taxId: string
   address: string
   complement?: string | null
   city: string
@@ -29,6 +30,7 @@ export class CreateShippingAddressUseCase {
   async execute({
     customerId,
     recipientName,
+    taxId,
     address,
     complement,
     city,
@@ -50,6 +52,7 @@ export class CreateShippingAddressUseCase {
     const shippingAddress = ShippingAddress.create({
       customerId: new UniqueEntityID(customerId),
       recipientName,
+      taxId,
       address: addressInfo,
     })
 

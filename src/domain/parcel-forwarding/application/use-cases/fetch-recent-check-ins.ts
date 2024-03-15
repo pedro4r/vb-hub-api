@@ -11,8 +11,10 @@ interface FetchCheckInsUseCaseRequest {
 }
 
 type FetchCheckInsUseCaseResponse = Either<
-  ResourceNotFoundError | NotAllowedError,
-  { checkIns: CheckIn[] }
+  null | ResourceNotFoundError | NotAllowedError,
+  {
+    checkIns: CheckIn[]
+  }
 >
 @Injectable()
 export class FetchRecentCheckInsUseCase {
