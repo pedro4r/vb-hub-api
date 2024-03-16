@@ -12,4 +12,8 @@ export abstract class CustomsDeclarationItemsRepository {
   abstract deleteMany(
     customsDeclarationItems: CustomsDeclarationItem[],
   ): Promise<void>
+
+  abstract deleteManyByCustomsDeclarationId(
+    customsDeclarationId: string,
+  ): Promise<void>
 }

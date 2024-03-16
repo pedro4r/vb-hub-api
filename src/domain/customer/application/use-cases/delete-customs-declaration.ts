@@ -6,7 +6,7 @@ import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 
 interface DeleteCustomsDeclarationRequest {
   customerId: string
-  packageId: string
+  customsDeclarationId: string
 }
 
 type DeleteCustomsDeclarationResponse = Either<
@@ -23,10 +23,10 @@ export class DeleteCustomsDeclaration {
 
   async execute({
     customerId,
-    packageId,
+    customsDeclarationId,
   }: DeleteCustomsDeclarationRequest): Promise<DeleteCustomsDeclarationResponse> {
     const customsDeclaration =
-      await this.customsDeclarationRepository.findById(packageId)
+      await this.customsDeclarationRepository.findById(customsDeclarationId)
 
     if (!customsDeclaration) {
       return left(new ResourceNotFoundError())
@@ -36,7 +36,7 @@ export class DeleteCustomsDeclaration {
       return left(new NotAllowedError())
     }
 
-    await this.customsDeclarationRepository.delete(packageId)
+    await this.customsDeclarationRepository.delete(customsDeclaration)
 
     return right({
       customsDeclaration,

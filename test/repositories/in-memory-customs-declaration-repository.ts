@@ -11,6 +11,30 @@ export class InMemoryCustomsDeclarationRepository
     private customsDeclarationItemsRepository: CustomsDeclarationItemsRepository,
   ) {}
 
+  async findManyByCustomerId(customerId: string) {
+    const customsDeclarations = this.items.filter(
+      (item) => item.customerId.toString() === customerId,
+    )
+
+    if (!customsDeclarations) {
+      return null
+    }
+
+    return customsDeclarations
+  }
+
+  async delete(customsDeclaration: CustomsDeclaration) {
+    const itemIndex = this.items.findIndex((item) =>
+      item.id.equals(customsDeclaration.id),
+    )
+
+    this.items.splice(itemIndex, 1)
+
+    await this.customsDeclarationItemsRepository.deleteMany(
+      customsDeclaration.items.getItems(),
+    )
+  }
+
   async findById(customsDeclarationId: string) {
     const customsDeclaration = this.items.find(
       (item) => item.id.toString() === customsDeclarationId,

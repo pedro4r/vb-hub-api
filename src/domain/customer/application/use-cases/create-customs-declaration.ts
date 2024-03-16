@@ -35,7 +35,7 @@ export class CreateCustomsDeclaration {
       title,
     })
 
-    const itemsList = customsDeclarationItems.map((item) => {
+    const items = customsDeclarationItems.map((item) => {
       return CustomsDeclarationItem.create({
         customsDeclarationId: customsDeclaration.id,
         description: item.description,
@@ -44,7 +44,7 @@ export class CreateCustomsDeclaration {
       })
     })
 
-    customsDeclaration.items = new CustomsDeclarationList(itemsList)
+    customsDeclaration.items = new CustomsDeclarationList(items)
 
     await this.customsDeclarationRepository.create(customsDeclaration)
 

@@ -6,52 +6,54 @@ import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { CustomsDeclarationItemsRepository } from '../repositories/customs-declaration-item-repository'
 import { CustomsDeclarationList } from '../../enterprise/entities/customs-declaration-list'
 
-interface GetCustomsDeclarationRequest {
-  customsDeclarationId: string
+interface FetchCustomsDeclarationsRequest {
   customerId: string
 }
 
-type GetCustomsDeclarationResponse = Either<
+type FetchCustomsDeclarationsResponse = Either<
   ResourceNotFoundError | NotAllowedError | null,
   {
-    customsDeclaration: CustomsDeclaration
+    customsDeclarations: CustomsDeclaration[]
   }
 >
 
-export class GetCustomsDeclaration {
+export class FetchCustomsDeclarations {
   constructor(
     private customsDeclarationRepository: CustomsDeclarationRepository,
     private customsDeclarationItemsRepository: CustomsDeclarationItemsRepository,
   ) {}
 
   async execute({
-    customsDeclarationId,
     customerId,
-  }: GetCustomsDeclarationRequest): Promise<GetCustomsDeclarationResponse> {
-    const customsDeclaration =
-      await this.customsDeclarationRepository.findById(customsDeclarationId)
+  }: FetchCustomsDeclarationsRequest): Promise<FetchCustomsDeclarationsResponse> {
+    const declarations =
+      await this.customsDeclarationRepository.findManyByCustomerId(customerId)
 
-    if (!customsDeclaration) {
+    if (!declarations) {
       return left(new ResourceNotFoundError())
     }
 
-    if (customsDeclaration.customerId.toString() !== customerId) {
+    if (declarations[0].customerId.toString() !== customerId) {
       return left(new NotAllowedError())
     }
 
-    const items =
-      await this.customsDeclarationItemsRepository.findManyByCustomsDeclarationId(
-        customsDeclarationId,
-      )
+    const customsDeclarations = await Promise.all(
+      declarations.map(async (customsDeclaration) => {
+        const items =
+          await this.customsDeclarationItemsRepository.findManyByCustomsDeclarationId(
+            customsDeclaration.id.toString(),
+          )
 
-    if (!items) {
-      return left(new ResourceNotFoundError())
-    }
+        if (items) {
+          customsDeclaration.items = new CustomsDeclarationList(items)
+        }
 
-    customsDeclaration.items = new CustomsDeclarationList(items)
+        return customsDeclaration
+      }),
+    )
 
     return right({
-      customsDeclaration,
+      customsDeclarations,
     })
   }
 }

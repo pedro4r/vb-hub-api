@@ -28,6 +28,13 @@ export class InMemoryCustomsDeclarationItemsRepository
     this.items = newCustomsDeclarationItems
   }
 
+  async deleteManyByCustomsDeclarationId(customsDeclarationId: string) {
+    const itemIndex = this.items.findIndex(
+      (item) => item.id.toString() === customsDeclarationId,
+    )
+    this.items.splice(itemIndex, 1)
+  }
+
   async createMany(
     customsDeclarationItem: CustomsDeclarationItem[],
   ): Promise<void> {
