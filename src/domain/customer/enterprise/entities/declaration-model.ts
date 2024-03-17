@@ -1,15 +1,15 @@
 import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { CustomsDeclarationList } from './customs-declaration-list'
 import { Optional } from '@/core/types/opitional'
+import { DeclarationModelList } from './declaration-model-list'
 
-export interface CustomsDeclarationProps {
+export interface DeclarationModelProps {
   title: string
   customerId: UniqueEntityID
-  items: CustomsDeclarationList
+  items: DeclarationModelList
 }
 
-export class CustomsDeclaration extends Entity<CustomsDeclarationProps> {
+export class DeclarationModel extends Entity<DeclarationModelProps> {
   get customerId() {
     return this.props.customerId
   }
@@ -26,22 +26,22 @@ export class CustomsDeclaration extends Entity<CustomsDeclarationProps> {
     return this.props.items
   }
 
-  set items(items: CustomsDeclarationList) {
+  set items(items: DeclarationModelList) {
     this.props.items = items
   }
 
   static create(
-    props: Optional<CustomsDeclarationProps, 'items'>,
+    props: Optional<DeclarationModelProps, 'items'>,
     id?: UniqueEntityID,
   ) {
-    const customsDeclaration = new CustomsDeclaration(
+    const declarationModel = new DeclarationModel(
       {
         ...props,
-        items: new CustomsDeclarationList(),
+        items: new DeclarationModelList(),
       },
       id,
     )
 
-    return customsDeclaration
+    return declarationModel
   }
 }

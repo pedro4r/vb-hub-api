@@ -2,19 +2,19 @@ import { InMemoryPackageRepository } from 'test/repositories/in-memory-package-r
 import { makePackage } from 'test/factories/make-package'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { DeletePackageUseCase } from './delete-package'
-import { InMemoryCustomsDeclarationRepository } from 'test/repositories/in-memory-customs-declaration-repository'
-import { makeCustomsDeclaration } from 'test/factories/make-customs-declaration'
+import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory-declaration-model-repository'
+import { makeDeclarationModel } from 'test/factories/make-customs-declaration'
 
-let inMemoryCustomsDeclarationRepository: InMemoryCustomsDeclarationRepository
+let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
 let inMemoryPackageRepository: InMemoryPackageRepository
 let sut: DeletePackageUseCase
 
 describe('Delete an Package', () => {
   beforeEach(() => {
-    inMemoryCustomsDeclarationRepository =
-      new InMemoryCustomsDeclarationRepository()
+    inMemoryDeclarationModelsRepository =
+      new InMemoryDeclarationModelsRepository()
     inMemoryPackageRepository = new InMemoryPackageRepository(
-      inMemoryCustomsDeclarationRepository,
+      inMemoryDeclarationModelsRepository,
     )
     sut = new DeletePackageUseCase(inMemoryPackageRepository)
   })
@@ -66,21 +66,19 @@ describe('Delete an Package', () => {
   })
 
   it('should be able to delete customs declaration associated to a package', async () => {
-    const customsDeclaration = makeCustomsDeclaration({
+    const declarationModel = makeDeclarationModel({
       customerId: new UniqueEntityID('customer-1'),
       packageId: new UniqueEntityID('package-1'),
     })
 
-    inMemoryCustomsDeclarationRepository.items.push(customsDeclaration)
+    inMemoryDeclarationModelsRepository.items.push(declarationModel)
 
-    expect(inMemoryCustomsDeclarationRepository.items.length === 1).toBeTruthy()
+    expect(inMemoryDeclarationModelsRepository.items.length === 1).toBeTruthy()
 
     const pkg1 = makePackage(
       {
         customerId: new UniqueEntityID('customer-1'),
-        customsDeclarationId: new UniqueEntityID(
-          customsDeclaration.id.toString(),
-        ),
+        declarationModelId: new UniqueEntityID(declarationModel.id.toString()),
       },
       new UniqueEntityID('package-1'),
     )
@@ -88,9 +86,7 @@ describe('Delete an Package', () => {
     const pkg2 = makePackage(
       {
         customerId: new UniqueEntityID('customer-1'),
-        customsDeclarationId: new UniqueEntityID(
-          customsDeclaration.id.toString(),
-        ),
+        declarationModelId: new UniqueEntityID(declarationModel.id.toString()),
       },
       new UniqueEntityID('package-2'),
     )
@@ -105,6 +101,6 @@ describe('Delete an Package', () => {
 
     expect(result.isRight()).toBeTruthy()
     expect(inMemoryPackageRepository.items.length === 1).toBeTruthy()
-    expect(inMemoryCustomsDeclarationRepository.items.length === 0).toBeTruthy()
+    expect(inMemoryDeclarationModelsRepository.items.length === 0).toBeTruthy()
   })
 })

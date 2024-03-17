@@ -9,7 +9,7 @@ const createPackageBodySchema = z.object({
   shippingAddressId: z.string(),
   hasBattery: z.boolean(),
   checkInsId: z.array(z.string().uuid()),
-  customsDeclarationItems: z.array(z.string().uuid()),
+  declarationModelItems: z.array(z.string().uuid()),
 })
 
 const bodyValidationPipe = new ZodValidationPipe(createPackageBodySchema)
@@ -25,19 +25,15 @@ export class CreatePackageController {
     @Body(bodyValidationPipe) body: CreatePackageBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
-    const {
-      shippingAddressId,
-      hasBattery,
-      checkInsId,
-      customsDeclarationItems,
-    } = body
+    const { shippingAddressId, hasBattery, checkInsId, declarationModelItems } =
+      body
     const userId = user.sub
 
     const result = await this.createPackageUseCase.execute({
       shippingAddressId,
       hasBattery,
       checkInsId,
-      customsDeclarationItems,
+      declarationModelItems,
     })
 
     if (result.isLeft()) {

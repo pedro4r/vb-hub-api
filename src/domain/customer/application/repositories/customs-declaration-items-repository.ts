@@ -5,15 +5,9 @@ export abstract class CustomsDeclarationItemsRepository {
     customsDeclarationItems: CustomsDeclarationItem[],
   ): Promise<void>
 
-  abstract findManyByCustomsDeclarationId(
-    customsDeclarationId: string,
+  abstract findManyByPackageId(
+    packageId: string,
   ): Promise<CustomsDeclarationItem[] | null>
 
-  abstract deleteMany(
-    customsDeclarationItems: CustomsDeclarationItem[],
-  ): Promise<void>
-
-  abstract deleteManyByCustomsDeclarationId(
-    customsDeclarationId: string,
-  ): Promise<void>
+  abstract deleteManyByPackageId(packageId: string): Promise<void>
 }

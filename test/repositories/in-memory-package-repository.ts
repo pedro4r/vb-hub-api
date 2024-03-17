@@ -1,5 +1,5 @@
 import { DomainEvents } from '@/core/events/domain-events'
-import { CustomsDeclarationRepository } from '@/domain/customer/application/repositories/customs-declaration-repository'
+import { CustomsDeclarationItemsRepository } from '@/domain/customer/application/repositories/customs-declaration-items-repository'
 import { PackageRepository } from '@/domain/customer/application/repositories/package-repository'
 import { Package } from '@/domain/customer/enterprise/entities/package'
 
@@ -7,7 +7,7 @@ export class InMemoryPackageRepository implements PackageRepository {
   public items: Package[] = []
 
   constructor(
-    private customsDeclarationRepository: CustomsDeclarationRepository,
+    private customsDeclarationItemsRepository: CustomsDeclarationItemsRepository,
   ) {}
 
   async findManyByCustomerId(id: string) {
@@ -24,6 +24,13 @@ export class InMemoryPackageRepository implements PackageRepository {
 
   async create(pkg: Package) {
     this.items.push(pkg)
+
+    if (pkg.items) {
+      await this.customsDeclarationItemsRepository.createMany(
+        pkg.items.getItems(),
+      )
+    }
+
     DomainEvents.dispatchEventsForAggregate(pkg.id)
   }
 
@@ -44,7 +51,5 @@ export class InMemoryPackageRepository implements PackageRepository {
   async delete(pkg: Package) {
     const index = this.items.findIndex((item) => item.id.equals(pkg.id))
     this.items.splice(index, 1)
-
-    await this.customsDeclarationRepository.delete(pkg.id.toString())
   }
 }

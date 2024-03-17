@@ -14,7 +14,7 @@ export function makePackage(
       parcelForwardingId: new UniqueEntityID('parcel-forwarding-1'),
       shippingAddressId: new UniqueEntityID('shipping-address-1'),
       checkInsId: [new UniqueEntityID('checkin-1')],
-      customsDeclarationId: new UniqueEntityID('customs-declaration-1'),
+      declarationModelId: new UniqueEntityID('customs-declaration-1'),
       taxId: new UniqueEntityID('tax-1'),
       hasBattery: false,
       ...override,

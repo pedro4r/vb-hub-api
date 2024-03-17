@@ -1,17 +1,18 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import {
-  CustomsDeclarationItem,
-  CustomsDeclarationItemProps,
-} from '@/domain/customer/enterprise/entities/customs-declaration-item'
+  DeclarationModelItem,
+  DeclarationModelItemProps,
+} from '@/domain/customer/enterprise/entities/declaration-model-item'
+
 import { faker } from '@faker-js/faker'
 
-export function makeCustomsDeclarationItem(
-  override: Partial<CustomsDeclarationItemProps> = {},
+export function makeDeclarationModelItem(
+  override: Partial<DeclarationModelItemProps> = {},
   id?: UniqueEntityID,
 ) {
-  const customsDeclarationItem = CustomsDeclarationItem.create(
+  const declarationModelItem = DeclarationModelItem.create(
     {
-      customsDeclarationId: new UniqueEntityID(),
+      declarationModelId: new UniqueEntityID(),
       description: faker.lorem.words(3),
       value: faker.number.int({ min: 1, max: 1000 }),
       quantity: faker.number.int({ min: 1, max: 100 }),
@@ -20,5 +21,5 @@ export function makeCustomsDeclarationItem(
     id,
   )
 
-  return customsDeclarationItem
+  return declarationModelItem
 }

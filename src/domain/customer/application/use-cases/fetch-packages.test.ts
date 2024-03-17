@@ -2,19 +2,19 @@ import { InMemoryPackageRepository } from 'test/repositories/in-memory-package-r
 import { makePackage } from 'test/factories/make-package'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { FetchPackageUseCase } from './fetch-package'
-import { InMemoryCustomsDeclarationRepository } from 'test/repositories/in-memory-customs-declaration-repository'
+import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory-declaration-model-repository'
 import { Package } from '../../enterprise/entities/package'
 
-let inMemoryCustomsDeclarationRepository: InMemoryCustomsDeclarationRepository
+let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
 let inMemoryPackageRepository: InMemoryPackageRepository
 let sut: FetchPackageUseCase
 
 describe('Get an Package', () => {
   beforeEach(() => {
-    inMemoryCustomsDeclarationRepository =
-      new InMemoryCustomsDeclarationRepository()
+    inMemoryDeclarationModelsRepository =
+      new InMemoryDeclarationModelsRepository()
     inMemoryPackageRepository = new InMemoryPackageRepository(
-      inMemoryCustomsDeclarationRepository,
+      inMemoryDeclarationModelsRepository,
     )
     sut = new FetchPackageUseCase(inMemoryPackageRepository)
   })

@@ -7,12 +7,12 @@ import {
 import { InMemoryNotificationsRepository } from 'test/repositories/in-memory-notifications-repository'
 import { waitFor } from 'test/utils/wait-for'
 import { InMemoryPackageRepository } from 'test/repositories/in-memory-package-repository'
-import { InMemoryCustomsDeclarationRepository } from 'test/repositories/in-memory-customs-declaration-repository'
+import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory-declaration-model-repository'
 import { OnPackageCreated } from './on-package-created'
 import { makePackage } from 'test/factories/make-package'
 
 let inMemoryPackageRepository: InMemoryPackageRepository
-let inMemorycustomsDeclarationRepository: InMemoryCustomsDeclarationRepository
+let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
 let inMemoryNotificationsRepository: InMemoryNotificationsRepository
 let sendNotificationUseCase: SendNotificationUseCase
 
@@ -23,10 +23,10 @@ let sendNotificationExecuteSpy: SpyInstance<
 
 describe('On Check-in Created', () => {
   beforeEach(() => {
-    inMemorycustomsDeclarationRepository =
-      new InMemoryCustomsDeclarationRepository()
+    inMemoryDeclarationModelsRepository =
+      new InMemoryDeclarationModelsRepository()
     inMemoryPackageRepository = new InMemoryPackageRepository(
-      inMemorycustomsDeclarationRepository,
+      inMemoryDeclarationModelsRepository,
     )
     inMemoryNotificationsRepository = new InMemoryNotificationsRepository()
 

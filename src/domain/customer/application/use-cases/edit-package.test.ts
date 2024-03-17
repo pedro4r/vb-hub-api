@@ -1,18 +1,18 @@
 import { InMemoryPackageRepository } from 'test/repositories/in-memory-package-repository'
 import { EditPackagesUseCase } from './edit-package'
 import { makePackage } from 'test/factories/make-package'
-import { InMemoryCustomsDeclarationRepository } from 'test/repositories/in-memory-customs-declaration-repository'
+import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory-declaration-model-repository'
 
-let inMemoryCustomsDeclarationRepository: InMemoryCustomsDeclarationRepository
+let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
 let inMemoryPackageRepository: InMemoryPackageRepository
 let sut: EditPackagesUseCase
 
 describe('Edit Package', () => {
   beforeEach(() => {
-    inMemoryCustomsDeclarationRepository =
-      new InMemoryCustomsDeclarationRepository()
+    inMemoryDeclarationModelsRepository =
+      new InMemoryDeclarationModelsRepository()
     inMemoryPackageRepository = new InMemoryPackageRepository(
-      inMemoryCustomsDeclarationRepository,
+      inMemoryDeclarationModelsRepository,
     )
     sut = new EditPackagesUseCase(inMemoryPackageRepository)
   })
@@ -28,7 +28,7 @@ describe('Edit Package', () => {
       parcelForwardingId: newPkg.parcelForwardingId.toString(),
       shippingAddressId: 'shippingAddress-2',
       checkInsId: ['checkin-2', 'checkin-3'],
-      customsDeclarationId: 'customs-declaration-2',
+      declarationModelId: 'customs-declaration-2',
       hasBattery: true,
     })
 
@@ -55,7 +55,7 @@ describe('Edit Package', () => {
       parcelForwardingId: newPkg.parcelForwardingId.toString(),
       shippingAddressId: 'shippingAddress-2',
       checkInsId: ['checkin-2', 'checkin-3'],
-      customsDeclarationId: 'customs-declaration-2',
+      declarationModelId: 'customs-declaration-2',
       hasBattery: true,
     })
 

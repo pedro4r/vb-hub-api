@@ -23,5 +23,6 @@
     "types": [
       "vitest/globals"
     ]
-  }
+  },
+  // "include": ["vitest.d.ts"]
 }

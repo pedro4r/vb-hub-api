@@ -1,4 +1,4 @@
-import { CustomsDeclarationItemsRepository } from '@/domain/customer/application/repositories/customs-declaration-item-repository'
+import { CustomsDeclarationItemsRepository } from '@/domain/customer/application/repositories/customs-declaration-items-repository'
 import { CustomsDeclarationItem } from '@/domain/customer/enterprise/entities/customs-declaration-item'
 
 export class InMemoryCustomsDeclarationItemsRepository
@@ -6,9 +6,9 @@ export class InMemoryCustomsDeclarationItemsRepository
 {
   public items: CustomsDeclarationItem[] = []
 
-  async findManyByCustomsDeclarationId(customsDeclarationId: string) {
+  async findManyByPackageId(packageId: string) {
     const customsDeclarationItems = this.items.filter(
-      (item) => item.customsDeclarationId?.toString() === customsDeclarationId,
+      (item) => item.packageId?.toString() === packageId,
     )
 
     if (!customsDeclarationItems.length) {
@@ -18,26 +18,14 @@ export class InMemoryCustomsDeclarationItemsRepository
     return customsDeclarationItems
   }
 
-  async deleteMany(customsDeclarationItems: CustomsDeclarationItem[]) {
-    const newCustomsDeclarationItems = this.items.filter((item) => {
-      return !customsDeclarationItems.some((declarationItem) =>
-        declarationItem.equals(item),
-      )
-    })
-
-    this.items = newCustomsDeclarationItems
-  }
-
-  async deleteManyByCustomsDeclarationId(customsDeclarationId: string) {
+  async deleteManyByPackageId(packageId: string) {
     const itemIndex = this.items.findIndex(
-      (item) => item.id.toString() === customsDeclarationId,
+      (item) => item.packageId?.toString() === packageId,
     )
     this.items.splice(itemIndex, 1)
   }
 
-  async createMany(
-    customsDeclarationItem: CustomsDeclarationItem[],
-  ): Promise<void> {
+  async createMany(customsDeclarationItem: CustomsDeclarationItem[]) {
     this.items.push(...customsDeclarationItem)
   }
 }
