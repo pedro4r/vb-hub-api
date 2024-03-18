@@ -7,6 +7,10 @@ import { CustomsDeclarationList } from '../../enterprise/entities/customs-declar
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { DeclarationModelItemsRepository } from '../repositories/declaration-model-item-repository'
+import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repositories/check-ins-repository'
+
+import { PackageCheckIn } from '../../enterprise/entities/package-check-in'
+import { PackageCheckInsList } from '../../enterprise/entities/package-check-ins-list'
 
 interface CreatePackageUseCaseRequest {
   customerId: string
@@ -14,7 +18,7 @@ interface CreatePackageUseCaseRequest {
   shippingAddressId: string
   checkInsId: string[]
   declarationModelId?: string
-  taxId?: string
+  taxId: string
   hasBattery: boolean
 }
 
@@ -29,6 +33,7 @@ export class CreatePackageUseCase {
   constructor(
     private packageRepository: PackageRepository,
     private declarationModelItemsRepository: DeclarationModelItemsRepository,
+    private checkInsRepository: CheckInsRepository,
   ) {}
 
   async execute({
@@ -44,10 +49,18 @@ export class CreatePackageUseCase {
       customerId: new UniqueEntityID(customerId),
       parcelForwardingId: new UniqueEntityID(parcelForwardingId),
       shippingAddressId: new UniqueEntityID(shippingAddressId),
-      checkInsId: checkInsId.map((id) => new UniqueEntityID(id)),
-      taxId: taxId ? new UniqueEntityID(taxId) : null,
+      taxId,
       hasBattery,
     })
+
+    const packageCheckIns = checkInsId.map((checkInId) => {
+      return PackageCheckIn.create({
+        checkInId: new UniqueEntityID(checkInId),
+        packageId: pkg.id,
+      })
+    })
+
+    pkg.checkIns = new PackageCheckInsList(packageCheckIns)
 
     if (declarationModelId) {
       const declarationModelItems =

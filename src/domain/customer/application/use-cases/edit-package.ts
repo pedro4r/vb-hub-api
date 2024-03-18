@@ -8,10 +8,10 @@ import { PackageRepository } from '../repositories/package-repository'
 interface EditPackagesRequest {
   packageId: string
   customerId: string
-  parcelForwardingId: string
   shippingAddressId: string
-  checkInsId: string[]
-  declarationModelId: string
+  checkInsIds: string[]
+  declarationModelId?: string
+  taxId: string
   hasBattery: boolean
 }
 
@@ -28,10 +28,10 @@ export class EditPackagesUseCase {
   async execute({
     packageId,
     customerId,
-    parcelForwardingId,
     shippingAddressId,
-    checkInsId,
+    checkInsIds,
     declarationModelId,
+    taxId,
     hasBattery,
   }: EditPackagesRequest): Promise<EditPackagesResponse> {
     const pkg = await this.packageRepository.findById(packageId)

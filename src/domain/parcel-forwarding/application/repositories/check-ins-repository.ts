@@ -1,3 +1,4 @@
+import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-check-in'
 import { CheckIn } from '../../enterprise/entities/check-in'
 
 export abstract class CheckInsRepository {
@@ -9,5 +10,7 @@ export abstract class CheckInsRepository {
   ): Promise<CheckIn[] | null>
 
   abstract save(checkIn: CheckIn): Promise<void>
+  abstract linkManyCheckInToPackage(checkIns: PackageCheckIn[]): Promise<void>
+  abstract unlinkManyCheckInToPackage(checkIns: PackageCheckIn[]): Promise<void>
   abstract delete(checkIn: CheckIn): Promise<void>
 }

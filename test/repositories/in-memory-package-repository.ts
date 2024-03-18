@@ -2,12 +2,14 @@ import { DomainEvents } from '@/core/events/domain-events'
 import { CustomsDeclarationItemsRepository } from '@/domain/customer/application/repositories/customs-declaration-items-repository'
 import { PackageRepository } from '@/domain/customer/application/repositories/package-repository'
 import { Package } from '@/domain/customer/enterprise/entities/package'
+import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repositories/check-ins-repository'
 
 export class InMemoryPackageRepository implements PackageRepository {
   public items: Package[] = []
 
   constructor(
     private customsDeclarationItemsRepository: CustomsDeclarationItemsRepository,
+    private checkInsRepository: CheckInsRepository,
   ) {}
 
   async findManyByCustomerId(id: string) {
@@ -31,6 +33,9 @@ export class InMemoryPackageRepository implements PackageRepository {
       )
     }
 
+    await this.checkInsRepository.linkManyCheckInToPackage(
+      pkg.checkIns.getItems(),
+    )
     DomainEvents.dispatchEventsForAggregate(pkg.id)
   }
 
@@ -45,6 +50,14 @@ export class InMemoryPackageRepository implements PackageRepository {
   async save(pkg: Package) {
     const index = this.items.findIndex((item) => item.id.equals(pkg.id))
     this.items[index] = pkg
+
+    await this.checkInsRepository.unlinkManyCheckInToPackage(
+      pkg.checkIns.getRemovedItems(),
+    )
+
+    await this.checkInsRepository.linkManyCheckInToPackage(
+      pkg.checkIns.getItems(),
+    )
     DomainEvents.dispatchEventsForAggregate(pkg.id)
   }
 

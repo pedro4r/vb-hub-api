@@ -3,15 +3,16 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/opitional'
 import { PackageCreatedEvent } from '../events/package-created-event'
 import { CustomsDeclarationList } from './customs-declaration-list'
+import { PackageCheckInsList } from './package-check-ins-list'
 
 export interface PackageProps {
   customerId: UniqueEntityID
   parcelForwardingId: UniqueEntityID
   freightProviderId?: UniqueEntityID | null
   shippingAddressId: UniqueEntityID
-  checkInsId: UniqueEntityID[]
+  checkIns: PackageCheckInsList
   items: CustomsDeclarationList
-  taxId?: UniqueEntityID | null
+  taxId: string
   weight?: number | null
   hasBattery: boolean
   trackingNumber?: string | null
@@ -47,12 +48,12 @@ export class Package extends AggregateRoot<PackageProps> {
     this.touch()
   }
 
-  get checkInsId() {
-    return this.props.checkInsId
+  get checkIns() {
+    return this.props.checkIns
   }
 
-  set checkInsId(ids: UniqueEntityID[]) {
-    this.props.checkInsId = ids
+  set checkIns(checkIns: PackageCheckInsList) {
+    this.props.checkIns = checkIns
     this.touch()
   }
 
@@ -69,7 +70,7 @@ export class Package extends AggregateRoot<PackageProps> {
     return this.props.taxId
   }
 
-  set taxId(id: UniqueEntityID | undefined | null) {
+  set taxId(id: string) {
     this.props.taxId = id
     this.touch()
   }
@@ -123,12 +124,13 @@ export class Package extends AggregateRoot<PackageProps> {
   }
 
   static create(
-    props: Optional<PackageProps, 'createdAt' | 'items'>,
+    props: Optional<PackageProps, 'createdAt' | 'items' | 'checkIns'>,
     id?: UniqueEntityID,
   ) {
     const pkg = new Package(
       {
         ...props,
+        checkIns: props.checkIns ?? new PackageCheckInsList(),
         items: props.items ?? new CustomsDeclarationList(),
         createdAt: props.createdAt ?? new Date(),
       },

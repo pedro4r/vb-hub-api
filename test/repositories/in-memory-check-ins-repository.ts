@@ -2,6 +2,7 @@ import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repos
 import { CheckIn } from '@/domain/parcel-forwarding/enterprise/entities/check-in'
 import { InMemoryCheckInsAttachmentsRepository } from './in-memory-check-ins-attachments-repository'
 import { DomainEvents } from '@/core/events/domain-events'
+import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-check-in'
 
 export class InMemoryCheckInsRepository implements CheckInsRepository {
   public items: CheckIn[] = []
@@ -9,6 +10,30 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
   constructor(
     private checkInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository,
   ) {}
+
+  async linkManyCheckInToPackage(checkIns: PackageCheckIn[]) {
+    checkIns.forEach((checkIn) => {
+      const item = this.items.find(
+        (item) => item.id.toString() === checkIn.checkInId.toString(),
+      )
+
+      if (item) {
+        item.packageId = checkIn.packageId
+      }
+    })
+  }
+
+  async unlinkManyCheckInToPackage(checkIns: PackageCheckIn[]) {
+    checkIns.forEach((checkIn) => {
+      const item = this.items.find(
+        (item) => item.id.toString() === checkIn.checkInId.toString(),
+      )
+
+      if (item) {
+        item.packageId = null
+      }
+    })
+  }
 
   async findManyRecent(parcelForwardingId: string, page: number) {
     const checkIns = this.items

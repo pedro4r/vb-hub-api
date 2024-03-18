@@ -7,7 +7,12 @@ import { makeDeclarationModelItem } from 'test/factories/make-customs-declaratio
 import { DeclarationModelList } from '../../enterprise/entities/declaration-model-list'
 import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory-declaration-model-repository'
 import { InMemoryDeclarationModelItemsRepository } from 'test/repositories/in-memory-declaration-model-items-repository'
+import { Package } from '../../enterprise/entities/package'
+import { InMemoryCheckInsRepository } from 'test/repositories/in-memory-check-ins-repository'
+import { InMemoryCheckInsAttachmentsRepository } from 'test/repositories/in-memory-check-ins-attachments-repository'
 
+let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
+let inMemoryCheckInsRepository: InMemoryCheckInsRepository
 let inMemoryDeclarationModelsItemsRepository: InMemoryDeclarationModelItemsRepository
 let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
 let inMemoryCustomsDeclarationItemsRepository: InMemoryCustomsDeclarationItemsRepository
@@ -16,6 +21,12 @@ let sut: CreatePackageUseCase
 
 describe('Create Package', () => {
   beforeEach(async () => {
+    inMemoryCheckInsAttachmentsRepository =
+      new InMemoryCheckInsAttachmentsRepository()
+
+    inMemoryCheckInsRepository = new InMemoryCheckInsRepository(
+      inMemoryCheckInsAttachmentsRepository,
+    )
     inMemoryDeclarationModelsItemsRepository =
       new InMemoryDeclarationModelItemsRepository()
 
@@ -32,6 +43,7 @@ describe('Create Package', () => {
     sut = new CreatePackageUseCase(
       inMemoryPackageRepository,
       inMemoryDeclarationModelsItemsRepository,
+      inMemoryCheckInsRepository,
     )
 
     await Promise.all(
@@ -72,12 +84,26 @@ describe('Create Package', () => {
       customerId: 'customer-1',
       parcelForwardingId: 'parcelForwardingId',
       shippingAddressId: 'shippingAddressId',
-      checkInsId: ['checkInId'],
+      checkInsId: ['checkInId1', 'checkInId2'],
       declarationModelId: 'declaration-model-1',
+      taxId: 'taxId',
       hasBattery: true,
     })
 
     expect(result.isRight()).toBe(true)
+
+    expect((result.value as { pkg: Package }).pkg).toEqual(
+      expect.objectContaining({
+        customerId: new UniqueEntityID('customer-1'),
+        parcelForwardingId: new UniqueEntityID('parcelForwardingId'),
+        checkInsId: [
+          new UniqueEntityID('checkInId1'),
+          new UniqueEntityID('checkInId2'),
+        ],
+        taxId: 'taxId',
+        hasBattery: true,
+      }),
+    )
 
     expect(inMemoryPackageRepository.items.length).toEqual(1)
     expect(inMemoryCustomsDeclarationItemsRepository.items.length).toEqual(3)
