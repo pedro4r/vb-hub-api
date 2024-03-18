@@ -36,6 +36,7 @@ export class InMemoryPackageRepository implements PackageRepository {
     await this.checkInsRepository.linkManyCheckInToPackage(
       pkg.checkIns.getItems(),
     )
+
     DomainEvents.dispatchEventsForAggregate(pkg.id)
   }
 
