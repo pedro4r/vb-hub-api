@@ -11,12 +11,17 @@ import { InMemoryCheckInsRepository } from 'test/repositories/in-memory-check-in
 import { InMemoryCheckInsAttachmentsRepository } from 'test/repositories/in-memory-check-ins-attachments-repository'
 import { makeCheckIn } from 'test/factories/make-check-in'
 import { Package } from '../../enterprise/entities/package'
+import { InMemoryPackageShippingAddressRepository } from 'test/repositories/in-memory-package-shipping-address-repository'
+import { InMemoryShippingAddressRepository } from 'test/repositories/in-memory-shipping-address-repository'
+import { makeShippingAddress } from 'test/factories/make-shipping-address'
 
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
 let inMemoryDeclarationModelsItemsRepository: InMemoryDeclarationModelItemsRepository
 let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
 let inMemoryCustomsDeclarationItemsRepository: InMemoryCustomsDeclarationItemsRepository
+let inMemoryShippingAddressRepository: InMemoryShippingAddressRepository
+let inMemoryPackageShippingAddressRepository: InMemoryPackageShippingAddressRepository
 let inMemoryPackageRepository: InMemoryPackageRepository
 let sut: CreatePackageUseCase
 
@@ -38,14 +43,22 @@ describe('Create Package', () => {
 
     inMemoryCustomsDeclarationItemsRepository =
       new InMemoryCustomsDeclarationItemsRepository()
+
     inMemoryPackageRepository = new InMemoryPackageRepository(
       inMemoryCustomsDeclarationItemsRepository,
       inMemoryCheckInsRepository,
     )
+
+    inMemoryShippingAddressRepository = new InMemoryShippingAddressRepository()
+
+    inMemoryPackageShippingAddressRepository =
+      new InMemoryPackageShippingAddressRepository(
+        inMemoryShippingAddressRepository,
+      )
     sut = new CreatePackageUseCase(
       inMemoryPackageRepository,
       inMemoryDeclarationModelsItemsRepository,
-      inMemoryCheckInsRepository,
+      inMemoryPackageShippingAddressRepository,
     )
 
     await Promise.all(
@@ -82,6 +95,15 @@ describe('Create Package', () => {
   })
 
   it('should be able to create a package', async () => {
+    const shippingAddress = makeShippingAddress(
+      {
+        customerId: new UniqueEntityID('customer-1'),
+      },
+      new UniqueEntityID('shippingAddress-1'),
+    )
+
+    await inMemoryShippingAddressRepository.create(shippingAddress)
+
     const checkIn1 = makeCheckIn(
       {
         customerId: new UniqueEntityID('customer-1'),
@@ -140,5 +162,9 @@ describe('Create Package', () => {
     expect(inMemoryCustomsDeclarationItemsRepository.items.length).toEqual(3)
     expect(inMemoryDeclarationModelsRepository.items.length).toBe(2)
     expect(inMemoryDeclarationModelsItemsRepository.items.length).toBe(6)
+    expect(inMemoryPackageShippingAddressRepository.items.length).toBe(1)
+    expect(
+      inMemoryPackageShippingAddressRepository.items[0].customerId,
+    ).toEqual(new UniqueEntityID('customer-1'))
   })
 })

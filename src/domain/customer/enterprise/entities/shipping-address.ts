@@ -7,7 +7,6 @@ import { AggregateRoot } from '@/core/entities/aggregate-root'
 export interface ShippingAddressProps {
   customerId: UniqueEntityID
   recipientName: string
-  taxId: string
   address: Address
   createdAt: Date
   updatedAt?: Date | null
@@ -33,15 +32,6 @@ export class ShippingAddress extends AggregateRoot<ShippingAddressProps> {
 
   set recipientName(recipientName: string) {
     this.props.recipientName = recipientName
-    this.touch()
-  }
-
-  get taxId() {
-    return this.props.taxId
-  }
-
-  set taxId(taxId: string) {
-    this.props.taxId = taxId
     this.touch()
   }
 
