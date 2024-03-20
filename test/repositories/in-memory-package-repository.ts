@@ -52,6 +52,16 @@ export class InMemoryPackageRepository implements PackageRepository {
     const index = this.items.findIndex((item) => item.id.equals(pkg.id))
     this.items[index] = pkg
 
+    if (pkg.items) {
+      await this.customsDeclarationItemsRepository.deleteMany(
+        pkg.items.getRemovedItems(),
+      )
+
+      await this.customsDeclarationItemsRepository.createMany(
+        pkg.items.getItems(),
+      )
+    }
+
     await this.checkInsRepository.unlinkManyCheckInToPackage(
       pkg.checkIns.getRemovedItems(),
     )

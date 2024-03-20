@@ -2,7 +2,7 @@ import { Entity } from '@/core/entities/entity'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 export interface CustomsDeclarationItemProps {
-  packageId?: UniqueEntityID
+  packageId: UniqueEntityID
   description: string
   value: number
   quantity: number
@@ -13,7 +13,7 @@ export class CustomsDeclarationItem extends Entity<CustomsDeclarationItemProps> 
     return this.props.packageId
   }
 
-  set packageId(id: UniqueEntityID | undefined) {
+  set packageId(id: UniqueEntityID) {
     this.props.packageId = id
   }
 

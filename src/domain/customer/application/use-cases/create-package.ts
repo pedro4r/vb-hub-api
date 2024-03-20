@@ -16,7 +16,7 @@ interface CreatePackageUseCaseRequest {
   customerId: string
   parcelForwardingId: string
   shippingAddressId: string
-  checkInsId: string[]
+  checkInsIds: string[]
   declarationModelId?: string
   taxId: string
   hasBattery: boolean
@@ -40,7 +40,7 @@ export class CreatePackageUseCase {
     customerId,
     parcelForwardingId,
     shippingAddressId,
-    checkInsId,
+    checkInsIds,
     declarationModelId,
     taxId,
     hasBattery,
@@ -56,7 +56,7 @@ export class CreatePackageUseCase {
       hasBattery,
     })
 
-    const packageCheckIns = checkInsId.map((checkInId) => {
+    const packageCheckIns = checkInsIds.map((checkInId) => {
       return PackageCheckIn.create({
         checkInId: new UniqueEntityID(checkInId),
         packageId: pkg.id,

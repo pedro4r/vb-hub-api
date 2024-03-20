@@ -9,5 +9,7 @@ export abstract class CustomsDeclarationItemsRepository {
     packageId: string,
   ): Promise<CustomsDeclarationItem[] | null>
 
-  abstract deleteManyByPackageId(packageId: string): Promise<void>
+  abstract deleteMany(
+    customsDeclarationItems: CustomsDeclarationItem[],
+  ): Promise<void>
 }

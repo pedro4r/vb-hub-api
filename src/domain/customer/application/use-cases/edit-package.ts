@@ -1,9 +1,13 @@
 import { Either, left, right } from '@/core/either'
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { Package } from '../../enterprise/entities/package'
 import { PackageRepository } from '../repositories/package-repository'
+import { DeclarationModelItemsRepository } from '../repositories/declaration-model-item-repository'
+import { PackageShippingAddressRepository } from '../repositories/package-shipping-address-repository'
+import { CustomsDeclarationItem } from '../../enterprise/entities/customs-declaration-item'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { PackageCheckIn } from '../../enterprise/entities/package-check-in'
 
 interface EditPackagesRequest {
   packageId: string
@@ -23,7 +27,11 @@ type EditPackagesResponse = Either<
 >
 
 export class EditPackagesUseCase {
-  constructor(private packageRepository: PackageRepository) {}
+  constructor(
+    private packageRepository: PackageRepository,
+    private declarationModelItemsRepository: DeclarationModelItemsRepository,
+    private packageShippingAddressRepository: PackageShippingAddressRepository,
+  ) {}
 
   async execute({
     packageId,
@@ -34,6 +42,8 @@ export class EditPackagesUseCase {
     taxId,
     hasBattery,
   }: EditPackagesRequest): Promise<EditPackagesResponse> {
+    const newShippingAddressId = shippingAddressId
+
     const pkg = await this.packageRepository.findById(packageId)
 
     if (!pkg) {
@@ -44,22 +54,57 @@ export class EditPackagesUseCase {
       return left(new NotAllowedError())
     }
 
-    const newPkg = Package.create(
-      {
-        customerId: new UniqueEntityID(customerId),
-        parcelForwardingId: new UniqueEntityID(parcelForwardingId),
-        shippingAddressId: new UniqueEntityID(shippingAddressId),
-        checkInsId: checkInsId.map((id) => new UniqueEntityID(id)),
-        declarationModelId: new UniqueEntityID(declarationModelId),
-        hasBattery,
-      },
-      new UniqueEntityID(packageId),
+    pkg.taxId = taxId
+    pkg.hasBattery = hasBattery
+
+    await this.packageShippingAddressRepository.delete(
+      pkg.shippingAddressId.toString(),
     )
 
-    await this.packageRepository.save(newPkg)
+    const packageShippingAddressId =
+      await this.packageShippingAddressRepository.create(newShippingAddressId)
+
+    pkg.shippingAddressId = packageShippingAddressId
+
+    const packageCheckIns = checkInsIds.map((checkInId) => {
+      return PackageCheckIn.create({
+        checkInId: new UniqueEntityID(checkInId),
+        packageId: pkg.id,
+      })
+    })
+
+    pkg.checkIns.update(packageCheckIns)
+
+    if (declarationModelId) {
+      const declarationModelItems =
+        await this.declarationModelItemsRepository.findManyByDeclarationModelId(
+          declarationModelId,
+        )
+
+      if (!declarationModelItems) {
+        return left(new ResourceNotFoundError())
+      }
+
+      const customsDeclarationItems = declarationModelItems.map(
+        (declarationModelItem) => {
+          return CustomsDeclarationItem.create(
+            {
+              packageId: pkg.id,
+              description: declarationModelItem.description,
+              value: declarationModelItem.value,
+              quantity: declarationModelItem.quantity,
+            },
+            new UniqueEntityID(declarationModelItem.id.toString()),
+          )
+        },
+      )
+      pkg.items.update(customsDeclarationItems)
+    }
+
+    await this.packageRepository.save(pkg)
 
     return right({
-      package: newPkg,
+      package: pkg,
     })
   }
 }

@@ -18,14 +18,17 @@ export class InMemoryCustomsDeclarationItemsRepository
     return customsDeclarationItems
   }
 
-  async deleteManyByPackageId(packageId: string) {
-    const itemIndex = this.items.findIndex(
-      (item) => item.packageId?.toString() === packageId,
-    )
-    this.items.splice(itemIndex, 1)
+  async deleteMany(customsDeclarationItems: CustomsDeclarationItem[]) {
+    const declarationItems = this.items.filter((declarationItem) => {
+      return !customsDeclarationItems.some((item) =>
+        item.equals(declarationItem),
+      )
+    })
+
+    this.items = declarationItems
   }
 
-  async createMany(customsDeclarationItem: CustomsDeclarationItem[]) {
-    this.items.push(...customsDeclarationItem)
+  async createMany(customsDeclarationItems: CustomsDeclarationItem[]) {
+    this.items.push(...customsDeclarationItems)
   }
 }

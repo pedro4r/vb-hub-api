@@ -92,9 +92,7 @@ describe('Create Package', () => {
         )
       }),
     )
-  })
 
-  it('should be able to create a package', async () => {
     const shippingAddress = makeShippingAddress(
       {
         customerId: new UniqueEntityID('customer-1'),
@@ -121,12 +119,14 @@ describe('Create Package', () => {
 
     await inMemoryCheckInsRepository.create(checkIn1)
     await inMemoryCheckInsRepository.create(checkIn2)
+  })
 
+  it('should be able to create a package', async () => {
     const result = await sut.execute({
       customerId: 'customer-1',
       parcelForwardingId: 'parcelForwarding-1',
       shippingAddressId: 'shippingAddress-1',
-      checkInsId: ['check-in-1', 'check-in-2'],
+      checkInsIds: ['check-in-1', 'check-in-2'],
       declarationModelId: 'declaration-model-1',
       taxId: 'tax-1',
       hasBattery: true,
