@@ -1,10 +1,10 @@
 import { InMemoryDeclarationModelItemsRepository } from 'test/repositories/in-memory-declaration-model-items-repository'
 import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory-declaration-model-repository'
-import { makeDeclarationModel } from 'test/factories/make-customs-declaration'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { makeDeclarationModelItem } from 'test/factories/make-customs-declaration-item'
 import { DeclarationModelList } from '../../enterprise/entities/declaration-model-list'
 import { DeleteDeclarationModel } from './delete-declaration-model'
+import { makeDeclarationModel } from 'test/factories/make-declaration-model'
+import { makeDeclarationModelItem } from 'test/factories/make-declaration-model-item'
 
 let inMemoryDeclarationModelItemsRepository: InMemoryDeclarationModelItemsRepository
 let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository

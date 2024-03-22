@@ -3,6 +3,7 @@ import { PackageShippingAddressRepository } from '@/domain/customer/application/
 import { ShippingAddressRepository } from '@/domain/customer/application/repositories/shipping-address-repository'
 
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
+import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 
 export class InMemoryPackageShippingAddressRepository
   implements PackageShippingAddressRepository
@@ -31,21 +32,24 @@ export class InMemoryPackageShippingAddressRepository
       throw new ResourceNotFoundError('Shipping Address not found')
     }
 
-    const packageShippingAddress = ShippingAddress.create({
-      customerId: shippingAddress.customerId,
-      recipientName: shippingAddress.recipientName,
-      address: shippingAddress.address,
-      createdAt: new Date(),
-    })
+    const packageShippingAddress = ShippingAddress.create(
+      {
+        customerId: shippingAddress.customerId,
+        recipientName: shippingAddress.recipientName,
+        address: shippingAddress.address,
+        createdAt: new Date(),
+      },
+      new UniqueEntityID(shippingAddressId),
+    )
 
     this.items.push(packageShippingAddress)
 
     return packageShippingAddress.id
   }
 
-  async delete(packageShippingAddressId: string) {
+  async delete(shippingAddressId: string) {
     const itemIndex = this.items.findIndex(
-      (item) => item.id.toString() === packageShippingAddressId,
+      (item) => item.id.toString() === shippingAddressId,
     )
     this.items.splice(itemIndex, 1)
   }

@@ -1,6 +1,7 @@
 import { DomainEvents } from '@/core/events/domain-events'
 import { CustomsDeclarationItemsRepository } from '@/domain/customer/application/repositories/customs-declaration-items-repository'
 import { PackageRepository } from '@/domain/customer/application/repositories/package-repository'
+import { PackageShippingAddressRepository } from '@/domain/customer/application/repositories/package-shipping-address-repository'
 import { Package } from '@/domain/customer/enterprise/entities/package'
 import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repositories/check-ins-repository'
 
@@ -9,6 +10,7 @@ export class InMemoryPackageRepository implements PackageRepository {
 
   constructor(
     private customsDeclarationItemsRepository: CustomsDeclarationItemsRepository,
+    private packageShippingAddressRepository: PackageShippingAddressRepository,
     private checkInsRepository: CheckInsRepository,
   ) {}
 
@@ -27,9 +29,13 @@ export class InMemoryPackageRepository implements PackageRepository {
   async create(pkg: Package) {
     this.items.push(pkg)
 
-    if (pkg.items) {
+    await this.packageShippingAddressRepository.create(
+      pkg.shippingAddressId.toString(),
+    )
+
+    if (pkg.customsDeclarationList) {
       await this.customsDeclarationItemsRepository.createMany(
-        pkg.items.getItems(),
+        pkg.customsDeclarationList.getItems(),
       )
     }
 
@@ -52,13 +58,13 @@ export class InMemoryPackageRepository implements PackageRepository {
     const index = this.items.findIndex((item) => item.id.equals(pkg.id))
     this.items[index] = pkg
 
-    if (pkg.items) {
+    if (pkg.customsDeclarationList) {
       await this.customsDeclarationItemsRepository.deleteMany(
-        pkg.items.getRemovedItems(),
+        pkg.customsDeclarationList.getRemovedItems(),
       )
 
       await this.customsDeclarationItemsRepository.createMany(
-        pkg.items.getItems(),
+        pkg.customsDeclarationList.getItems(),
       )
     }
 
@@ -73,7 +79,18 @@ export class InMemoryPackageRepository implements PackageRepository {
   }
 
   async delete(pkg: Package) {
-    const index = this.items.findIndex((item) => item.id.equals(pkg.id))
-    this.items.splice(index, 1)
+    await this.packageShippingAddressRepository.delete(
+      pkg.shippingAddressId.toString(),
+    )
+
+    await this.customsDeclarationItemsRepository.deleteMany(
+      pkg.customsDeclarationList.getItems(),
+    )
+
+    await this.checkInsRepository.unlinkManyCheckInToPackage(
+      pkg.checkIns.getItems(),
+    )
+
+    this.items = this.items.filter((item) => !item.id.equals(pkg.id))
   }
 }

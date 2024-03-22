@@ -11,7 +11,7 @@ export interface PackageProps {
   freightProviderId?: UniqueEntityID | null
   shippingAddressId: UniqueEntityID
   checkIns: PackageCheckInsList
-  items: CustomsDeclarationList
+  customsDeclarationList: CustomsDeclarationList
   taxId: string
   weight?: number | null
   hasBattery: boolean
@@ -57,12 +57,12 @@ export class Package extends AggregateRoot<PackageProps> {
     this.touch()
   }
 
-  get items() {
-    return this.props.items
+  get customsDeclarationList() {
+    return this.props.customsDeclarationList
   }
 
-  set items(items: CustomsDeclarationList) {
-    this.props.items = items
+  set customsDeclarationList(customsDeclarationList: CustomsDeclarationList) {
+    this.props.customsDeclarationList = customsDeclarationList
     this.touch()
   }
 
@@ -124,14 +124,18 @@ export class Package extends AggregateRoot<PackageProps> {
   }
 
   static create(
-    props: Optional<PackageProps, 'createdAt' | 'items' | 'checkIns'>,
+    props: Optional<
+      PackageProps,
+      'createdAt' | 'customsDeclarationList' | 'checkIns'
+    >,
     id?: UniqueEntityID,
   ) {
     const pkg = new Package(
       {
         ...props,
         checkIns: props.checkIns ?? new PackageCheckInsList(),
-        items: props.items ?? new CustomsDeclarationList(),
+        customsDeclarationList:
+          props.customsDeclarationList ?? new CustomsDeclarationList(),
         createdAt: props.createdAt ?? new Date(),
       },
       id,

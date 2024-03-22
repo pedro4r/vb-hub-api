@@ -98,7 +98,7 @@ export class EditPackagesUseCase {
           )
         },
       )
-      pkg.items.update(customsDeclarationItems)
+      pkg.customsDeclarationList.update(customsDeclarationItems)
     }
 
     await this.packageRepository.save(pkg)

@@ -11,6 +11,14 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     private checkInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository,
   ) {}
 
+  async findManyByPackageId(packadeId: string) {
+    const checkIns = this.items.filter(
+      (item) => item.packageId?.toString() === packadeId,
+    )
+
+    return checkIns
+  }
+
   async linkManyCheckInToPackage(checkIns: PackageCheckIn[]) {
     checkIns.forEach((checkIn) => {
       const item = this.items.find(

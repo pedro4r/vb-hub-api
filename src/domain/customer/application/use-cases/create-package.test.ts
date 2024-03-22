@@ -1,9 +1,7 @@
 import { InMemoryPackageRepository } from 'test/repositories/in-memory-package-repository'
 import { CreatePackageUseCase } from './create-package'
 import { InMemoryCustomsDeclarationItemsRepository } from 'test/repositories/in-memory-customs-declaration-items-repository'
-import { makeDeclarationModel } from 'test/factories/make-customs-declaration'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { makeDeclarationModelItem } from 'test/factories/make-customs-declaration-item'
 import { DeclarationModelList } from '../../enterprise/entities/declaration-model-list'
 import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory-declaration-model-repository'
 import { InMemoryDeclarationModelItemsRepository } from 'test/repositories/in-memory-declaration-model-items-repository'
@@ -14,6 +12,8 @@ import { Package } from '../../enterprise/entities/package'
 import { InMemoryPackageShippingAddressRepository } from 'test/repositories/in-memory-package-shipping-address-repository'
 import { InMemoryShippingAddressRepository } from 'test/repositories/in-memory-shipping-address-repository'
 import { makeShippingAddress } from 'test/factories/make-shipping-address'
+import { makeDeclarationModelItem } from 'test/factories/make-declaration-model-item'
+import { makeDeclarationModel } from 'test/factories/make-declaration-model'
 
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
@@ -44,21 +44,22 @@ describe('Create Package', () => {
     inMemoryCustomsDeclarationItemsRepository =
       new InMemoryCustomsDeclarationItemsRepository()
 
-    inMemoryPackageRepository = new InMemoryPackageRepository(
-      inMemoryCustomsDeclarationItemsRepository,
-      inMemoryCheckInsRepository,
-    )
-
     inMemoryShippingAddressRepository = new InMemoryShippingAddressRepository()
 
     inMemoryPackageShippingAddressRepository =
       new InMemoryPackageShippingAddressRepository(
         inMemoryShippingAddressRepository,
       )
+
+    inMemoryPackageRepository = new InMemoryPackageRepository(
+      inMemoryCustomsDeclarationItemsRepository,
+      inMemoryPackageShippingAddressRepository,
+      inMemoryCheckInsRepository,
+    )
+
     sut = new CreatePackageUseCase(
       inMemoryPackageRepository,
       inMemoryDeclarationModelsItemsRepository,
-      inMemoryPackageShippingAddressRepository,
     )
 
     await Promise.all(

@@ -7,10 +7,8 @@ import { CustomsDeclarationList } from '../../enterprise/entities/customs-declar
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { DeclarationModelItemsRepository } from '../repositories/declaration-model-item-repository'
-
 import { PackageCheckIn } from '../../enterprise/entities/package-check-in'
 import { PackageCheckInsList } from '../../enterprise/entities/package-check-ins-list'
-import { PackageShippingAddressRepository } from '../repositories/package-shipping-address-repository'
 
 interface CreatePackageUseCaseRequest {
   customerId: string
@@ -33,7 +31,6 @@ export class CreatePackageUseCase {
   constructor(
     private packageRepository: PackageRepository,
     private declarationModelItemsRepository: DeclarationModelItemsRepository,
-    private packageShippingAddressRepository: PackageShippingAddressRepository,
   ) {}
 
   async execute({
@@ -45,13 +42,10 @@ export class CreatePackageUseCase {
     taxId,
     hasBattery,
   }: CreatePackageUseCaseRequest): Promise<CreatePackageUseCaseResponse> {
-    const packageShippingAddressId =
-      await this.packageShippingAddressRepository.create(shippingAddressId)
-
     const pkg = Package.create({
       customerId: new UniqueEntityID(customerId),
       parcelForwardingId: new UniqueEntityID(parcelForwardingId),
-      shippingAddressId: packageShippingAddressId,
+      shippingAddressId: new UniqueEntityID(shippingAddressId),
       taxId,
       hasBattery,
     })
@@ -85,7 +79,9 @@ export class CreatePackageUseCase {
           })
         },
       )
-      pkg.items = new CustomsDeclarationList(customsDeclarationItems)
+      pkg.customsDeclarationList = new CustomsDeclarationList(
+        customsDeclarationItems,
+      )
     }
 
     await this.packageRepository.create(pkg)
