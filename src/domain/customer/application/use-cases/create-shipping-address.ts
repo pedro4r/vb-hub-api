@@ -3,6 +3,7 @@ import { ShippingAddressRepository } from '../repositories/shipping-address-repo
 import { Address } from '@/core/value-objects/address'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ShippingAddress } from '../../enterprise/entities/shipping-address'
+import { Injectable } from '@nestjs/common'
 
 interface CreateShippingAddressUseCaseRequest {
   customerId: string
@@ -23,6 +24,7 @@ type CreateShippingAddressUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class CreateShippingAddressUseCase {
   constructor(private shippingAddressRepository: ShippingAddressRepository) {}
 

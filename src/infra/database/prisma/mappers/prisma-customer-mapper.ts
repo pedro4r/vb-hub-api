@@ -25,7 +25,7 @@ export class PrismaCustomerMapper {
     return {
       id: customer.id.toString(),
       name: customer.name,
-      parcel_forwarding_id: customer.parcelForwardingId.toString(),
+      parcelForwardingId: customer.parcelForwardingId.toString(),
       hubId: `${customer.hubId.parcelForwadingInitials}-${customer.hubId.customerCode}`,
       email: customer.email,
       password: customer.password,

@@ -11,7 +11,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
   async findManyByPackageId(packadeId: string) {
     const checkIns = await this.prisma.checkIn.findMany({
       where: {
-        package_id: packadeId,
+        packageId: packadeId,
       },
     })
 
@@ -26,7 +26,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
             id: checkIn.checkInId.toString(),
           },
           data: {
-            package_id: checkIn.packageId.toString(),
+            packageId: checkIn.packageId.toString(),
           },
         })
       }),
@@ -41,7 +41,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
             id: checkIn.checkInId.toString(),
           },
           data: {
-            package_id: null,
+            packageId: null,
           },
         })
       }),
@@ -54,7 +54,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
         createdAt: 'desc',
       },
       where: {
-        parcel_forwarding_id: parcelForwardingId,
+        parcelForwardingId,
       },
       take: 20,
       skip: (page - 1) * 20,

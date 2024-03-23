@@ -8,17 +8,18 @@ datasource db {
 }
 
 model Customer {
-  id                   String            @id @default(uuid())
-  hubId                String            @unique
-  parcel_forwarding_id String            @map("parcel_forwarding_id")
-  name                 String
-  email                String            @unique
-  password             String
-  CheckIn              CheckIn[]
-  Package              Package[]
-  ShippingAddress      ShippingAddress[]
+  id                 String             @id @default(uuid())
+  hubId              String             @unique @map("hub_id")
+  parcelForwardingId String             @map("parcel_forwarding_id")
+  name               String
+  email              String             @unique
+  password           String
+  CheckIn            CheckIn[]
+  Package            Package[]
+  ShippingAddress    ShippingAddress[]
+  DeclarationModel   DeclarationModel[]
 
-  parcel_forwarding ParcelForwarding @relation(fields: [parcel_forwarding_id], references: [id])
+  parcel_forwarding ParcelForwarding @relation(fields: [parcelForwardingId], references: [id])
 
   @@map("customers")
 }
@@ -37,72 +38,79 @@ model ParcelForwarding {
 }
 
 model CheckIn {
-  id                   String    @id @default(uuid())
-  status               Int
-  details              String
-  weight               Int
-  parcel_forwarding_id String    @map("parcel_forwarding_id")
-  package_id           String?   @map("package_id")
-  customer_id          String    @map("customer_id")
-  createdAt            DateTime  @default(now()) @map("created_at")
-  updatedAt            DateTime? @updatedAt @map("updated_at")
+  id                 String    @id @default(uuid())
+  status             Int
+  details            String
+  weight             Int
+  parcelForwardingId String    @map("parcel_forwarding_id")
+  packageId          String?   @map("package_id")
+  customerId         String    @map("customer_id")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime? @updatedAt @map("updated_at")
 
-  parcel_forwarding ParcelForwarding @relation(fields: [parcel_forwarding_id], references: [id])
-  customer          Customer         @relation(fields: [customer_id], references: [id])
-  Package           Package?         @relation(fields: [package_id], references: [id])
-  Attachment        Attachment[]
+  parcel_forwarding ParcelForwarding @relation(fields: [parcelForwardingId], references: [id])
+  customer          Customer         @relation(fields: [customerId], references: [id])
+  Package           Package?         @relation(fields: [packageId], references: [id])
+
+  Attachment Attachment[]
 
   @@map("check_ins")
 }
 
 model Attachment {
-  id          String   @id @default(uuid())
-  check_in_id String   @map("check_in_id")
-  createdAt   DateTime @default(now()) @map("created_at")
+  id        String   @id @default(uuid())
+  checkInId String   @map("check_in_id")
+  createdAt DateTime @default(now()) @map("created_at")
 
-  check_in CheckIn @relation(fields: [check_in_id], references: [id])
+  check_in CheckIn @relation(fields: [checkInId], references: [id])
 
   @@map("attachments")
 }
 
 model Package {
-  id                   String    @id @default(uuid())
-  weight               Int
-  hasBattery           Boolean   @map("has_battery")
-  trackingNumber       String    @map("tracking_number")
-  isShipped            Boolean   @map("is_shipped")
-  parcel_forwarding_id String    @map("parcel_forwarding_id")
-  customer_id          String    @map("customer_id")
-  createdAt            DateTime  @default(now()) @map("created_at")
-  updatedAt            DateTime? @updatedAt @map("updated_at")
+  id                       String    @id @default(uuid())
+  customerId               String    @map("customer_id")
+  parcelForwardingId       String    @map("parcel_forwarding_id")
+  packageShippingAddressId String    @map("package_shipping_addresses_id")
+  weight                   Int
+  hasBattery               Boolean   @map("has_battery")
+  trackingNumber           String    @map("tracking_number")
+  isShipped                Boolean   @map("is_shipped")
+  createdAt                DateTime  @default(now()) @map("created_at")
+  updatedAt                DateTime? @updatedAt @map("updated_at")
 
   CheckIn CheckIn[]
 
-  parcel_forwarding       ParcelForwarding         @relation(fields: [parcel_forwarding_id], references: [id])
-  customer                Customer                 @relation(fields: [customer_id], references: [id])
+  parcel_forwarding       ParcelForwarding         @relation(fields: [parcelForwardingId], references: [id])
+  customer                Customer                 @relation(fields: [customerId], references: [id])
   CustomDeclaractionItems CustomDeclaractionItem[]
+  PackageShippingAddress  PackageShippingAddress   @relation(fields: [packageShippingAddressId], references: [id])
 
   @@map("packages")
 }
 
-model CustomDeclaractionItem {
-  id          String    @id @default(uuid())
-  description String    @map("description")
-  value       Int       @map("value")
-  quantity    Int       @map("quantity")
-  package_id  String    @map("package_id")
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime? @updatedAt @map("updated_at")
-
-  Package Package @relation(fields: [package_id], references: [id])
-
-  @@map("custom_declaraction_items")
-}
-
 model ShippingAddress {
   id            String    @id @default(uuid())
+  customerId    String    @map("customer_id")
   recipientName String    @map("recipient_name")
-  taxId         String    @map("tax_id")
+  address       String    @map("address")
+  complement    String?   @map("complement")
+  city          String    @map("city")
+  state         String    @map("state")
+  zipcode       String    @map("zipcode")
+  country       String    @map("country")
+  phoneNumber   String?   @map("phone_number")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime? @updatedAt @map("updated_at")
+
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@map("shipping_addresses")
+}
+
+model PackageShippingAddress {
+  id            String    @id @default(uuid())
+  recipientName String    @map("recipient_name")
   address       String    @map("address")
   complement    String    @map("complement")
   city          String    @map("city")
@@ -110,11 +118,50 @@ model ShippingAddress {
   zipcode       String    @map("zipcode")
   country       String    @map("country")
   phoneNumber   String    @map("phone_number")
-  customer_id   String    @map("customer_id")
   createdAt     DateTime  @default(now()) @map("created_at")
   updatedAt     DateTime? @updatedAt @map("updated_at")
+  Package       Package[]
 
-  customer Customer @relation(fields: [customer_id], references: [id])
+  @@map("package_shipping_addresses")
+}
 
-  @@map("shipping_addresses")
+model DeclarationModel {
+  id         String    @id @default(uuid())
+  customerId String    @map("customer_id")
+  title      String    @map("title")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime? @updatedAt @map("updated_at")
+
+  Customer              Customer?               @relation(fields: [customerId], references: [id])
+  DeclaractionModelItem DeclaractionModelItem[]
+
+  @@map("declaration_models")
+}
+
+model DeclaractionModelItem {
+  id                 String    @id @default(uuid())
+  declarationModelId String    @map("declaration_model_id")
+  description        String    @map("description")
+  value              Int       @map("value")
+  quantity           Int       @map("quantity")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime? @updatedAt @map("updated_at")
+
+  DeclarationModel DeclarationModel @relation(fields: [declarationModelId], references: [id])
+
+  @@map("declaraction_model_items")
+}
+
+model CustomDeclaractionItem {
+  id          String    @id @default(uuid())
+  description String    @map("description")
+  value       Int       @map("value")
+  quantity    Int       @map("quantity")
+  packageId   String    @map("package_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+
+  Package Package @relation(fields: [packageId], references: [id])
+
+  @@map("custom_declaraction_items")
 }

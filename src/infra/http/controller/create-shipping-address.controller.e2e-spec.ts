@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 
-describe('Create Check-in (E2E)', () => {
+describe('Create Shipping Address (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
   let jwt: JwtService
@@ -23,7 +23,7 @@ describe('Create Check-in (E2E)', () => {
     await app.init()
   })
 
-  test('[POST] /check-in', async () => {
+  test('[POST] /shipping-address', async () => {
     const parcelForwarding = await prisma.parcelForwarding.create({
       data: {
         name: 'Voabox',
@@ -43,27 +43,31 @@ describe('Create Check-in (E2E)', () => {
       },
     })
 
-    const accessToken = jwt.sign({ sub: parcelForwarding.id })
+    const accessToken = jwt.sign({ sub: customer.id })
 
     const response = await request(app.getHttpServer())
-      .post('/check-in')
+      .post('/shipping-address')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        parcel_forwarding_id: parcelForwarding.id,
         customerId: customer.id,
-        status: '1',
-        details: 'New Check-in',
-        weight: '10',
+        recipientName: 'Pedro',
+        address: 'Millenia Blvd, 1234',
+        complement: 'Apt 1',
+        city: 'Orlando',
+        state: 'FL',
+        zipcode: '32839',
+        country: 'USA',
+        phoneNumber: '123456',
       })
 
     expect(response.statusCode).toBe(201)
 
-    const checkInOnDatabase = await prisma.checkIn.findFirst({
+    const shippingAddressnOnDatabase = await prisma.shippingAddress.findFirst({
       where: {
         customerId: customer.id,
       },
     })
 
-    expect(checkInOnDatabase).toBeTruthy()
+    expect(shippingAddressnOnDatabase).toBeTruthy()
   })
 })

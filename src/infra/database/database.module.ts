@@ -4,6 +4,8 @@ import { PrismaCheckInsRepository } from './prisma/repositories/prisma-check-ins
 import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repositories/check-ins-repository'
 import { ParcelForwardingsRepository } from '@/domain/parcel-forwarding/application/repositories/parcel-forwardings-repository'
 import { PrismaParcelForwardingRepository } from './prisma/repositories/prisma-parcel-forwardings-repository'
+import { ShippingAddressRepository } from '@/domain/customer/application/repositories/shipping-address-repository'
+import { PrismaShippingAddressRepository } from './prisma/repositories/prisma-shipping-address-repository'
 
 @Module({
   providers: [
@@ -13,10 +15,19 @@ import { PrismaParcelForwardingRepository } from './prisma/repositories/prisma-p
       useClass: PrismaCheckInsRepository,
     },
     {
+      provide: ShippingAddressRepository,
+      useClass: PrismaShippingAddressRepository,
+    },
+    {
       provide: ParcelForwardingsRepository,
       useClass: PrismaParcelForwardingRepository,
     },
   ],
-  exports: [PrismaService, CheckInsRepository, ParcelForwardingsRepository],
+  exports: [
+    PrismaService,
+    CheckInsRepository,
+    ParcelForwardingsRepository,
+    ShippingAddressRepository,
+  ],
 })
 export class DatabseModule {}
