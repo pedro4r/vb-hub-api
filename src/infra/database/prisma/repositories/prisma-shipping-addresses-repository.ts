@@ -5,7 +5,7 @@ import { ShippingAddress } from '@/domain/customer/enterprise/entities/shipping-
 import { PrismaShippingAddressMapper } from '../mappers/prisma-shipping-address-mapper'
 
 @Injectable()
-export class PrismaShippingAddressRepository
+export class PrismaShippingAddressesRepository
   implements ShippingAddressRepository
 {
   constructor(private prisma: PrismaService) {}

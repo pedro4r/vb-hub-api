@@ -1,10 +1,10 @@
 import { InMemoryDeclarationModelItemsRepository } from 'test/repositories/in-memory-declaration-model-items-repository'
-import { CreateDeclarationModel } from './create-declaration-model'
+import { CreateDeclarationModelUseCase } from './create-declaration-model'
 import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory-declaration-model-repository'
 
 let inMemoryDeclarationModelItemsRepository: InMemoryDeclarationModelItemsRepository
 let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
-let sut: CreateDeclarationModel
+let sut: CreateDeclarationModelUseCase
 
 describe('Create Customs Declaration', () => {
   beforeEach(() => {
@@ -14,7 +14,9 @@ describe('Create Customs Declaration', () => {
       new InMemoryDeclarationModelsRepository(
         inMemoryDeclarationModelItemsRepository,
       )
-    sut = new CreateDeclarationModel(inMemoryDeclarationModelsRepository)
+    sut = new CreateDeclarationModelUseCase(
+      inMemoryDeclarationModelsRepository,
+    )
   })
 
   it('should be able to create a customs declaration', async () => {

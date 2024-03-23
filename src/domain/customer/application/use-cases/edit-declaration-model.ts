@@ -67,6 +67,7 @@ export class EditDeclarationModel {
     const declarationModelItems = items.map((item) => {
       return DeclarationModelItem.create(
         {
+          declarationModelId: new UniqueEntityID(declarationModelId),
           description: item.props.description,
           value: item.props.value,
           quantity: item.props.quantity,

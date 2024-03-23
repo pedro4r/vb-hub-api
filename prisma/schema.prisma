@@ -81,10 +81,10 @@ model Package {
 
   CheckIn CheckIn[]
 
-  parcel_forwarding       ParcelForwarding         @relation(fields: [parcelForwardingId], references: [id])
-  customer                Customer                 @relation(fields: [customerId], references: [id])
-  CustomDeclaractionItems CustomDeclaractionItem[]
-  PackageShippingAddress  PackageShippingAddress   @relation(fields: [packageShippingAddressId], references: [id])
+  parcel_forwarding      ParcelForwarding        @relation(fields: [parcelForwardingId], references: [id])
+  customer               Customer                @relation(fields: [customerId], references: [id])
+  CustomDeclarationItems CustomDeclarationItem[]
+  PackageShippingAddress PackageShippingAddress  @relation(fields: [packageShippingAddressId], references: [id])
 
   @@map("packages")
 }
@@ -132,13 +132,13 @@ model DeclarationModel {
   createdAt  DateTime  @default(now()) @map("created_at")
   updatedAt  DateTime? @updatedAt @map("updated_at")
 
-  Customer              Customer?               @relation(fields: [customerId], references: [id])
-  DeclaractionModelItem DeclaractionModelItem[]
+  Customer              Customer?              @relation(fields: [customerId], references: [id])
+  DeclarationModelItems DeclarationModelItem[]
 
   @@map("declaration_models")
 }
 
-model DeclaractionModelItem {
+model DeclarationModelItem {
   id                 String    @id @default(uuid())
   declarationModelId String    @map("declaration_model_id")
   description        String    @map("description")
@@ -149,10 +149,10 @@ model DeclaractionModelItem {
 
   DeclarationModel DeclarationModel @relation(fields: [declarationModelId], references: [id])
 
-  @@map("declaraction_model_items")
+  @@map("declaration_model_items")
 }
 
-model CustomDeclaractionItem {
+model CustomDeclarationItem {
   id          String    @id @default(uuid())
   description String    @map("description")
   value       Int       @map("value")
@@ -163,5 +163,5 @@ model CustomDeclaractionItem {
 
   Package Package @relation(fields: [packageId], references: [id])
 
-  @@map("custom_declaraction_items")
+  @@map("custom_declaration_items")
 }

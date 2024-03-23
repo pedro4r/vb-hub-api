@@ -11,6 +11,8 @@ import { CryptographyModule } from '../cryptograph/cryptograph.module'
 import { FetchRecentCheckInsUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-check-ins'
 import { CreateShippingAddressUseCase } from '@/domain/customer/application/use-cases/create-shipping-address'
 import { CreateShippingAddressController } from './controller/create-shipping-address.controller'
+import { CreateDeclarationModelController } from './controller/create-declaration-model.controller'
+import { CreateDeclarationModelUseCase } from '@/domain/customer/application/use-cases/create-declaration-model'
 
 @Module({
   imports: [DatabseModule, CryptographyModule],
@@ -21,6 +23,7 @@ import { CreateShippingAddressController } from './controller/create-shipping-ad
     CreateCheckInController,
     CreateShippingAddressController,
     FetchRecentCheckInsController,
+    CreateDeclarationModelController,
   ],
   providers: [
     CheckInUseCase,
@@ -28,6 +31,7 @@ import { CreateShippingAddressController } from './controller/create-shipping-ad
     AuthenticateUseCase,
     RegisterParcelForwardingUseCase,
     FetchRecentCheckInsUseCase,
+    CreateDeclarationModelUseCase,
   ],
 })
 export class HttpModule {}

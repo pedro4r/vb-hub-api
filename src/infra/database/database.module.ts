@@ -5,7 +5,11 @@ import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repos
 import { ParcelForwardingsRepository } from '@/domain/parcel-forwarding/application/repositories/parcel-forwardings-repository'
 import { PrismaParcelForwardingRepository } from './prisma/repositories/prisma-parcel-forwardings-repository'
 import { ShippingAddressRepository } from '@/domain/customer/application/repositories/shipping-address-repository'
-import { PrismaShippingAddressRepository } from './prisma/repositories/prisma-shipping-address-repository'
+import { DeclarationModelRepository } from '@/domain/customer/application/repositories/declaration-model-repository'
+import { PrismaShippingAddressesRepository } from './prisma/repositories/prisma-shipping-addresses-repository'
+import { PrismaDeclarationModelsRepository } from './prisma/repositories/prisma-declaration-models-repository'
+import { DeclarationModelItemsRepository } from '@/domain/customer/application/repositories/declaration-model-item-repository'
+import { PrismaDeclarationModelItemsRepository } from './prisma/repositories/prisma-declaration-model-items-repository'
 
 @Module({
   providers: [
@@ -16,11 +20,19 @@ import { PrismaShippingAddressRepository } from './prisma/repositories/prisma-sh
     },
     {
       provide: ShippingAddressRepository,
-      useClass: PrismaShippingAddressRepository,
+      useClass: PrismaShippingAddressesRepository,
     },
     {
       provide: ParcelForwardingsRepository,
       useClass: PrismaParcelForwardingRepository,
+    },
+    {
+      provide: DeclarationModelRepository,
+      useClass: PrismaDeclarationModelsRepository,
+    },
+    {
+      provide: DeclarationModelItemsRepository,
+      useClass: PrismaDeclarationModelItemsRepository,
     },
   ],
   exports: [
@@ -28,6 +40,8 @@ import { PrismaShippingAddressRepository } from './prisma/repositories/prisma-sh
     CheckInsRepository,
     ParcelForwardingsRepository,
     ShippingAddressRepository,
+    DeclarationModelRepository,
+    DeclarationModelItemsRepository,
   ],
 })
 export class DatabseModule {}

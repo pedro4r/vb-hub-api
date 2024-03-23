@@ -55,12 +55,13 @@ describe('Edit Customs Declaration', () => {
       customerId: declarationModel.customerId.toString(),
       title: declarationModel.title,
       items: declarationModelItems.map((item, i) => ({
-        id: item.id.toString(),
         props: {
+          declarationModelId: declarationModel.id,
           description: `New description ${i + 1}`,
           value: 100,
           quantity: 10,
         },
+        id: item.id.toString(),
       })),
     })
 
@@ -69,6 +70,7 @@ describe('Edit Customs Declaration', () => {
     expect(inMemoryDeclarationModelItemsRepository.items).toEqual([
       expect.objectContaining({
         props: {
+          declarationModelId: declarationModel.id,
           description: 'New description 1',
           value: 100,
           quantity: 10,
@@ -76,6 +78,7 @@ describe('Edit Customs Declaration', () => {
       }),
       expect.objectContaining({
         props: {
+          declarationModelId: declarationModel.id,
           description: 'New description 2',
           value: 100,
           quantity: 10,
@@ -83,6 +86,7 @@ describe('Edit Customs Declaration', () => {
       }),
       expect.objectContaining({
         props: {
+          declarationModelId: declarationModel.id,
           description: 'New description 3',
           value: 100,
           quantity: 10,
@@ -99,6 +103,7 @@ describe('Edit Customs Declaration', () => {
       items: declarationModelItems.slice(0, -1).map((item, i) => ({
         id: item.id.toString(),
         props: {
+          declarationModelId: declarationModel.id,
           description: `New description ${i + 1}`,
           value: 100,
           quantity: 10,
@@ -111,6 +116,7 @@ describe('Edit Customs Declaration', () => {
     expect(inMemoryDeclarationModelItemsRepository.items).toEqual([
       expect.objectContaining({
         props: {
+          declarationModelId: declarationModel.id,
           description: 'New description 1',
           value: 100,
           quantity: 10,
@@ -118,6 +124,7 @@ describe('Edit Customs Declaration', () => {
       }),
       expect.objectContaining({
         props: {
+          declarationModelId: declarationModel.id,
           description: 'New description 2',
           value: 100,
           quantity: 10,
@@ -140,6 +147,7 @@ describe('Edit Customs Declaration', () => {
       items: declarationModelItems.map((item, i) => ({
         id: item.id.toString(),
         props: {
+          declarationModelId: declarationModel.id,
           description: `New description ${i + 1}`,
           value: 100,
           quantity: 10,
@@ -152,6 +160,7 @@ describe('Edit Customs Declaration', () => {
     expect(inMemoryDeclarationModelItemsRepository.items).toEqual([
       expect.objectContaining({
         props: {
+          declarationModelId: declarationModel.id,
           description: 'New description 1',
           value: 100,
           quantity: 10,
@@ -159,6 +168,7 @@ describe('Edit Customs Declaration', () => {
       }),
       expect.objectContaining({
         props: {
+          declarationModelId: declarationModel.id,
           description: 'New description 2',
           value: 100,
           quantity: 10,
@@ -166,6 +176,7 @@ describe('Edit Customs Declaration', () => {
       }),
       expect.objectContaining({
         props: {
+          declarationModelId: declarationModel.id,
           description: 'New description 3',
           value: 100,
           quantity: 10,
@@ -173,6 +184,7 @@ describe('Edit Customs Declaration', () => {
       }),
       expect.objectContaining({
         props: {
+          declarationModelId: declarationModel.id,
           description: 'New description 4',
           value: 100,
           quantity: 10,
@@ -189,6 +201,7 @@ describe('Edit Customs Declaration', () => {
       items: declarationModelItems.map((item) => ({
         id: item.id.toString(),
         props: {
+          declarationModelId: declarationModel.id,
           description: item.description,
           value: item.value,
           quantity: item.quantity,
@@ -214,6 +227,7 @@ describe('Edit Customs Declaration', () => {
       items: declarationModelItems.map((item) => ({
         id: item.id.toString(),
         props: {
+          declarationModelId: declarationModel.id,
           description: item.description,
           value: item.value,
           quantity: item.quantity,
