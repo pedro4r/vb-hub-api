@@ -12,7 +12,6 @@ interface CreateParcelForwardingAddressUseCaseRequest {
   state: string
   zipcode: string
   country: string
-  phoneNumber?: string | null
 }
 
 type CreateParcelForwardingAddressUseCaseResponse = Either<
@@ -35,7 +34,6 @@ export class CreateParcelForwardingAddressUseCase {
     state,
     zipcode,
     country,
-    phoneNumber,
   }: CreateParcelForwardingAddressUseCaseRequest): Promise<CreateParcelForwardingAddressUseCaseResponse> {
     const addressInfo = new Address({
       address,
@@ -44,7 +42,6 @@ export class CreateParcelForwardingAddressUseCase {
       state,
       zipcode,
       country,
-      phoneNumber,
     })
 
     const parcelForwardingAddress = ParcelForwardingAddress.create({

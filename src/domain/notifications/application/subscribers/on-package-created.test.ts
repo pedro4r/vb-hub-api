@@ -113,7 +113,6 @@ describe('On Check-in Created', () => {
     const newPkg = makePackage({
       shippingAddressId: new UniqueEntityID('shippingAddress-1'),
       parcelForwardingId: new UniqueEntityID('parcelForwarding-1'),
-      taxId: 'tax-1',
       hasBattery: false,
     })
 

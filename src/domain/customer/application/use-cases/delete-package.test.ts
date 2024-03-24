@@ -90,7 +90,6 @@ describe('Delete an Package', () => {
       {
         shippingAddressId: new UniqueEntityID('shippingAddress-1'),
         parcelForwardingId: new UniqueEntityID('parcelForwarding-1'),
-        taxId: 'tax-1',
         hasBattery: false,
       },
       new UniqueEntityID('package-1'),

@@ -9,6 +9,7 @@ import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { DeclarationModelItemsRepository } from '../repositories/declaration-model-item-repository'
 import { PackageCheckIn } from '../../enterprise/entities/package-check-in'
 import { PackageCheckInsList } from '../../enterprise/entities/package-check-ins-list'
+import { Injectable } from '@nestjs/common'
 
 interface CreatePackageUseCaseRequest {
   customerId: string
@@ -16,7 +17,6 @@ interface CreatePackageUseCaseRequest {
   shippingAddressId: string
   checkInsIds: string[]
   declarationModelId?: string
-  taxId: string
   hasBattery: boolean
 }
 
@@ -27,6 +27,7 @@ type CreatePackageUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class CreatePackageUseCase {
   constructor(
     private packageRepository: PackageRepository,
@@ -39,14 +40,12 @@ export class CreatePackageUseCase {
     shippingAddressId,
     checkInsIds,
     declarationModelId,
-    taxId,
     hasBattery,
   }: CreatePackageUseCaseRequest): Promise<CreatePackageUseCaseResponse> {
     const pkg = Package.create({
       customerId: new UniqueEntityID(customerId),
       parcelForwardingId: new UniqueEntityID(parcelForwardingId),
       shippingAddressId: new UniqueEntityID(shippingAddressId),
-      taxId,
       hasBattery,
     })
 

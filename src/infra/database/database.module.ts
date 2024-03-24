@@ -10,6 +10,10 @@ import { PrismaShippingAddressesRepository } from './prisma/repositories/prisma-
 import { PrismaDeclarationModelsRepository } from './prisma/repositories/prisma-declaration-models-repository'
 import { DeclarationModelItemsRepository } from '@/domain/customer/application/repositories/declaration-model-item-repository'
 import { PrismaDeclarationModelItemsRepository } from './prisma/repositories/prisma-declaration-model-items-repository'
+import { PrismaPackageRepository } from './prisma/repositories/prisma-package-repository'
+import { PackageRepository } from '@/domain/customer/application/repositories/package-repository'
+import { PackageShippingAddressRepository } from '@/domain/customer/application/repositories/package-shipping-address-repository'
+import { PrismaPackageShippingAddressRepository } from './prisma/repositories/prisma-package-shipping-address-repository'
 
 @Module({
   providers: [
@@ -34,6 +38,15 @@ import { PrismaDeclarationModelItemsRepository } from './prisma/repositories/pri
       provide: DeclarationModelItemsRepository,
       useClass: PrismaDeclarationModelItemsRepository,
     },
+
+    {
+      provide: PackageRepository,
+      useClass: PrismaPackageRepository,
+    },
+    {
+      provide: PackageShippingAddressRepository,
+      useClass: PrismaPackageShippingAddressRepository,
+    },
   ],
   exports: [
     PrismaService,
@@ -42,6 +55,8 @@ import { PrismaDeclarationModelItemsRepository } from './prisma/repositories/pri
     ShippingAddressRepository,
     DeclarationModelRepository,
     DeclarationModelItemsRepository,
+    PackageRepository,
+    PackageShippingAddressRepository,
   ],
 })
-export class DatabseModule {}
+export class DatabaseModule {}

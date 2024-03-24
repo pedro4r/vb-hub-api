@@ -8,13 +8,15 @@ import { Injectable } from '@nestjs/common'
 interface CreateShippingAddressUseCaseRequest {
   customerId: string
   recipientName: string
+  taxId?: string | null
   address: string
+  phoneNumber?: string | null
+  email?: string | null
   complement?: string | null
   city: string
   state: string
   zipcode: string
   country: string
-  phoneNumber?: string | null
 }
 
 type CreateShippingAddressUseCaseResponse = Either<
@@ -38,6 +40,8 @@ export class CreateShippingAddressUseCase {
     zipcode,
     country,
     phoneNumber,
+    email,
+    taxId,
   }: CreateShippingAddressUseCaseRequest): Promise<CreateShippingAddressUseCaseResponse> {
     const addressInfo = new Address({
       address,
@@ -46,12 +50,14 @@ export class CreateShippingAddressUseCase {
       state,
       zipcode,
       country,
-      phoneNumber,
     })
 
     const shippingAddress = ShippingAddress.create({
       customerId: new UniqueEntityID(customerId),
       recipientName,
+      phoneNumber,
+      email,
+      taxId,
       address: addressInfo,
     })
 

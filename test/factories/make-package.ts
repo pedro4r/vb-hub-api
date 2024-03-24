@@ -13,7 +13,6 @@ export function makePackage(
       customerId: new UniqueEntityID('customer-1'),
       parcelForwardingId: new UniqueEntityID('parcel-forwarding-1'),
       shippingAddressId: new UniqueEntityID('shipping-address-1'),
-      taxId: 'tax-1',
       hasBattery: false,
       ...override,
     },

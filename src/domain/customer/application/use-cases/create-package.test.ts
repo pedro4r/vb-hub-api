@@ -129,7 +129,6 @@ describe('Create Package', () => {
       shippingAddressId: 'shippingAddress-1',
       checkInsIds: ['check-in-1', 'check-in-2'],
       declarationModelId: 'declaration-model-1',
-      taxId: 'tax-1',
       hasBattery: true,
     })
 
@@ -153,7 +152,6 @@ describe('Create Package', () => {
             }),
           ]),
         }),
-        taxId: 'tax-1',
         hasBattery: true,
       }),
     )
@@ -164,8 +162,5 @@ describe('Create Package', () => {
     expect(inMemoryDeclarationModelsRepository.items.length).toBe(2)
     expect(inMemoryDeclarationModelsItemsRepository.items.length).toBe(6)
     expect(inMemoryPackageShippingAddressRepository.items.length).toBe(1)
-    expect(
-      inMemoryPackageShippingAddressRepository.items[0].customerId,
-    ).toEqual(new UniqueEntityID('customer-1'))
   })
 })

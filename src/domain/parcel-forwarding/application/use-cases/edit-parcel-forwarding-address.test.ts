@@ -37,7 +37,6 @@ describe('Edit Forwarding Address', () => {
       state: 'New state',
       zipcode: 'New zipcode',
       country: 'New country',
-      phoneNumber: 'New phoneNumber',
     })
 
     expect(
@@ -68,7 +67,6 @@ describe('Edit Forwarding Address', () => {
       state: 'New state',
       zipcode: 'New zipcode',
       country: 'New country',
-      phoneNumber: 'New phoneNumber',
     })
 
     expect(result.isLeft).toBeTruthy()

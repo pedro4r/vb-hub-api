@@ -15,7 +15,6 @@ interface EditPackagesRequest {
   shippingAddressId: string
   checkInsIds: string[]
   declarationModelId?: string
-  taxId: string
   hasBattery: boolean
 }
 
@@ -39,11 +38,8 @@ export class EditPackagesUseCase {
     shippingAddressId,
     checkInsIds,
     declarationModelId,
-    taxId,
     hasBattery,
   }: EditPackagesRequest): Promise<EditPackagesResponse> {
-    const newShippingAddressId = shippingAddressId
-
     const pkg = await this.packageRepository.findById(packageId)
 
     if (!pkg) {
@@ -54,17 +50,15 @@ export class EditPackagesUseCase {
       return left(new NotAllowedError())
     }
 
-    pkg.taxId = taxId
     pkg.hasBattery = hasBattery
 
     await this.packageShippingAddressRepository.delete(
       pkg.shippingAddressId.toString(),
     )
 
-    const packageShippingAddressId =
-      await this.packageShippingAddressRepository.create(newShippingAddressId)
+    await this.packageShippingAddressRepository.create(shippingAddressId)
 
-    pkg.shippingAddressId = packageShippingAddressId
+    pkg.shippingAddressId = new UniqueEntityID(shippingAddressId)
 
     const packageCheckIns = checkInsIds.map((checkInId) => {
       return PackageCheckIn.create({

@@ -115,7 +115,6 @@ describe('Edit Package', () => {
       {
         shippingAddressId: new UniqueEntityID('shippingAddress-1'),
         parcelForwardingId: new UniqueEntityID('parcelForwarding-1'),
-        taxId: 'tax-1',
         hasBattery: false,
       },
       new UniqueEntityID('package-1'),
@@ -158,7 +157,6 @@ describe('Edit Package', () => {
       shippingAddressId: 'shippingAddress-2',
       checkInsIds: ['check-in-3'],
       declarationModelId: 'declaration-model-2',
-      taxId: 'tax-2',
       hasBattery: true,
     })
 
@@ -171,7 +169,6 @@ describe('Edit Package', () => {
     expect(itemsWithPackageId.length).toBe(1)
     expect(result.value).toEqual({
       package: expect.objectContaining({
-        taxId: 'tax-2',
         hasBattery: true,
         customsDeclarationList: expect.objectContaining({
           currentItems: expect.arrayContaining([
@@ -223,7 +220,6 @@ describe('Edit Package', () => {
       shippingAddressId: 'shippingAddress-2',
       checkInsIds: ['check-in-3'],
       declarationModelId: 'declaration-model-2',
-      taxId: 'tax-2',
       hasBattery: true,
     })
 

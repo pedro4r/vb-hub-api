@@ -9,13 +9,15 @@ interface EditShippingAddressUseCaseRequest {
   shippingAddressId: string
   customerId: string
   recipientName: string
+  email?: string | null
+  phoneNumber?: string | null
+  taxId?: string | null
   address: string
   complement?: string | null
   city: string
   state: string
   zipcode: string
   country: string
-  phoneNumber?: string | null
 }
 
 type EditShippingAddressUseCaseResponse = Either<
@@ -39,6 +41,8 @@ export class EditShippingAddressUseCase {
     zipcode,
     country,
     phoneNumber,
+    email,
+    taxId,
   }: EditShippingAddressUseCaseRequest): Promise<EditShippingAddressUseCaseResponse> {
     const shippingAddress =
       await this.shippingAddressRepository.findById(shippingAddressId)
@@ -52,6 +56,9 @@ export class EditShippingAddressUseCase {
     }
 
     shippingAddress.recipientName = recipientName
+    shippingAddress.phoneNumber = phoneNumber
+    shippingAddress.email = email
+    shippingAddress.taxId = taxId
 
     const newAddress = new Address({
       address,
@@ -60,7 +67,6 @@ export class EditShippingAddressUseCase {
       zipcode,
       country,
       complement,
-      phoneNumber,
     })
 
     shippingAddress.address = newAddress

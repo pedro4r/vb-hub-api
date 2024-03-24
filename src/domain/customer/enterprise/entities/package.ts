@@ -8,15 +8,12 @@ import { PackageCheckInsList } from './package-check-ins-list'
 export interface PackageProps {
   customerId: UniqueEntityID
   parcelForwardingId: UniqueEntityID
-  freightProviderId?: UniqueEntityID | null
   shippingAddressId: UniqueEntityID
   checkIns: PackageCheckInsList
   customsDeclarationList: CustomsDeclarationList
-  taxId: string
   weight?: number | null
   hasBattery: boolean
   trackingNumber?: string | null
-  isShipped?: boolean
   createdAt: Date
   updatedAt?: Date
 }
@@ -28,15 +25,6 @@ export class Package extends AggregateRoot<PackageProps> {
 
   get parcelForwardingId() {
     return this.props.parcelForwardingId
-  }
-
-  get freightProviderId() {
-    return this.props.freightProviderId
-  }
-
-  set freightProviderId(id: UniqueEntityID | undefined | null) {
-    this.props.freightProviderId = id
-    this.touch()
   }
 
   get shippingAddressId() {
@@ -66,15 +54,6 @@ export class Package extends AggregateRoot<PackageProps> {
     this.touch()
   }
 
-  get taxId() {
-    return this.props.taxId
-  }
-
-  set taxId(id: string) {
-    this.props.taxId = id
-    this.touch()
-  }
-
   get weight() {
     return this.props.weight
   }
@@ -99,15 +78,6 @@ export class Package extends AggregateRoot<PackageProps> {
 
   set trackingNumber(trackingNumber: string | undefined | null) {
     this.props.trackingNumber = trackingNumber
-    this.touch()
-  }
-
-  get isShipped() {
-    return this.props.isShipped
-  }
-
-  set isShipped(isShipped: boolean | undefined) {
-    this.props.isShipped = isShipped
     this.touch()
   }
 

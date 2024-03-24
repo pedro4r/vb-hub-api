@@ -5,7 +5,6 @@ export interface AddressProps {
   state: string
   zipcode: string
   country: string
-  phoneNumber?: string | null
 }
 
 export class Address implements AddressProps {
@@ -38,15 +37,10 @@ export class Address implements AddressProps {
     return this.props.country
   }
 
-  get phoneNumber() {
-    return this.props.phoneNumber
-  }
-
   static create(props: AddressProps) {
     const address = new Address({
       ...props,
       complement: props.complement ?? null,
-      phoneNumber: props.phoneNumber ?? null,
     })
 
     return address

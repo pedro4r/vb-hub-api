@@ -106,7 +106,6 @@ describe('Get an Package', () => {
       {
         shippingAddressId: new UniqueEntityID('shippingAddress-1'),
         parcelForwardingId: new UniqueEntityID('parcelForwarding-1'),
-        taxId: 'tax-1',
         hasBattery: false,
       },
       new UniqueEntityID('package-1'),
@@ -116,7 +115,6 @@ describe('Get an Package', () => {
       {
         shippingAddressId: new UniqueEntityID('shippingAddress-1'),
         parcelForwardingId: new UniqueEntityID('parcelForwarding-1'),
-        taxId: 'tax-2',
         hasBattery: false,
       },
       new UniqueEntityID('package-2'),

@@ -22,7 +22,6 @@ describe('Create Forwarding Address', () => {
       state: 'IL',
       zipcode: '62701',
       country: 'USA',
-      phoneNumber: '555-555-5555',
     })
 
     expect(result.isRight()).toBe(true)

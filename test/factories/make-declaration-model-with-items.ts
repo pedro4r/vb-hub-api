@@ -7,6 +7,10 @@ import {
 import { faker } from '@faker-js/faker'
 import { makeDeclarationModelItem } from './make-declaration-model-item'
 import { DeclarationModelList } from '@/domain/customer/enterprise/entities/declaration-model-list'
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { PrismaDeclarationModelMapper } from '@/infra/database/prisma/mappers/prisma-declaration-model-mapper'
+import { PrismaDeclarationModelItemsMapper } from '@/infra/database/prisma/mappers/prisma-declaration-model-items-mapper'
 
 export function makeDeclarationModelWithItems(
   override: Partial<DeclarationModelProps> = {},
@@ -39,4 +43,29 @@ export function makeDeclarationModelWithItems(
   declarationModel.items = new DeclarationModelList(declarationModelsItems)
 
   return declarationModel
+}
+
+@Injectable()
+export class DeclarationModelWithItemsFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaDeclarationModel(
+    data: Partial<DeclarationModelProps> = {},
+  ): Promise<DeclarationModel> {
+    const declarationModel = makeDeclarationModelWithItems(data)
+
+    await this.prisma.declarationModel.create({
+      data: PrismaDeclarationModelMapper.toPrisma(declarationModel),
+    })
+
+    const declarationModelItems = declarationModel.items.getItems()
+
+    await this.prisma.declarationModelItem.createMany({
+      data: declarationModelItems.map((item) =>
+        PrismaDeclarationModelItemsMapper.toPrisma(item),
+      ),
+    })
+
+    return declarationModel
+  }
 }

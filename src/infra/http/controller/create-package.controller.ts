@@ -11,7 +11,6 @@ const createPackageBodySchema = z.object({
   checkInsIds: z.array(z.string().uuid()),
   declarationModelId: z.string().optional(),
   hasBattery: z.boolean(),
-  taxId: z.string(),
 })
 
 const bodyValidationPipe = new ZodValidationPipe(createPackageBodySchema)
@@ -32,9 +31,9 @@ export class CreatePackageController {
       shippingAddressId,
       checkInsIds,
       declarationModelId,
-      taxId,
       hasBattery,
     } = body
+
     const userId = user.sub
 
     const result = await this.createPackageUseCase.execute({
@@ -43,7 +42,6 @@ export class CreatePackageController {
       shippingAddressId,
       checkInsIds,
       declarationModelId,
-      taxId,
       hasBattery,
     })
 

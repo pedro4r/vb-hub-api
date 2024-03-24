@@ -1,13 +1,14 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Address } from '@/core/value-objects/address'
+import { PackageShippingAddress } from '@/domain/customer/enterprise/entities/package-shipping-address'
 import { ShippingAddress } from '@/domain/customer/enterprise/entities/shipping-address'
 import {
   Prisma,
-  ShippingAddress as PrismaShippingAddress,
+  PackageShippingAddress as PrismaPackageShippingAddress,
 } from '@prisma/client'
 
-export class PrismaShippingAddressMapper {
-  static toDomain(raw: PrismaShippingAddress): ShippingAddress {
+export class PrismaPackageShippingAddressMapper {
+  static toDomain(raw: PrismaPackageShippingAddress): PackageShippingAddress {
     const address = Address.create({
       address: raw.address,
       complement: raw.complement,
@@ -17,9 +18,8 @@ export class PrismaShippingAddressMapper {
       country: raw.country,
     })
 
-    return ShippingAddress.create(
+    return PackageShippingAddress.create(
       {
-        customerId: new UniqueEntityID(raw.customerId),
         recipientName: raw.recipientName,
         taxId: raw.taxId ?? null,
         email: raw.email ?? null,
@@ -34,10 +34,9 @@ export class PrismaShippingAddressMapper {
 
   static toPrisma(
     shippingAddress: ShippingAddress,
-  ): Prisma.ShippingAddressUncheckedCreateInput {
+  ): Prisma.PackageShippingAddressUncheckedCreateInput {
     return {
       id: shippingAddress.id.toString(),
-      customerId: shippingAddress.customerId.toString(),
       recipientName: shippingAddress.recipientName,
       taxId: shippingAddress.taxId ?? null,
       email: shippingAddress.email ?? null,

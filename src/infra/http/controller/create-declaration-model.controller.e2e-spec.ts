@@ -72,6 +72,14 @@ describe('Create Declaration Model (E2E)', () => {
       },
     })
 
+    const declarationModelItemsOnDatabase =
+      await prisma.declarationModelItem.findMany({
+        where: {
+          declarationModelId: declarationModelOnDatabase?.id,
+        },
+      })
+
     expect(declarationModelOnDatabase).toBeTruthy()
+    expect(declarationModelItemsOnDatabase).toBeTruthy()
   })
 })

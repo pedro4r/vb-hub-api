@@ -38,7 +38,6 @@ export class EditParcelForwardingAddressUseCase {
     state,
     zipcode,
     country,
-    phoneNumber,
   }: EditParcelForwardingAddressUseCaseRequest): Promise<EditParcelForwardingAddressUseCaseResponse> {
     const parcelForwardingAddress =
       await this.parcelForwardingAddressesRepository.findById(
@@ -63,7 +62,6 @@ export class EditParcelForwardingAddressUseCase {
       zipcode,
       country,
       complement,
-      phoneNumber,
     })
 
     parcelForwardingAddress.address = newAddress

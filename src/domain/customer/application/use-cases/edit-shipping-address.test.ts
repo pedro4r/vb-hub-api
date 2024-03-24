@@ -26,13 +26,15 @@ describe('Edit Shipping Address', () => {
       shippingAddressId: newShippingAddress.id.toString(),
       customerId: newShippingAddress.customerId.toString(),
       recipientName: 'New recipient name',
+      phoneNumber: 'New phoneNumber',
+      email: 'johndoe@example.com',
+      taxId: '123456789',
       address: 'New address',
       complement: 'New complement',
       city: 'New city',
       state: 'New state',
       zipcode: 'New zipcode',
       country: 'New country',
-      phoneNumber: 'New phoneNumber',
     })
 
     expect(inMemoryShippingAddressRepository.items[0].address).toMatchObject({
@@ -54,13 +56,15 @@ describe('Edit Shipping Address', () => {
       shippingAddressId: newShippingAddress.id.toString(),
       customerId: 'another-customer-id',
       recipientName: 'New recipient name',
+      phoneNumber: 'New phoneNumber',
+      email: 'johndoe@example.com',
+      taxId: '123456789',
       address: 'New address',
       complement: 'New complement',
       city: 'New city',
       state: 'New state',
       zipcode: 'New zipcode',
       country: 'New country',
-      phoneNumber: 'New phoneNumber',
     })
 
     expect(result.isLeft).toBeTruthy()
