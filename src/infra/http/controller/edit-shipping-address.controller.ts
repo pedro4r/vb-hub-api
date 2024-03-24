@@ -1,11 +1,18 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  HttpCode,
+  Param,
+  Put,
+} from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
-import { ZodValidationPipe } from '@/infra/http/pipe/zod-validation-pipe'
 import { z } from 'zod'
-import { CreateShippingAddressUseCase } from '@/domain/customer/application/use-cases/create-shipping-address'
+import { ZodValidationPipe } from '../pipe/zod-validation-pipe'
+import { EditShippingAddressUseCase } from '@/domain/customer/application/use-cases/edit-shipping-address'
 
-const createShippingAddressBodySchema = z.object({
+const editShippingAddressBodySchema = z.object({
   recipientName: z.string(),
   taxId: z.string().optional(),
   email: z.string().optional(),
@@ -18,24 +25,22 @@ const createShippingAddressBodySchema = z.object({
   country: z.string(),
 })
 
-const bodyValidationPipe = new ZodValidationPipe(
-  createShippingAddressBodySchema,
-)
+const bodyValidationPipe = new ZodValidationPipe(editShippingAddressBodySchema)
 
-type CreateShippingAddressBodySchema = z.infer<
-  typeof createShippingAddressBodySchema
+type EditShippingAddressBodySchema = z.infer<
+  typeof editShippingAddressBodySchema
 >
 
-@Controller('/shipping-address')
-export class CreateShippingAddressController {
-  constructor(
-    private createShippingAddressUseCase: CreateShippingAddressUseCase,
-  ) {}
+@Controller('/shipping-address/:id')
+export class EditShippingAddressController {
+  constructor(private editShippingAddress: EditShippingAddressUseCase) {}
 
-  @Post()
+  @Put()
+  @HttpCode(204)
   async handle(
-    @Body(bodyValidationPipe) body: CreateShippingAddressBodySchema,
+    @Body(bodyValidationPipe) body: EditShippingAddressBodySchema,
     @CurrentUser() user: UserPayload,
+    @Param('id') shippingAddressId: string,
   ) {
     const {
       recipientName,
@@ -51,8 +56,9 @@ export class CreateShippingAddressController {
     } = body
     const userId = user.sub
 
-    const result = await this.createShippingAddressUseCase.execute({
+    const result = await this.editShippingAddress.execute({
       customerId: userId,
+      shippingAddressId,
       recipientName,
       taxId,
       email,

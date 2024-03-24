@@ -57,6 +57,7 @@ export class PrismaShippingAddressesRepository
   }
 
   async delete(shippingAddress: ShippingAddress) {
+    console.log('oieee')
     const data = PrismaShippingAddressMapper.toPrisma(shippingAddress)
 
     await this.prisma.shippingAddress.delete({

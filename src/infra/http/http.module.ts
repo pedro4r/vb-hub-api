@@ -15,6 +15,10 @@ import { CreateDeclarationModelController } from './controller/create-declaratio
 import { CreateDeclarationModelUseCase } from '@/domain/customer/application/use-cases/create-declaration-model'
 import { CreatePackageUseCase } from '@/domain/customer/application/use-cases/create-package'
 import { CreatePackageController } from './controller/create-package.controller'
+import { EditShippingAddressController } from './controller/edit-shipping-address.controller'
+import { EditShippingAddressUseCase } from '@/domain/customer/application/use-cases/edit-shipping-address'
+import { DeleteShippingAddressController } from './controller/delete-shipping-address.controller'
+import { DeleteShippingAddressUseCase } from '@/domain/customer/application/use-cases/delete-shipping-address'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -27,6 +31,8 @@ import { CreatePackageController } from './controller/create-package.controller'
     FetchRecentCheckInsController,
     CreateDeclarationModelController,
     CreatePackageController,
+    EditShippingAddressController,
+    DeleteShippingAddressController,
   ],
   providers: [
     CheckInUseCase,
@@ -36,6 +42,8 @@ import { CreatePackageController } from './controller/create-package.controller'
     FetchRecentCheckInsUseCase,
     CreateDeclarationModelUseCase,
     CreatePackageUseCase,
+    EditShippingAddressUseCase,
+    DeleteShippingAddressUseCase,
   ],
 })
 export class HttpModule {}

@@ -4,6 +4,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { ShippingAddressRepository } from '../repositories/shipping-address-repository'
 import { ShippingAddress } from '../../enterprise/entities/shipping-address'
 import { Address } from '@/core/value-objects/address'
+import { Injectable } from '@nestjs/common'
 
 interface EditShippingAddressUseCaseRequest {
   shippingAddressId: string
@@ -27,6 +28,7 @@ type EditShippingAddressUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class EditShippingAddressUseCase {
   constructor(private shippingAddressRepository: ShippingAddressRepository) {}
 

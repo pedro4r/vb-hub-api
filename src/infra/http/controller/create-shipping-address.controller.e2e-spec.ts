@@ -49,15 +49,16 @@ describe('Create Shipping Address (E2E)', () => {
       .post('/shipping-address')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        customerId: customer.id,
         recipientName: 'Pedro',
+        taxId: '123456',
+        email: 'johndoe@example.com',
+        phoneNumber: '123456',
         address: 'Millenia Blvd, 1234',
         complement: 'Apt 1',
         city: 'Orlando',
         state: 'FL',
         zipcode: '32839',
         country: 'USA',
-        phoneNumber: '123456',
       })
 
     expect(response.statusCode).toBe(201)
