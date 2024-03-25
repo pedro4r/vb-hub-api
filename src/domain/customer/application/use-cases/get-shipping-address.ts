@@ -3,6 +3,7 @@ import { ShippingAddressRepository } from '../repositories/shipping-address-repo
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { ShippingAddress } from '../../enterprise/entities/shipping-address'
+import { Injectable } from '@nestjs/common'
 
 interface GetShippingAddressUseCaseRequest {
   customerId: string
@@ -15,7 +16,7 @@ type GetShippingAddressUseCaseResponse = Either<
     shippingAddress: ShippingAddress
   }
 >
-
+@Injectable()
 export class GetShippingAddressUseCase {
   constructor(private shippingAddressRepository: ShippingAddressRepository) {}
 

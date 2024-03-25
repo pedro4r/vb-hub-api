@@ -21,6 +21,8 @@ import { DeleteShippingAddressController } from './controller/delete-shipping-ad
 import { DeleteShippingAddressUseCase } from '@/domain/customer/application/use-cases/delete-shipping-address'
 import { FetchShippingAddressUseCase } from '@/domain/customer/application/use-cases/fetch-shipping-address'
 import { FetchShippingAddressController } from './controller/fetch-shipping-address.controller'
+import { GetShippingAddressController } from './controller/get-shipping-address.controller'
+import { GetShippingAddressUseCase } from '@/domain/customer/application/use-cases/get-shipping-address'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -36,6 +38,7 @@ import { FetchShippingAddressController } from './controller/fetch-shipping-addr
     EditShippingAddressController,
     DeleteShippingAddressController,
     FetchShippingAddressController,
+    GetShippingAddressController,
   ],
   providers: [
     CheckInUseCase,
@@ -48,6 +51,7 @@ import { FetchShippingAddressController } from './controller/fetch-shipping-addr
     EditShippingAddressUseCase,
     DeleteShippingAddressUseCase,
     FetchShippingAddressUseCase,
+    GetShippingAddressUseCase,
   ],
 })
 export class HttpModule {}
