@@ -3,26 +3,27 @@ import { DeclarationModelRepository } from '../repositories/declaration-model-re
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { DeclarationModel } from '../../enterprise/entities/declaration-model'
+import { Injectable } from '@nestjs/common'
 
-interface DeleteDeclarationModelRequest {
+interface DeleteDeclarationModelUseCaseRequest {
   customerId: string
   declarationModelId: string
 }
 
-type DeleteDeclarationModelResponse = Either<
+type DeleteDeclarationModelUseCaseResponse = Either<
   null | ResourceNotFoundError | NotAllowedError,
   {
     declarationModel: DeclarationModel
   }
 >
-
-export class DeleteDeclarationModel {
+@Injectable()
+export class DeleteDeclarationModelUseCase {
   constructor(private declarationModelRepository: DeclarationModelRepository) {}
 
   async execute({
     customerId,
     declarationModelId,
-  }: DeleteDeclarationModelRequest): Promise<DeleteDeclarationModelResponse> {
+  }: DeleteDeclarationModelUseCaseRequest): Promise<DeleteDeclarationModelUseCaseResponse> {
     const declarationModel =
       await this.declarationModelRepository.findById(declarationModelId)
 

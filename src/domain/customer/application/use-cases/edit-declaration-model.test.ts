@@ -4,13 +4,13 @@ import { InMemoryDeclarationModelItemsRepository } from 'test/repositories/in-me
 import { DeclarationModelItem } from '../../enterprise/entities/declaration-model-item'
 import { DeclarationModel } from '../../enterprise/entities/declaration-model'
 import { DeclarationModelList } from '../../enterprise/entities/declaration-model-list'
-import { EditDeclarationModel } from './edit-declaration-model'
+import { EditDeclarationModelUseCase } from './edit-declaration-model'
 import { makeDeclarationModelItem } from 'test/factories/make-declaration-model-item'
 import { makeDeclarationModel } from 'test/factories/make-declaration-model'
 
 let inMemoryDeclarationModelItemsRepository: InMemoryDeclarationModelItemsRepository
 let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
-let sut: EditDeclarationModel
+let sut: EditDeclarationModelUseCase
 
 let declarationModelItems: DeclarationModelItem[]
 let declarationModel: DeclarationModel
@@ -23,7 +23,7 @@ describe('Edit Customs Declaration', () => {
       new InMemoryDeclarationModelsRepository(
         inMemoryDeclarationModelItemsRepository,
       )
-    sut = new EditDeclarationModel(
+    sut = new EditDeclarationModelUseCase(
       inMemoryDeclarationModelsRepository,
       inMemoryDeclarationModelItemsRepository,
     )
@@ -55,12 +55,11 @@ describe('Edit Customs Declaration', () => {
       customerId: declarationModel.customerId.toString(),
       title: declarationModel.title,
       items: declarationModelItems.map((item, i) => ({
-        props: {
-          declarationModelId: declarationModel.id,
-          description: `New description ${i + 1}`,
-          value: 100,
-          quantity: 10,
-        },
+        declarationModelId: declarationModel.id.toString(),
+        description: `New description ${i + 1}`,
+        value: 100,
+        quantity: 10,
+
         id: item.id.toString(),
       })),
     })
@@ -102,12 +101,10 @@ describe('Edit Customs Declaration', () => {
       title: declarationModel.title,
       items: declarationModelItems.slice(0, -1).map((item, i) => ({
         id: item.id.toString(),
-        props: {
-          declarationModelId: declarationModel.id,
-          description: `New description ${i + 1}`,
-          value: 100,
-          quantity: 10,
-        },
+        declarationModelId: declarationModel.id.toString(),
+        description: `New description ${i + 1}`,
+        value: 100,
+        quantity: 10,
       })),
     })
 
@@ -146,12 +143,10 @@ describe('Edit Customs Declaration', () => {
       title: declarationModel.title,
       items: declarationModelItems.map((item, i) => ({
         id: item.id.toString(),
-        props: {
-          declarationModelId: declarationModel.id,
-          description: `New description ${i + 1}`,
-          value: 100,
-          quantity: 10,
-        },
+        declarationModelId: declarationModel.id.toString(),
+        description: `New description ${i + 1}`,
+        value: 100,
+        quantity: 10,
       })),
     })
 
@@ -200,12 +195,10 @@ describe('Edit Customs Declaration', () => {
       title: 'My new title',
       items: declarationModelItems.map((item) => ({
         id: item.id.toString(),
-        props: {
-          declarationModelId: declarationModel.id,
-          description: item.description,
-          value: item.value,
-          quantity: item.quantity,
-        },
+        declarationModelId: declarationModel.id.toString(),
+        description: item.description,
+        value: item.value,
+        quantity: item.quantity,
       })),
     })
 
@@ -226,12 +219,10 @@ describe('Edit Customs Declaration', () => {
       title: 'My new title',
       items: declarationModelItems.map((item) => ({
         id: item.id.toString(),
-        props: {
-          declarationModelId: declarationModel.id,
-          description: item.description,
-          value: item.value,
-          quantity: item.quantity,
-        },
+        declarationModelId: declarationModel.id.toString(),
+        description: item.description,
+        value: item.value,
+        quantity: item.quantity,
       })),
     })
 

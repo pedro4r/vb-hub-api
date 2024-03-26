@@ -2,13 +2,13 @@ import { InMemoryDeclarationModelItemsRepository } from 'test/repositories/in-me
 import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory-declaration-model-repository'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { DeclarationModelList } from '../../enterprise/entities/declaration-model-list'
-import { DeleteDeclarationModel } from './delete-declaration-model'
+import { DeleteDeclarationModelUseCase } from './delete-declaration-model'
 import { makeDeclarationModel } from 'test/factories/make-declaration-model'
 import { makeDeclarationModelItem } from 'test/factories/make-declaration-model-item'
 
 let inMemoryDeclarationModelItemsRepository: InMemoryDeclarationModelItemsRepository
 let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
-let sut: DeleteDeclarationModel
+let sut: DeleteDeclarationModelUseCase
 
 describe('Delete Customs Declaration', () => {
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe('Delete Customs Declaration', () => {
       new InMemoryDeclarationModelsRepository(
         inMemoryDeclarationModelItemsRepository,
       )
-    sut = new DeleteDeclarationModel(inMemoryDeclarationModelsRepository)
+    sut = new DeleteDeclarationModelUseCase(inMemoryDeclarationModelsRepository)
   })
 
   it('should be able to delete a customs declaration', async () => {

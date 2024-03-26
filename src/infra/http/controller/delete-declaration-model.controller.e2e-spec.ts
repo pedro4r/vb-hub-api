@@ -6,17 +6,17 @@ import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
 import { CustomerFactory } from 'test/factories/make-customer'
+import { DeclarationModelWithItemsFactory } from 'test/factories/make-declaration-model-with-items'
 import { ParcelForwardingFactory } from 'test/factories/make-parcel-forwarding'
-import { ShippingAddressFactory } from 'test/factories/make-shipping-address'
 
-describe('Delete Shipping Address (E2E)', () => {
+describe('Delete Declaration Model (E2E)', () => {
   let app: INestApplication
 
   let prisma: PrismaService
 
   let parcelForwardingFactory: ParcelForwardingFactory
   let customerFactory: CustomerFactory
-  let shippingAddressFactory: ShippingAddressFactory
+  let declarationModelWithItemsFactory: DeclarationModelWithItemsFactory
 
   let jwt: JwtService
 
@@ -26,7 +26,7 @@ describe('Delete Shipping Address (E2E)', () => {
       providers: [
         ParcelForwardingFactory,
         CustomerFactory,
-        ShippingAddressFactory,
+        DeclarationModelWithItemsFactory,
       ],
     }).compile()
 
@@ -35,13 +35,15 @@ describe('Delete Shipping Address (E2E)', () => {
     prisma = moduleRef.get(PrismaService)
     parcelForwardingFactory = moduleRef.get(ParcelForwardingFactory)
     customerFactory = moduleRef.get(CustomerFactory)
-    shippingAddressFactory = moduleRef.get(ShippingAddressFactory)
+    declarationModelWithItemsFactory = moduleRef.get(
+      DeclarationModelWithItemsFactory,
+    )
     jwt = moduleRef.get(JwtService)
 
     await app.init()
   })
 
-  test('[DELETE] /shipping-address/:id', async () => {
+  test('[DELETE] /declaration-model/:id', async () => {
     const parcelForwarding =
       await parcelForwardingFactory.makePrismaParcelForwarding()
 
@@ -49,31 +51,50 @@ describe('Delete Shipping Address (E2E)', () => {
       parcelForwardingId: parcelForwarding.id,
     })
 
-    const shippingAddress =
-      await shippingAddressFactory.makePrismaShippingAddress({
+    const declarationModel =
+      await declarationModelWithItemsFactory.makePrismaDeclarationModel({
         customerId: customer.id,
       })
 
-    // Have to create another shipping address to avoid the NotAllowedError
-    // Cannot delete shipping address when you have only one.
-    await shippingAddressFactory.makePrismaShippingAddress({
-      customerId: customer.id,
+    let declarationModelOnDataBase = await prisma.declarationModel.findUnique({
+      where: {
+        id: declarationModel.id.toString(),
+      },
     })
+
+    expect(declarationModelOnDataBase).not.toBeNull()
+
+    let declarationModelItemsOnDataBase =
+      await prisma.declarationModelItem.findMany({
+        where: {
+          declarationModelId: declarationModel.id.toString(),
+        },
+      })
+
+    expect(declarationModelItemsOnDataBase).not.toBeNull()
 
     const accessToken = jwt.sign({ sub: customer.id.toString() })
 
     const response = await request(app.getHttpServer())
-      .delete(`/shipping-address/${shippingAddress.id.toString()}`)
+      .delete(`/declaration-model/${declarationModel.id.toString()}`)
       .set('Authorization', `Bearer ${accessToken}`)
 
     expect(response.statusCode).toBe(204)
 
-    const shippingAddressnOnDatabase = await prisma.shippingAddress.findUnique({
+    declarationModelOnDataBase = await prisma.declarationModel.findUnique({
       where: {
-        id: shippingAddress.id.toString(),
+        id: declarationModel.id.toString(),
       },
     })
+    expect(declarationModelOnDataBase).toBeNull()
 
-    expect(shippingAddressnOnDatabase).toBeNull()
+    declarationModelItemsOnDataBase =
+      await prisma.declarationModelItem.findMany({
+        where: {
+          declarationModelId: declarationModel.id.toString(),
+        },
+      })
+
+    expect(declarationModelItemsOnDataBase).toHaveLength(0)
   })
 })

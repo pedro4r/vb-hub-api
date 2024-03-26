@@ -3,32 +3,33 @@ import { DeclarationModelRepository } from '../repositories/declaration-model-re
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import {
-  DeclarationModelItem,
-  DeclarationModelItemProps,
-} from '../../enterprise/entities/declaration-model-item'
+import { DeclarationModelItem } from '../../enterprise/entities/declaration-model-item'
 import { DeclarationModel } from '../../enterprise/entities/declaration-model'
 import { DeclarationModelItemsRepository } from '../repositories/declaration-model-item-repository'
 import { DeclarationModelList } from '../../enterprise/entities/declaration-model-list'
+import { Injectable } from '@nestjs/common'
 
-interface EditDeclarationModelRequest {
+interface EditDeclarationModelUseCaseRequest {
   declarationModelId: string
   customerId: string
   title: string
   items: {
-    props: DeclarationModelItemProps
     id: string
+    declarationModelId: string
+    description: string
+    value: number
+    quantity: number
   }[]
 }
 
-type EditDeclarationModelResponse = Either<
+type EditDeclarationModelUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {
     declarationModel: DeclarationModel
   }
 >
-
-export class EditDeclarationModel {
+@Injectable()
+export class EditDeclarationModelUseCase {
   constructor(
     private declarationModelRepository: DeclarationModelRepository,
     private declarationModelItemsRepository: DeclarationModelItemsRepository,
@@ -39,7 +40,7 @@ export class EditDeclarationModel {
     customerId,
     title,
     items,
-  }: EditDeclarationModelRequest): Promise<EditDeclarationModelResponse> {
+  }: EditDeclarationModelUseCaseRequest): Promise<EditDeclarationModelUseCaseResponse> {
     const currentDeclarationModel =
       await this.declarationModelRepository.findById(declarationModelId)
 
@@ -68,9 +69,9 @@ export class EditDeclarationModel {
       return DeclarationModelItem.create(
         {
           declarationModelId: new UniqueEntityID(declarationModelId),
-          description: item.props.description,
-          value: item.props.value,
-          quantity: item.props.quantity,
+          description: item.description,
+          value: item.value,
+          quantity: item.quantity,
         },
         new UniqueEntityID(item.id),
       )

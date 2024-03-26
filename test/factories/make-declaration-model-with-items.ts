@@ -61,8 +61,8 @@ export class DeclarationModelWithItemsFactory {
     const declarationModelItems = declarationModel.items.getItems()
 
     await this.prisma.declarationModelItem.createMany({
-      data: declarationModelItems.map((item) =>
-        PrismaDeclarationModelItemsMapper.toPrisma(item),
+      data: declarationModelItems.map((item, index) =>
+        PrismaDeclarationModelItemsMapper.toPrisma(item, index),
       ),
     })
 

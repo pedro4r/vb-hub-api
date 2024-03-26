@@ -147,7 +147,7 @@ model DeclarationModelItem {
   description        String    @map("description")
   value              Int       @map("value")
   quantity           Int       @map("quantity")
-  createdAt          DateTime  @default(now()) @map("created_at")
+  createdAt          DateTime  @map("created_at")
   updatedAt          DateTime? @updatedAt @map("updated_at")
 
   DeclarationModel DeclarationModel @relation(fields: [declarationModelId], references: [id])

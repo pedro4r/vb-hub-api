@@ -30,8 +30,8 @@ export class InMemoryDeclarationModelsRepository
 
     this.items.splice(itemIndex, 1)
 
-    await this.declarationModelItemsRepository.deleteMany(
-      declarationModel.items.getItems(),
+    await this.declarationModelItemsRepository.deleteManyByDeclarationModelId(
+      declarationModel.id.toString(),
     )
   }
 

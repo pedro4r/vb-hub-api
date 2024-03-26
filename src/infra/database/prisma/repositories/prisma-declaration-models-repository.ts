@@ -11,7 +11,7 @@ export class PrismaDeclarationModelsRepository
 {
   constructor(
     private prisma: PrismaService,
-    private declarationModelItems: DeclarationModelItemsRepository,
+    private declarationModelItemsRepository: DeclarationModelItemsRepository,
   ) {}
 
   async create(declarationModel: DeclarationModel) {
@@ -22,7 +22,7 @@ export class PrismaDeclarationModelsRepository
       data: declarationModelData,
     })
 
-    await this.declarationModelItems.createMany(
+    await this.declarationModelItemsRepository.createMany(
       declarationModel.items.getItems(),
     )
   }
@@ -64,9 +64,21 @@ export class PrismaDeclarationModelsRepository
         title: declarationModel.title,
       },
     })
+
+    await this.declarationModelItemsRepository.deleteMany(
+      declarationModel.items.getRemovedItems(),
+    )
+
+    await this.declarationModelItemsRepository.createMany(
+      declarationModel.items.getNewItems(),
+    )
   }
 
   async delete(declarationModel: DeclarationModel) {
+    await this.declarationModelItemsRepository.deleteManyByDeclarationModelId(
+      declarationModel.id.toString(),
+    )
+
     await this.prisma.declarationModel.delete({
       where: {
         id: declarationModel.id.toString(),

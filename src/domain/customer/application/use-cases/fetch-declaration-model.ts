@@ -6,19 +6,20 @@ import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { DeclarationModelItemsRepository } from '../repositories/declaration-model-item-repository'
 import { DeclarationModel } from '../../enterprise/entities/declaration-model'
 import { DeclarationModelList } from '../../enterprise/entities/declaration-model-list'
+import { Injectable } from '@nestjs/common'
 
-interface FetchDeclarationModelsRequest {
+interface FetchDeclarationModelsUseCaseRequest {
   customerId: string
 }
 
-type FetchDeclarationModelsResponse = Either<
+type FetchDeclarationModelsUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError | null,
   {
     declarationModels: DeclarationModel[]
   }
 >
-
-export class FetchDeclarationModels {
+@Injectable()
+export class FetchDeclarationModelsUseCase {
   constructor(
     private declarationModelRepository: DeclarationModelRepository,
     private declarationModelItemsRepository: DeclarationModelItemsRepository,
@@ -26,7 +27,7 @@ export class FetchDeclarationModels {
 
   async execute({
     customerId,
-  }: FetchDeclarationModelsRequest): Promise<FetchDeclarationModelsResponse> {
+  }: FetchDeclarationModelsUseCaseRequest): Promise<FetchDeclarationModelsUseCaseResponse> {
     const declarations =
       await this.declarationModelRepository.findManyByCustomerId(customerId)
 

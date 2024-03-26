@@ -12,9 +12,8 @@ export class PrismaDeclarationModelItemsRepository
 
   async createMany(declarationModelItems: DeclarationModelItem[]) {
     await Promise.all(
-      declarationModelItems.map((item) => {
-        const itemData = PrismaDeclarationModelItemsMapper.toPrisma(item)
-
+      declarationModelItems.map((item, index) => {
+        const itemData = PrismaDeclarationModelItemsMapper.toPrisma(item, index)
         return this.prisma.declarationModelItem.create({
           data: itemData,
         })
@@ -39,8 +38,8 @@ export class PrismaDeclarationModelItemsRepository
 
   async deleteMany(declarationModelItems: DeclarationModelItem[]) {
     await Promise.all(
-      declarationModelItems.map((item) => {
-        const itemData = PrismaDeclarationModelItemsMapper.toPrisma(item)
+      declarationModelItems.map((item, index) => {
+        const itemData = PrismaDeclarationModelItemsMapper.toPrisma(item, index)
 
         return this.prisma.declarationModelItem.delete({
           where: {

@@ -1,5 +1,5 @@
 import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory-declaration-model-repository'
-import { FetchDeclarationModels } from './fetch-declaration-model'
+import { FetchDeclarationModelsUseCase } from './fetch-declaration-model'
 import { InMemoryDeclarationModelItemsRepository } from 'test/repositories/in-memory-declaration-model-items-repository'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { DeclarationModelList } from '../../enterprise/entities/declaration-model-list'
@@ -9,7 +9,7 @@ import { makeDeclarationModelItem } from 'test/factories/make-declaration-model-
 
 let inMemoryDeclarationModelsItemsRepository: InMemoryDeclarationModelItemsRepository
 let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
-let sut: FetchDeclarationModels
+let sut: FetchDeclarationModelsUseCase
 
 describe('Fetch Customs Declarations', () => {
   beforeEach(async () => {
@@ -19,7 +19,7 @@ describe('Fetch Customs Declarations', () => {
       new InMemoryDeclarationModelsRepository(
         inMemoryDeclarationModelsItemsRepository,
       )
-    sut = new FetchDeclarationModels(
+    sut = new FetchDeclarationModelsUseCase(
       inMemoryDeclarationModelsRepository,
       inMemoryDeclarationModelsItemsRepository,
     )

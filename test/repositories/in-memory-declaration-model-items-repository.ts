@@ -29,10 +29,11 @@ export class InMemoryDeclarationModelItemsRepository
   }
 
   async deleteManyByDeclarationModelId(declarationModelId: string) {
-    const itemIndex = this.items.findIndex(
-      (item) => item.id.toString() === declarationModelId,
+    const declarationModelItems = this.items.filter(
+      (item) => item.declarationModelId?.toString() !== declarationModelId,
     )
-    this.items.splice(itemIndex, 1)
+
+    this.items = declarationModelItems
   }
 
   async createMany(

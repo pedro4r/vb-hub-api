@@ -20,13 +20,18 @@ export class PrismaDeclarationModelItemsMapper {
 
   static toPrisma(
     declarationModelItem: DeclarationModelItem,
+    index: number,
   ): Prisma.DeclarationModelItemUncheckedCreateInput {
+    const currentDate = new Date()
+    // index is used to create a unique createdAt date
+    // and respect the order of the items in the array
     return {
       id: declarationModelItem.id.toString(),
       declarationModelId: declarationModelItem.declarationModelId.toString(),
       description: declarationModelItem.description,
       value: declarationModelItem.value,
       quantity: declarationModelItem.quantity,
+      createdAt: new Date(currentDate.getTime() + index),
     }
   }
 }
