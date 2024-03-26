@@ -27,6 +27,8 @@ import { EditDeclarationModelController } from './controller/edit-declaration-mo
 import { EditDeclarationModelUseCase } from '@/domain/customer/application/use-cases/edit-declaration-model'
 import { DeleteDeclarationModelController } from './controller/delete-declaration-model.controller'
 import { DeleteDeclarationModelUseCase } from '@/domain/customer/application/use-cases/delete-declaration-model'
+import { FetchDeclarationModelsController } from './controller/fetch-declaration-models.controller'
+import { FetchDeclarationModelsUseCase } from '@/domain/customer/application/use-cases/fetch-declaration-model'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -45,6 +47,7 @@ import { DeleteDeclarationModelUseCase } from '@/domain/customer/application/use
     GetShippingAddressController,
     EditDeclarationModelController,
     DeleteDeclarationModelController,
+    FetchDeclarationModelsController,
   ],
   providers: [
     CheckInUseCase,
@@ -60,6 +63,7 @@ import { DeleteDeclarationModelUseCase } from '@/domain/customer/application/use
     GetShippingAddressUseCase,
     EditDeclarationModelUseCase,
     DeleteDeclarationModelUseCase,
+    FetchDeclarationModelsUseCase,
   ],
 })
 export class HttpModule {}
