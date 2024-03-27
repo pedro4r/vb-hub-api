@@ -5,7 +5,6 @@ import { PackageRepository } from '../repositories/package-repository'
 import { CustomsDeclarationItem } from '../../enterprise/entities/customs-declaration-item'
 import { CustomsDeclarationList } from '../../enterprise/entities/customs-declaration-list'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
-import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { DeclarationModelItemsRepository } from '../repositories/declaration-model-item-repository'
 import { PackageCheckIn } from '../../enterprise/entities/package-check-in'
 import { PackageCheckInsList } from '../../enterprise/entities/package-check-ins-list'
@@ -21,7 +20,7 @@ interface CreatePackageUseCaseRequest {
 }
 
 type CreatePackageUseCaseResponse = Either<
-  ResourceNotFoundError | NotAllowedError | null,
+  ResourceNotFoundError,
   {
     pkg: Package
   }
@@ -65,7 +64,9 @@ export class CreatePackageUseCase {
         )
 
       if (!declarationModelItems) {
-        return left(new ResourceNotFoundError())
+        return left(
+          new ResourceNotFoundError('Declaration Model Items not found'),
+        )
       }
 
       const customsDeclarationItems = declarationModelItems.map(

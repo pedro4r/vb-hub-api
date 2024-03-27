@@ -45,11 +45,15 @@ export class EditDeclarationModelUseCase {
       await this.declarationModelRepository.findById(declarationModelId)
 
     if (!currentDeclarationModel) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('DeclarationModel not found'))
     }
 
     if (currentDeclarationModel.customerId.toString() !== customerId) {
-      return left(new NotAllowedError())
+      return left(
+        new NotAllowedError(
+          'You are not allowed to edit this DeclarationModel',
+        ),
+      )
     }
 
     const currentDeclarationModelItems =
@@ -58,7 +62,7 @@ export class EditDeclarationModelUseCase {
       )
 
     if (!currentDeclarationModelItems) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('DeclarationModelItems not found'))
     }
 
     const customDeclarationItemsList = new DeclarationModelList(

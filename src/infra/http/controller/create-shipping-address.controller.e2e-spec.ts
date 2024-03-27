@@ -63,12 +63,12 @@ describe('Create Shipping Address (E2E)', () => {
 
     expect(response.statusCode).toBe(201)
 
-    const shippingAddressnOnDatabase = await prisma.shippingAddress.findFirst({
+    const shippingAddressOnDatabase = await prisma.shippingAddress.findFirst({
       where: {
         customerId: customer.id,
       },
     })
 
-    expect(shippingAddressnOnDatabase).toBeTruthy()
+    expect(shippingAddressOnDatabase).toBeTruthy()
   })
 })

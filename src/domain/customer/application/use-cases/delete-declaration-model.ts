@@ -11,7 +11,7 @@ interface DeleteDeclarationModelUseCaseRequest {
 }
 
 type DeleteDeclarationModelUseCaseResponse = Either<
-  null | ResourceNotFoundError | NotAllowedError,
+  ResourceNotFoundError | NotAllowedError,
   {
     declarationModel: DeclarationModel
   }
@@ -28,11 +28,15 @@ export class DeleteDeclarationModelUseCase {
       await this.declarationModelRepository.findById(declarationModelId)
 
     if (!declarationModel) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('DeclarationModel not found'))
     }
 
     if (declarationModel.customerId.toString() !== customerId) {
-      return left(new NotAllowedError())
+      return left(
+        new NotAllowedError(
+          'You are not allowed to delete this DeclarationModel',
+        ),
+      )
     }
 
     await this.declarationModelRepository.delete(declarationModel)

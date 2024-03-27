@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Controller,
   Delete,
   HttpCode,
@@ -8,6 +9,8 @@ import {
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { DeleteShippingAddressUseCase } from '@/domain/customer/application/use-cases/delete-shipping-address'
+import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
+import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 
 @Controller('/shipping-address/:id')
 export class DeleteShippingAddressController {
@@ -27,7 +30,16 @@ export class DeleteShippingAddressController {
     })
 
     if (result.isLeft()) {
-      throw new BadRequestException()
+      const error = result.value
+
+      switch (error.constructor) {
+        case ResourceNotFoundError:
+          throw new ConflictException(error.message)
+        case NotAllowedError:
+          throw new ConflictException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
     }
   }
 }

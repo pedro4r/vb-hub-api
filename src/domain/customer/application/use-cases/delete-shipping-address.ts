@@ -25,11 +25,13 @@ export class DeleteShippingAddressUseCase {
       await this.shippingAddressRepository.findManyByCustomerId(customerId)
 
     if (!shippingAddresses) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('Shipping address not found.'))
     }
 
     if (customerId !== shippingAddresses[0].customerId.toString()) {
-      return left(new NotAllowedError())
+      return left(
+        new NotAllowedError('Not allowed to delete this shipping address.'),
+      )
     }
 
     if (shippingAddresses.length === 1) {

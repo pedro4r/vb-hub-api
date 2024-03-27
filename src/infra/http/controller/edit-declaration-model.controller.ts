@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   HttpCode,
   Param,
@@ -11,6 +12,8 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipe/zod-validation-pipe'
 import { EditDeclarationModelUseCase } from '@/domain/customer/application/use-cases/edit-declaration-model'
+import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
+import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 
 const editDeclarationModelBodySchema = z.object({
   title: z.string(),
@@ -61,7 +64,16 @@ export class EditDeclarationModelController {
     })
 
     if (result.isLeft()) {
-      throw new BadRequestException()
+      const error = result.value
+
+      switch (error.constructor) {
+        case ResourceNotFoundError:
+          throw new ConflictException(error.message)
+        case NotAllowedError:
+          throw new ConflictException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
     }
   }
 }

@@ -68,12 +68,12 @@ describe('Delete Shipping Address (E2E)', () => {
 
     expect(response.statusCode).toBe(204)
 
-    const shippingAddressnOnDatabase = await prisma.shippingAddress.findUnique({
+    const shippingAddressOnDatabase = await prisma.shippingAddress.findUnique({
       where: {
         id: shippingAddress.id.toString(),
       },
     })
 
-    expect(shippingAddressnOnDatabase).toBeNull()
+    expect(shippingAddressOnDatabase).toBeNull()
   })
 })

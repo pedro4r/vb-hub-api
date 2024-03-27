@@ -9,7 +9,7 @@ import { CustomerFactory } from 'test/factories/make-customer'
 import { ParcelForwardingFactory } from 'test/factories/make-parcel-forwarding'
 import { ShippingAddressFactory } from 'test/factories/make-shipping-address'
 
-describe('Create Shipping Address (E2E)', () => {
+describe('Edit Shipping Address (E2E)', () => {
   let app: INestApplication
 
   let prisma: PrismaService
@@ -74,12 +74,12 @@ describe('Create Shipping Address (E2E)', () => {
 
     expect(response.statusCode).toBe(204)
 
-    const shippingAddressnOnDatabase = await prisma.shippingAddress.findFirst({
+    const shippingAddressOnDatabase = await prisma.shippingAddress.findFirst({
       where: {
         customerId: customer.id.toString(),
       },
     })
 
-    expect(shippingAddressnOnDatabase).toBeTruthy()
+    expect(shippingAddressOnDatabase).toBeTruthy()
   })
 })
