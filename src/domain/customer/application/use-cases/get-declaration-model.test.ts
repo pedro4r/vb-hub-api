@@ -2,13 +2,13 @@ import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryDeclarationModelItemsRepository } from 'test/repositories/in-memory-declaration-model-items-repository'
 import { DeclarationModelList } from '../../enterprise/entities/declaration-model-list'
-import { GetDeclarationModel } from './get-declaration-model'
+import { GetDeclarationModelUseCase } from './get-declaration-model'
 import { makeDeclarationModelItem } from 'test/factories/make-declaration-model-item'
 import { makeDeclarationModel } from 'test/factories/make-declaration-model'
 
 let inMemoryDeclarationModelItemsRepository: InMemoryDeclarationModelItemsRepository
 let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
-let sut: GetDeclarationModel
+let sut: GetDeclarationModelUseCase
 
 describe('Get Customs Declaration', () => {
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe('Get Customs Declaration', () => {
       new InMemoryDeclarationModelsRepository(
         inMemoryDeclarationModelItemsRepository,
       )
-    sut = new GetDeclarationModel(
+    sut = new GetDeclarationModelUseCase(
       inMemoryDeclarationModelsRepository,
       inMemoryDeclarationModelItemsRepository,
     )

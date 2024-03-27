@@ -6,20 +6,21 @@ import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { DeclarationModelItemsRepository } from '../repositories/declaration-model-item-repository'
 import { DeclarationModel } from '../../enterprise/entities/declaration-model'
 import { DeclarationModelList } from '../../enterprise/entities/declaration-model-list'
+import { Injectable } from '@nestjs/common'
 
-interface GetDeclarationModelRequest {
+interface GetDeclarationModelUseCaseRequest {
   declarationModelId: string
   customerId: string
 }
 
-type GetDeclarationModelResponse = Either<
+type GetDeclarationModelUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError | null,
   {
     declarationModel: DeclarationModel
   }
 >
-
-export class GetDeclarationModel {
+@Injectable()
+export class GetDeclarationModelUseCase {
   constructor(
     private declarationModelRepository: DeclarationModelRepository,
     private declarationModelItemsRepository: DeclarationModelItemsRepository,
@@ -28,7 +29,7 @@ export class GetDeclarationModel {
   async execute({
     declarationModelId,
     customerId,
-  }: GetDeclarationModelRequest): Promise<GetDeclarationModelResponse> {
+  }: GetDeclarationModelUseCaseRequest): Promise<GetDeclarationModelUseCaseResponse> {
     const declarationModel =
       await this.declarationModelRepository.findById(declarationModelId)
 
