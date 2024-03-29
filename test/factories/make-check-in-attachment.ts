@@ -3,6 +3,9 @@ import {
   CheckInAttachment,
   CheckInAttachmentProps,
 } from '@/domain/parcel-forwarding/enterprise/entities/check-in-attachment'
+import { PrismaCheckInAttachmentsMapper } from '@/infra/database/prisma/mappers/prisma-check-in-attachment-mapper'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { Injectable } from '@nestjs/common'
 
 export function makeCheckInAttachment(
   override: Partial<CheckInAttachmentProps> = {},
@@ -18,4 +21,21 @@ export function makeCheckInAttachment(
   )
 
   return checkInAttachment
+}
+
+@Injectable()
+export class CheckInAttachmentFactory {
+  constructor(private prisma: PrismaService) {}
+
+  async makePrismaCheckInAttachment(
+    data: Partial<CheckInAttachmentProps> = {},
+  ): Promise<CheckInAttachment> {
+    const checkInAttachment = makeCheckInAttachment(data)
+
+    await this.prisma.checkInAttachment.create({
+      data: PrismaCheckInAttachmentsMapper.toPrisma(checkInAttachment),
+    })
+
+    return checkInAttachment
+  }
 }

@@ -29,25 +29,21 @@ export class PrismaDeclarationModelItemsRepository
         },
       })
 
-    if (!declarationModelItems) {
-      return null
-    }
-
     return declarationModelItems.map(PrismaDeclarationModelItemsMapper.toDomain)
   }
 
   async deleteMany(declarationModelItems: DeclarationModelItem[]) {
-    await Promise.all(
-      declarationModelItems.map((item, index) => {
-        const itemData = PrismaDeclarationModelItemsMapper.toPrisma(item, index)
+    const declarationModelItemsIds = declarationModelItems.map((item) => {
+      return item.id.toString()
+    })
 
-        return this.prisma.declarationModelItem.delete({
-          where: {
-            id: itemData.id,
-          },
-        })
-      }),
-    )
+    await this.prisma.declarationModelItem.deleteMany({
+      where: {
+        id: {
+          in: declarationModelItemsIds,
+        },
+      },
+    })
   }
 
   async deleteManyByDeclarationModelId(declarationModelId: string) {

@@ -10,7 +10,7 @@ interface FetchShippingAddressUseCaseRequest {
 }
 
 type FetchShippingAddressUseCaseResponse = Either<
-  ResourceNotFoundError | NotAllowedError | null,
+  ResourceNotFoundError | NotAllowedError,
   {
     shippingAddresses: ShippingAddress[]
   }
@@ -26,11 +26,15 @@ export class FetchShippingAddressUseCase {
       await this.shippingAddressRepository.findManyByCustomerId(customerId)
 
     if (!shippingAddresses) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('No shipping addresses found.'))
     }
 
     if (customerId !== shippingAddresses[0]?.customerId.toString()) {
-      return left(new NotAllowedError())
+      return left(
+        new NotAllowedError(
+          'You are not allowed to fetch these shipping addresses.',
+        ),
+      )
     }
 
     return right({

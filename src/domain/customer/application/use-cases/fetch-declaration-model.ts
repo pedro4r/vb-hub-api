@@ -13,7 +13,7 @@ interface FetchDeclarationModelsUseCaseRequest {
 }
 
 type FetchDeclarationModelsUseCaseResponse = Either<
-  ResourceNotFoundError | NotAllowedError | null,
+  ResourceNotFoundError | NotAllowedError,
   {
     declarationModels: DeclarationModel[]
   }
@@ -32,11 +32,13 @@ export class FetchDeclarationModelsUseCase {
       await this.declarationModelRepository.findManyByCustomerId(customerId)
 
     if (!declarations) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('No declaration models found.'))
     }
 
     if (declarations[0].customerId.toString() !== customerId) {
-      return left(new NotAllowedError())
+      return left(
+        new NotAllowedError('You are not allowed to access this resource.'),
+      )
     }
 
     const declarationModels = await Promise.all(

@@ -11,7 +11,7 @@ interface GetShippingAddressUseCaseRequest {
 }
 
 type GetShippingAddressUseCaseResponse = Either<
-  ResourceNotFoundError | NotAllowedError | null,
+  ResourceNotFoundError | NotAllowedError,
   {
     shippingAddress: ShippingAddress
   }
@@ -28,11 +28,15 @@ export class GetShippingAddressUseCase {
       await this.shippingAddressRepository.findById(shippingAddressId)
 
     if (!shippingAddress) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('Shipping address not found.'))
     }
 
     if (customerId !== shippingAddress.customerId.toString()) {
-      return left(new NotAllowedError())
+      return left(
+        new NotAllowedError(
+          'You are not allowed to fetch this shipping address.',
+        ),
+      )
     }
 
     return right({

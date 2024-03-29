@@ -39,6 +39,7 @@ data
 
 # Env
 .env
+.env.test
 
 #Keys
 *.pem

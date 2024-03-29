@@ -7,7 +7,7 @@ export abstract class CustomsDeclarationItemsRepository {
 
   abstract findManyByPackageId(
     packageId: string,
-  ): Promise<CustomsDeclarationItem[] | null>
+  ): Promise<CustomsDeclarationItem[]>
 
   abstract deleteMany(
     customsDeclarationItems: CustomsDeclarationItem[],

@@ -14,7 +14,7 @@ interface GetDeclarationModelUseCaseRequest {
 }
 
 type GetDeclarationModelUseCaseResponse = Either<
-  ResourceNotFoundError | NotAllowedError | null,
+  ResourceNotFoundError | NotAllowedError,
   {
     declarationModel: DeclarationModel
   }
@@ -34,11 +34,13 @@ export class GetDeclarationModelUseCase {
       await this.declarationModelRepository.findById(declarationModelId)
 
     if (!declarationModel) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('No declaration model found.'))
     }
 
     if (declarationModel.customerId.toString() !== customerId) {
-      return left(new NotAllowedError())
+      return left(
+        new NotAllowedError('You are not allowed to access this resource.'),
+      )
     }
 
     const items =
@@ -47,7 +49,9 @@ export class GetDeclarationModelUseCase {
       )
 
     if (!items) {
-      return left(new ResourceNotFoundError())
+      return left(
+        new ResourceNotFoundError('No declaration model items found.'),
+      )
     }
 
     declarationModel.items = new DeclarationModelList(items)

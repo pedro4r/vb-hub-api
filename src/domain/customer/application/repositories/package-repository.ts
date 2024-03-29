@@ -5,5 +5,5 @@ export abstract class PackageRepository {
   abstract findById(id: string): Promise<Package | null>
   abstract save(pkg: Package): Promise<void>
   abstract delete(pkg: Package): Promise<void>
-  abstract findManyByCustomerId(id: string): Promise<Package[] | null>
+  abstract findManyByCustomerId(id: string): Promise<Package[]>
 }

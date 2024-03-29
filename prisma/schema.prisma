@@ -48,23 +48,33 @@ model CheckIn {
   createdAt          DateTime  @default(now()) @map("created_at")
   updatedAt          DateTime? @updatedAt @map("updated_at")
 
-  parcel_forwarding ParcelForwarding @relation(fields: [parcelForwardingId], references: [id])
-  customer          Customer         @relation(fields: [customerId], references: [id])
-  Package           Package?         @relation(fields: [packageId], references: [id])
-
-  Attachment Attachment[]
+  parcel_forwarding ParcelForwarding    @relation(fields: [parcelForwardingId], references: [id])
+  customer          Customer            @relation(fields: [customerId], references: [id])
+  Package           Package?            @relation(fields: [packageId], references: [id])
+  CheckInAttachment CheckInAttachment[]
 
   @@map("check_ins")
 }
 
 model Attachment {
-  id        String   @id @default(uuid())
-  checkInId String   @map("check_in_id")
-  createdAt DateTime @default(now()) @map("created_at")
-
-  check_in CheckIn @relation(fields: [checkInId], references: [id])
+  id                String              @id @default(uuid())
+  url               String
+  createdAt         DateTime            @default(now()) @map("created_at")
+  CheckInAttachment CheckInAttachment[]
 
   @@map("attachments")
+}
+
+model CheckInAttachment {
+  id           String   @id @default(uuid())
+  checkInId    String   @map("check_in_id")
+  attachmentId String   @map("attachment_id")
+  createdAt    DateTime @map("created_at")
+
+  CheckIn    CheckIn    @relation(fields: [checkInId], references: [id])
+  Attachment Attachment @relation(fields: [attachmentId], references: [id])
+
+  @@map("check_in_attachments")
 }
 
 model Package {

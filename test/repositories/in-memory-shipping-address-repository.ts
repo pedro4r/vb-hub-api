@@ -12,10 +12,6 @@ export class InMemoryShippingAddressRepository
       (item) => item.customerId.toString() === customerId,
     )
 
-    if (shippingAddresses.length === 0) {
-      return null
-    }
-
     return shippingAddresses
   }
 

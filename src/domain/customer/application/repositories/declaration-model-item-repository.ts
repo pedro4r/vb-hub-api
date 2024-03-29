@@ -7,7 +7,7 @@ export abstract class DeclarationModelItemsRepository {
 
   abstract findManyByDeclarationModelId(
     declarationModelId: string,
-  ): Promise<DeclarationModelItem[] | null>
+  ): Promise<DeclarationModelItem[]>
 
   abstract deleteMany(
     declarationModelItems: DeclarationModelItem[],

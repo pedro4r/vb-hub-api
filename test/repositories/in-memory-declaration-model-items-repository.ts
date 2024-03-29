@@ -11,10 +11,6 @@ export class InMemoryDeclarationModelItemsRepository
       (item) => item.declarationModelId?.toString() === declarationModelId,
     )
 
-    if (!declarationModelItems.length) {
-      return null
-    }
-
     return declarationModelItems
   }
 

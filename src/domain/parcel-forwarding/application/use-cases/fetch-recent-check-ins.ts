@@ -11,7 +11,7 @@ interface FetchCheckInsUseCaseRequest {
 }
 
 type FetchCheckInsUseCaseResponse = Either<
-  null | ResourceNotFoundError | NotAllowedError,
+  ResourceNotFoundError | NotAllowedError,
   {
     checkIns: CheckIn[]
   }
@@ -29,12 +29,14 @@ export class FetchRecentCheckInsUseCase {
       page,
     )
 
-    if (!checkIns) {
-      return left(new ResourceNotFoundError())
+    if (checkIns.length === 0) {
+      return left(new ResourceNotFoundError('Check-ins not found.'))
     }
 
     if (parcelForwardingId !== checkIns[0].parcelForwardingId.toString()) {
-      return left(new NotAllowedError())
+      return left(
+        new NotAllowedError('You are not allowed to fetch these check-ins.'),
+      )
     }
 
     return right({ checkIns })

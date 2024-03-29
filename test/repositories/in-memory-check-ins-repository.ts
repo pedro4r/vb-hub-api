@@ -51,10 +51,6 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20)
 
-    if (checkIns.length === 0) {
-      return null
-    }
-
     return checkIns
   }
 

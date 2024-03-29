@@ -22,7 +22,6 @@ export class PrismaDeclarationModelItemsMapper {
     declarationModelItem: DeclarationModelItem,
     index: number,
   ): Prisma.DeclarationModelItemUncheckedCreateInput {
-    const currentDate = new Date()
     // index is used to create a unique createdAt date
     // and respect the order of the items in the array
     return {
@@ -31,7 +30,7 @@ export class PrismaDeclarationModelItemsMapper {
       description: declarationModelItem.description,
       value: declarationModelItem.value,
       quantity: declarationModelItem.quantity,
-      createdAt: new Date(currentDate.getTime() + index),
+      createdAt: new Date(Date.now() + index * 1000),
     }
   }
 }

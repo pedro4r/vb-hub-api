@@ -19,10 +19,6 @@ export class InMemoryPackageRepository implements PackageRepository {
       (pkg) => pkg.customerId.toString() === id,
     )
 
-    if (!packages) {
-      return null
-    }
-
     return packages
   }
 

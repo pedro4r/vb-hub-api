@@ -31,9 +31,14 @@ import { FetchDeclarationModelsController } from './controller/fetch-declaration
 import { FetchDeclarationModelsUseCase } from '@/domain/customer/application/use-cases/fetch-declaration-model'
 import { GetDeclarationModelController } from './controller/get-declaration-model.controller'
 import { GetDeclarationModelUseCase } from '@/domain/customer/application/use-cases/get-declaration-model'
+import { UploadAttachmentController } from './controller/upload-attachment.controller'
+import { UploadAndCreateAttachmentUseCase } from '@/domain/parcel-forwarding/application/use-cases/upload-and-create-attachment'
+import { StorageModule } from '../storage/storage.module'
+import { DeleteCheckInController } from './controller/delete-check-in.controller'
+import { DeleteCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/delete-check-in'
 
 @Module({
-  imports: [DatabaseModule, CryptographyModule],
+  imports: [DatabaseModule, CryptographyModule, StorageModule],
   controllers: [
     RegisterParcelForwardingController,
     AuthenticateController,
@@ -51,6 +56,8 @@ import { GetDeclarationModelUseCase } from '@/domain/customer/application/use-ca
     DeleteDeclarationModelController,
     FetchDeclarationModelsController,
     GetDeclarationModelController,
+    UploadAttachmentController,
+    DeleteCheckInController,
   ],
   providers: [
     CheckInUseCase,
@@ -68,6 +75,8 @@ import { GetDeclarationModelUseCase } from '@/domain/customer/application/use-ca
     DeleteDeclarationModelUseCase,
     FetchDeclarationModelsUseCase,
     GetDeclarationModelUseCase,
+    UploadAndCreateAttachmentUseCase,
+    DeleteCheckInUseCase,
   ],
 })
 export class HttpModule {}

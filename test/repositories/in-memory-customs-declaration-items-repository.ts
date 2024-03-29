@@ -11,10 +11,6 @@ export class InMemoryCustomsDeclarationItemsRepository
       (item) => item.packageId?.toString() === packageId,
     )
 
-    if (!customsDeclarationItems.length) {
-      return null
-    }
-
     return customsDeclarationItems
   }
 

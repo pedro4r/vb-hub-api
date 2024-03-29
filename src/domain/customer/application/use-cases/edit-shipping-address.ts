@@ -50,11 +50,15 @@ export class EditShippingAddressUseCase {
       await this.shippingAddressRepository.findById(shippingAddressId)
 
     if (!shippingAddress) {
-      return left(new ResourceNotFoundError())
+      return left(new ResourceNotFoundError('Shipping address not found.'))
     }
 
     if (customerId !== shippingAddress.customerId.toString()) {
-      return left(new NotAllowedError())
+      return left(
+        new NotAllowedError(
+          'You are not allowed to edit this shipping address.',
+        ),
+      )
     }
 
     shippingAddress.recipientName = recipientName

@@ -4,10 +4,15 @@ import { Injectable } from '@nestjs/common'
 import { PrismaCheckInMapper } from '../mappers/prisma-check-in-mapper'
 import { PrismaService } from '../prisma.service'
 import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-check-in'
+import { CheckInAttachmentsRepository } from '@/domain/parcel-forwarding/application/repositories/check-in-attachments-repository'
 
 @Injectable()
 export class PrismaCheckInsRepository implements CheckInsRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private checkInAttachmentsRepository: CheckInAttachmentsRepository,
+  ) {}
+
   async findManyByPackageId(packadeId: string) {
     const checkIns = await this.prisma.checkIn.findMany({
       where: {
@@ -69,6 +74,10 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     await this.prisma.checkIn.create({
       data,
     })
+
+    await this.checkInAttachmentsRepository.createMany(
+      checkIn.attachments.getItems(),
+    )
   }
 
   async findById(id: string): Promise<CheckIn | null> {
@@ -98,6 +107,8 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
 
   async delete(checkIn: CheckIn): Promise<void> {
     const data = PrismaCheckInMapper.toPrisma(checkIn)
+
+    await this.checkInAttachmentsRepository.deleteManyByCheckInId(data.id!)
 
     await this.prisma.checkIn.delete({
       where: {

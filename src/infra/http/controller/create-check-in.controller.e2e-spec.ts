@@ -1,23 +1,28 @@
 import { AppModule } from '@/infra/app.module'
+import { DatabaseModule } from '@/infra/database/database.module'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
 import request from 'supertest'
+import { AttachmentFactory } from 'test/factories/make-attachment'
 
 describe('Create Check-in (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
+  let attachmentFactory: AttachmentFactory
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [AttachmentFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
     prisma = moduleRef.get(PrismaService)
+    attachmentFactory = moduleRef.get(AttachmentFactory)
     jwt = moduleRef.get(JwtService)
 
     await app.init()
@@ -43,6 +48,9 @@ describe('Create Check-in (E2E)', () => {
       },
     })
 
+    const attachment1 = await attachmentFactory.makePrismaAttachment()
+    const attachment2 = await attachmentFactory.makePrismaAttachment()
+
     const accessToken = jwt.sign({ sub: parcelForwarding.id })
 
     const response = await request(app.getHttpServer())
@@ -51,9 +59,9 @@ describe('Create Check-in (E2E)', () => {
       .send({
         parcel_forwarding_id: parcelForwarding.id,
         customerId: customer.id,
-        status: '1',
         details: 'New Check-in',
         weight: '10',
+        attachmentsIds: [attachment1.id.toString(), attachment2.id.toString()],
       })
 
     expect(response.statusCode).toBe(201)
@@ -65,5 +73,28 @@ describe('Create Check-in (E2E)', () => {
     })
 
     expect(checkInOnDatabase).toBeTruthy()
+
+    const checkInAttachmentsOnDatabase =
+      await prisma.checkInAttachment.findMany({
+        orderBy: {
+          createdAt: 'asc',
+        },
+      })
+
+    expect(checkInAttachmentsOnDatabase).toHaveLength(2)
+    expect(checkInAttachmentsOnDatabase).toEqual([
+      {
+        id: expect.any(String),
+        checkInId: expect.any(String),
+        attachmentId: attachment1.id.toString(),
+        createdAt: expect.any(Date),
+      },
+      {
+        id: expect.any(String),
+        checkInId: expect.any(String),
+        attachmentId: attachment2.id.toString(),
+        createdAt: expect.any(Date),
+      },
+    ])
   })
 })

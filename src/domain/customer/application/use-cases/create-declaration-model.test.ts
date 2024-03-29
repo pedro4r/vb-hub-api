@@ -14,9 +14,7 @@ describe('Create Customs Declaration', () => {
       new InMemoryDeclarationModelsRepository(
         inMemoryDeclarationModelItemsRepository,
       )
-    sut = new CreateDeclarationModelUseCase(
-      inMemoryDeclarationModelsRepository,
-    )
+    sut = new CreateDeclarationModelUseCase(inMemoryDeclarationModelsRepository)
   })
 
   it('should be able to create a customs declaration', async () => {

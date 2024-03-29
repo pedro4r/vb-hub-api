@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   HttpCode,
   Param,
@@ -11,6 +12,8 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { z } from 'zod'
 import { ZodValidationPipe } from '../pipe/zod-validation-pipe'
 import { EditShippingAddressUseCase } from '@/domain/customer/application/use-cases/edit-shipping-address'
+import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
+import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 
 const editShippingAddressBodySchema = z.object({
   recipientName: z.string(),
@@ -72,7 +75,16 @@ export class EditShippingAddressController {
     })
 
     if (result.isLeft()) {
-      throw new BadRequestException()
+      const error = result.value
+
+      switch (error.constructor) {
+        case ResourceNotFoundError:
+          throw new ConflictException(error.message)
+        case NotAllowedError:
+          throw new ConflictException(error.message)
+        default:
+          throw new BadRequestException(error.message)
+      }
     }
   }
 }

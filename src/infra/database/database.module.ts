@@ -14,6 +14,10 @@ import { PrismaPackageRepository } from './prisma/repositories/prisma-package-re
 import { PackageRepository } from '@/domain/customer/application/repositories/package-repository'
 import { PackageShippingAddressRepository } from '@/domain/customer/application/repositories/package-shipping-address-repository'
 import { PrismaPackageShippingAddressRepository } from './prisma/repositories/prisma-package-shipping-address-repository'
+import { AttachmentsRepository } from '@/domain/parcel-forwarding/application/repositories/attachments-repository'
+import { PrismaAttachmentsRepository } from './prisma/repositories/prisma-attachments-repository'
+import { CheckInAttachmentsRepository } from '@/domain/parcel-forwarding/application/repositories/check-in-attachments-repository'
+import { PrismaCheckInAttachmentsRepository } from './prisma/repositories/prisma-check-in-attachments-repository'
 
 @Module({
   providers: [
@@ -47,6 +51,14 @@ import { PrismaPackageShippingAddressRepository } from './prisma/repositories/pr
       provide: PackageShippingAddressRepository,
       useClass: PrismaPackageShippingAddressRepository,
     },
+    {
+      provide: AttachmentsRepository,
+      useClass: PrismaAttachmentsRepository,
+    },
+    {
+      provide: CheckInAttachmentsRepository,
+      useClass: PrismaCheckInAttachmentsRepository,
+    },
   ],
   exports: [
     PrismaService,
@@ -57,6 +69,8 @@ import { PrismaPackageShippingAddressRepository } from './prisma/repositories/pr
     DeclarationModelItemsRepository,
     PackageRepository,
     PackageShippingAddressRepository,
+    AttachmentsRepository,
+    CheckInAttachmentsRepository,
   ],
 })
 export class DatabaseModule {}

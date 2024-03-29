@@ -4,18 +4,17 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipe/zod-validation-pipe'
 import { z } from 'zod'
 import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/check-in'
-import { CheckInStatus } from '@/domain/parcel-forwarding/enterprise/entities/check-in'
 
 const createCheckInBodySchema = z.object({
   customerId: z.string().uuid(),
-  details: z.string(),
-  status: z.string().transform(Number).pipe(z.nativeEnum(CheckInStatus)),
+  details: z.string().optional().default(''),
   weight: z
     .string()
     .optional()
     .default('0')
     .transform(Number)
     .pipe(z.number().min(0)),
+  attachmentsIds: z.array(z.string().uuid()),
 })
 
 const bodyValidationPipe = new ZodValidationPipe(createCheckInBodySchema)
@@ -31,16 +30,16 @@ export class CreateCheckInController {
     @Body(bodyValidationPipe) body: CreateCheckInBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
-    const { customerId, details, weight, status } = body
+    const { customerId, details, weight, attachmentsIds } = body
     const userId = user.sub
 
     const result = await this.checkInUseCase.execute({
       customerId,
       details,
       weight,
-      status,
+      status: 1,
       parcelForwardingId: userId,
-      attachmentsIds: [],
+      attachmentsIds,
     })
 
     if (result.isLeft()) {

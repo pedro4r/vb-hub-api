@@ -57,16 +57,12 @@ export class PrismaPackageRepository implements PackageRepository {
     })
   }
 
-  async findManyByCustomerId(id: string): Promise<Package[] | null> {
+  async findManyByCustomerId(id: string): Promise<Package[]> {
     const packages = await this.prisma.package.findMany({
       where: {
         customerId: id,
       },
     })
-
-    if (!packages) {
-      return null
-    }
 
     return packages.map((pkg) => PrismaPackageMapper.toDomain(pkg))
   }

@@ -48,10 +48,6 @@ export class PrismaDeclarationModelsRepository
       },
     })
 
-    if (!declarationModels) {
-      return null
-    }
-
     return declarationModels.map(PrismaDeclarationModelMapper.toDomain)
   }
 

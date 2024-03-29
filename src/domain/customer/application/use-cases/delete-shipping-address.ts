@@ -21,10 +21,11 @@ export class DeleteShippingAddressUseCase {
     shippingAddressId,
     customerId,
   }: DeleteShippingAddressUseCaseRequest): Promise<DeleteShippingAddressUseCaseResponse> {
+    // It's necessary to check if the customer has more than one address before deleting it
     const shippingAddresses =
       await this.shippingAddressRepository.findManyByCustomerId(customerId)
 
-    if (!shippingAddresses) {
+    if (shippingAddresses.length === 0) {
       return left(new ResourceNotFoundError('Shipping address not found.'))
     }
 
@@ -34,6 +35,7 @@ export class DeleteShippingAddressUseCase {
       )
     }
 
+    // If the customer has only one address, it is not allowed to delete it
     if (shippingAddresses.length === 1) {
       return left(
         new NotAllowedError(

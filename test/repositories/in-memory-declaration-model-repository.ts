@@ -16,10 +16,6 @@ export class InMemoryDeclarationModelsRepository
       (item) => item.customerId.toString() === customerId,
     )
 
-    if (!declarationModels) {
-      return null
-    }
-
     return declarationModels
   }
 

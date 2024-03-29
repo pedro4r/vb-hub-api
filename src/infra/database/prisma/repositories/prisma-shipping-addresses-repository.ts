@@ -16,10 +16,6 @@ export class PrismaShippingAddressesRepository
       },
     })
 
-    if (!shippingAddresses) {
-      return null
-    }
-
     return shippingAddresses.map(PrismaShippingAddressMapper.toDomain)
   }
 

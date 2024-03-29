@@ -46,7 +46,6 @@ describe('Delete Check-in', () => {
     await sut.execute({
       checkInId: 'check-in-1',
       parcelForwardingId: 'company-1',
-      customerId: 'customer-1',
     })
 
     expect(inMemoryCheckInsRepository.items).toHaveLength(0)
@@ -78,7 +77,6 @@ describe('Delete Check-in', () => {
     const result = await sut.execute({
       checkInId: 'check-in-1',
       parcelForwardingId: 'company-2',
-      customerId: 'customer-2',
     })
 
     expect(result.isLeft()).toBe(true)

@@ -7,9 +7,9 @@ export abstract class CheckInsRepository {
   abstract findManyRecent(
     parcelForwardingId: string,
     page: number,
-  ): Promise<CheckIn[] | null>
+  ): Promise<CheckIn[]>
 
-  abstract findManyByPackageId(packadeId: string): Promise<CheckIn[] | null>
+  abstract findManyByPackageId(packadeId: string): Promise<CheckIn[]>
   abstract save(checkIn: CheckIn): Promise<void>
   abstract linkManyCheckInToPackage(checkIns: PackageCheckIn[]): Promise<void>
   abstract unlinkManyCheckInToPackage(checkIns: PackageCheckIn[]): Promise<void>
