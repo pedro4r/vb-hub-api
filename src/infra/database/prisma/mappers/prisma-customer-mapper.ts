@@ -9,6 +9,7 @@ export class PrismaCustomerMapper {
     return Customer.create(
       {
         name: raw.name,
+        lastName: raw.lastName,
         hubId: HubId.create({
           parcelForwadingInitials,
           customerCode: parseInt(customerCode),
@@ -25,6 +26,7 @@ export class PrismaCustomerMapper {
     return {
       id: customer.id.toString(),
       name: customer.name,
+      lastName: customer.lastName,
       parcelForwardingId: customer.parcelForwardingId.toString(),
       hubId: `${customer.hubId.parcelForwadingInitials}-${customer.hubId.customerCode}`,
       email: customer.email,

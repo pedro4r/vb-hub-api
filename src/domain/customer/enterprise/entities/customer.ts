@@ -6,6 +6,7 @@ export interface CustomerProps {
   parcelForwardingId: UniqueEntityID
   hubId: HubId
   name: string
+  lastName: string
   email: string
   password: string
 }
@@ -19,20 +20,36 @@ export class Customer extends Entity<CustomerProps> {
     return this.props.hubId
   }
 
-  set hubId(hubId: HubId) {
-    this.props.hubId = hubId
-  }
-
   get name() {
     return this.props.name
+  }
+
+  set name(name: string) {
+    this.props.name = name
+  }
+
+  get lastName() {
+    return this.props.lastName
+  }
+
+  set lastName(lastName: string) {
+    this.props.lastName = lastName
   }
 
   get email() {
     return this.props.email
   }
 
+  set email(email: string) {
+    this.props.email = email
+  }
+
   get password() {
     return this.props.password
+  }
+
+  set password(password: string) {
+    this.props.password = password
   }
 
   static create(props: CustomerProps, id?: UniqueEntityID) {

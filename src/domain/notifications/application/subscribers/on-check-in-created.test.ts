@@ -11,7 +11,11 @@ import { OnCheckInCreated } from './on-check-in-created'
 import { makeCheckIn } from 'test/factories/make-check-in'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { waitFor } from 'test/utils/wait-for'
+import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
+let inMemoryCustomerRepository: InMemoryCustomerRepository
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
 let inMemoryNotificationsRepository: InMemoryNotificationsRepository
@@ -24,10 +28,15 @@ let sendNotificationExecuteSpy: SpyInstance<
 
 describe('On Check-in Created', () => {
   beforeEach(() => {
+    inMemoryCustomerRepository = new InMemoryCustomerRepository()
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
+
     inMemoryCheckInsAttachmentsRepository =
       new InMemoryCheckInsAttachmentsRepository()
     inMemoryCheckInsRepository = new InMemoryCheckInsRepository(
       inMemoryCheckInsAttachmentsRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryCustomerRepository,
     )
 
     inMemoryNotificationsRepository = new InMemoryNotificationsRepository()

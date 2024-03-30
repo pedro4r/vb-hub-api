@@ -14,7 +14,7 @@ export class HubId extends ValueObject<HubIdProps> {
     return this.props.customerCode
   }
 
-  get hubId() {
+  get value() {
     return `${this.props.parcelForwadingInitials}${this.props.customerCode}`
   }
 

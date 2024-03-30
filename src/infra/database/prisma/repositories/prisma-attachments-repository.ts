@@ -8,6 +8,18 @@ import { AttachmentsRepository } from '@/domain/parcel-forwarding/application/re
 export class PrismaAttachmentsRepository implements AttachmentsRepository {
   constructor(private prisma: PrismaService) {}
 
+  async findManyByIds(ids: string[]): Promise<Attachment[]> {
+    const attachments = await this.prisma.attachment.findMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    })
+
+    return attachments.map(PrismaAttachmentMapper.toDomain)
+  }
+
   async create(attachment: Attachment): Promise<void> {
     const data = PrismaAttachmentMapper.toPrisma(attachment)
 

@@ -5,18 +5,27 @@ import { InMemoryCheckInsAttachmentsRepository } from 'test/repositories/in-memo
 
 import { makeCheckIn } from 'test/factories/make-check-in'
 import { CheckIn } from '../../enterprise/entities/check-in'
+import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
+let inMemoryCustomerRepository: InMemoryCustomerRepository
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
 let sut: FetchRecentCheckInsUseCase
 
 describe('Fetch Recent Check-ins', () => {
   beforeEach(() => {
+    inMemoryCustomerRepository = new InMemoryCustomerRepository()
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
+
     inMemoryCheckInsAttachmentsRepository =
       new InMemoryCheckInsAttachmentsRepository()
 
     inMemoryCheckInsRepository = new InMemoryCheckInsRepository(
       inMemoryCheckInsAttachmentsRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryCustomerRepository,
     )
     sut = new FetchRecentCheckInsUseCase(inMemoryCheckInsRepository)
   })

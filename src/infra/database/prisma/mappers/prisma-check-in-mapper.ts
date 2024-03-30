@@ -21,7 +21,7 @@ export class PrismaCheckInMapper {
   static toPrisma(checkIn: CheckIn): Prisma.CheckInUncheckedCreateInput {
     return {
       id: checkIn.id.toString(),
-      status: checkIn.status,
+      status: checkIn.getStatusAsCode(),
       parcelForwardingId: checkIn.parcelForwardingId.toString(),
       customerId: checkIn.customerId.toString(),
       packageId: checkIn.packageId?.toString(),

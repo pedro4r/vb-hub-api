@@ -7,4 +7,8 @@ export class InMemoryAttachmentsRepository implements AttachmentsRepository {
   async create(attachment: Attachment) {
     this.items.push(attachment)
   }
+
+  async findManyByIds(ids: string[]) {
+    return this.items.filter((item) => ids.includes(item.id.toString()))
+  }
 }

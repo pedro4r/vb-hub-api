@@ -14,7 +14,11 @@ import { InMemoryShippingAddressRepository } from 'test/repositories/in-memory-s
 import { makeShippingAddress } from 'test/factories/make-shipping-address'
 import { makeDeclarationModelItem } from 'test/factories/make-declaration-model-item'
 import { makeDeclarationModel } from 'test/factories/make-declaration-model'
+import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
+let inMemoryCustomerRepository: InMemoryCustomerRepository
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
 let inMemoryDeclarationModelsItemsRepository: InMemoryDeclarationModelItemsRepository
@@ -27,11 +31,16 @@ let sut: CreatePackageUseCase
 
 describe('Create Package', () => {
   beforeEach(async () => {
+    inMemoryCustomerRepository = new InMemoryCustomerRepository()
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
+
     inMemoryCheckInsAttachmentsRepository =
       new InMemoryCheckInsAttachmentsRepository()
 
     inMemoryCheckInsRepository = new InMemoryCheckInsRepository(
       inMemoryCheckInsAttachmentsRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryCustomerRepository,
     )
     inMemoryDeclarationModelsItemsRepository =
       new InMemoryDeclarationModelItemsRepository()

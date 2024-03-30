@@ -10,6 +10,7 @@ import { HubId } from '../../enterprise/entities/value-objects/hub-id'
 interface RegisterCustomerUseCaseRequest {
   parcelForwardingId: string
   name: string
+  lastName: string
   email: string
   password: string
 }
@@ -28,12 +29,13 @@ export class RegisterCustomerUseCase {
     private hashGenerator: HashGenerator,
   ) {}
 
-  private async prepareHubId(parcelForwardingId: string): Promise<HubId> {
-    let creatingCustomerCode =
+  private async handleHubId(parcelForwardingId: string): Promise<HubId> {
+    const totalOfParcelForwardingCustomers =
       await this.customersRepository.countParcelForwardingCustomers(
         parcelForwardingId,
       )
-    creatingCustomerCode ? creatingCustomerCode++ : (creatingCustomerCode = 1)
+
+    const customerCode = totalOfParcelForwardingCustomers + 1
 
     const parcelForwarding =
       await this.parcelForwardingsRepository.findById(parcelForwardingId)
@@ -44,13 +46,14 @@ export class RegisterCustomerUseCase {
 
     return HubId.create({
       parcelForwadingInitials: parcelForwarding.initials,
-      customerCode: creatingCustomerCode,
+      customerCode,
     })
   }
 
   async execute({
     parcelForwardingId,
     name,
+    lastName,
     email,
     password,
   }: RegisterCustomerUseCaseRequest): Promise<RegisterCustomerUseCaseResponse> {
@@ -63,12 +66,11 @@ export class RegisterCustomerUseCase {
 
     const hashedPassword = await this.hashGenerator.hash(password)
 
-    this.prepareHubId(parcelForwardingId)
-
     const customer = Customer.create({
       parcelForwardingId: new UniqueEntityID(parcelForwardingId),
-      hubId: await this.prepareHubId(parcelForwardingId),
+      hubId: await this.handleHubId(parcelForwardingId),
       name,
+      lastName,
       email,
       password: hashedPassword,
     })

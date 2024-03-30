@@ -3,12 +3,17 @@ import { CheckIn } from '@/domain/parcel-forwarding/enterprise/entities/check-in
 import { InMemoryCheckInsAttachmentsRepository } from './in-memory-check-ins-attachments-repository'
 import { DomainEvents } from '@/core/events/domain-events'
 import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-check-in'
+import { InMemoryCustomerRepository } from './in-memory-customer-repository'
+import { InMemoryAttachmentsRepository } from './in-memory-attachments-repository'
+import { CheckInDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-details'
 
 export class InMemoryCheckInsRepository implements CheckInsRepository {
   public items: CheckIn[] = []
 
   constructor(
     private checkInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository,
+    private attachmentsRepository: InMemoryAttachmentsRepository,
+    private customerRepository: InMemoryCustomerRepository,
   ) {}
 
   async findManyByPackageId(packadeId: string) {
@@ -97,5 +102,55 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     )
 
     DomainEvents.dispatchEventsForAggregate(checkin.id)
+  }
+
+  async findDetailsById(checkInId: string) {
+    const checkIn = this.items.find((item) => item.id.toString() === checkInId)
+
+    if (!checkIn) {
+      return null
+    }
+
+    const customer = await this.customerRepository.findById(
+      checkIn.customerId.toString(),
+    )
+
+    if (!customer) {
+      throw new Error(
+        `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
+      )
+    }
+
+    const checkInAttachments =
+      await this.checkInsAttachmentsRepository.findManyByCheckInId(
+        checkIn.id.toString(),
+      )
+
+    const attachmentsId = checkInAttachments.map((checkInAttachment) => {
+      return checkInAttachment.attachmentId.toString()
+    })
+
+    const attachments =
+      await this.attachmentsRepository.findManyByIds(attachmentsId)
+
+    if (attachments.length !== 0) {
+      throw new Error(`Attachments do not exist.`)
+    }
+
+    return CheckInDetails.create({
+      checkInId: checkIn.id,
+      parcelForwardingId: checkIn.parcelForwardingId,
+      customerId: checkIn.customerId,
+      hubId: customer.hubId.value,
+      customerName: customer.name,
+      customerLastName: customer.lastName,
+      packageId: checkIn.packageId,
+      details: checkIn.details,
+      status: checkIn.status,
+      attachments,
+      weight: checkIn.weight,
+      createdAt: checkIn.createdAt,
+      updatedAt: checkIn.updatedAt,
+    })
   }
 }

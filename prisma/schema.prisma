@@ -12,6 +12,7 @@ model Customer {
   hubId              String             @unique @map("hub_id")
   parcelForwardingId String             @map("parcel_forwarding_id")
   name               String
+  lastName           String             @map("last_name")
   email              String             @unique
   password           String
   CheckIn            CheckIn[]

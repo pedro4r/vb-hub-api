@@ -4,17 +4,27 @@ import { InMemoryCheckInsAttachmentsRepository } from 'test/repositories/in-memo
 import { InMemoryCheckInsRepository } from 'test/repositories/in-memory-check-ins-repository'
 import { EditCheckInUseCase } from './edit-check-in'
 import { makeCheckInAttachment } from 'test/factories/make-check-in-attachment'
+import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
+let inMemoryCustomerRepository: InMemoryCustomerRepository
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
 let sut: EditCheckInUseCase
 
 describe('Edit Question', () => {
   beforeEach(() => {
+    inMemoryCustomerRepository = new InMemoryCustomerRepository()
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
+
     inMemoryCheckInsAttachmentsRepository =
       new InMemoryCheckInsAttachmentsRepository()
+
     inMemoryCheckInsRepository = new InMemoryCheckInsRepository(
       inMemoryCheckInsAttachmentsRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryCustomerRepository,
     )
 
     sut = new EditCheckInUseCase(

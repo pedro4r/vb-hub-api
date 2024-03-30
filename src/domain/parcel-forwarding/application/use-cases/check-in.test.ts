@@ -2,7 +2,11 @@ import { CheckInUseCase } from './check-in'
 import { InMemoryCheckInsRepository } from 'test/repositories/in-memory-check-ins-repository'
 import { InMemoryCheckInsAttachmentsRepository } from 'test/repositories/in-memory-check-ins-attachments-repository'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
+let inMemoryCustomerRepository: InMemoryCustomerRepository
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
 
@@ -10,10 +14,15 @@ let sut: CheckInUseCase
 
 describe('Check-in', () => {
   beforeEach(() => {
+    inMemoryCustomerRepository = new InMemoryCustomerRepository()
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
+
     inMemoryCheckInsAttachmentsRepository =
       new InMemoryCheckInsAttachmentsRepository()
     inMemoryCheckInsRepository = new InMemoryCheckInsRepository(
       inMemoryCheckInsAttachmentsRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryCustomerRepository,
     )
     sut = new CheckInUseCase(inMemoryCheckInsRepository)
   })

@@ -63,7 +63,11 @@ export class CheckIn extends AggregateRoot<CheckInProps> {
     return this.props.weight
   }
 
-  get status() {
+  get status(): string {
+    return CheckInStatus[this.props.status]
+  }
+
+  getStatusAsCode(): CheckInStatus {
     return this.props.status
   }
 

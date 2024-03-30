@@ -21,10 +21,13 @@ import { CustomsDeclarationList } from '@/domain/customer/enterprise/entities/cu
 import { makeShippingAddress } from 'test/factories/make-shipping-address'
 import { makeCheckIn } from 'test/factories/make-check-in'
 import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-check-in'
+import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
+let inMemoryCustomerRepository: InMemoryCustomerRepository
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
-
 let inMemoryCustomsDeclarationItemsRepository: InMemoryCustomsDeclarationItemsRepository
 let inMemoryShippingAddressRepository: InMemoryShippingAddressRepository
 let inMemoryPackageShippingAddressRepository: InMemoryPackageShippingAddressRepository
@@ -39,11 +42,16 @@ let sendNotificationExecuteSpy: SpyInstance<
 
 describe('On Check-in Created', () => {
   beforeEach(async () => {
+    inMemoryCustomerRepository = new InMemoryCustomerRepository()
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
+
     inMemoryCheckInsAttachmentsRepository =
       new InMemoryCheckInsAttachmentsRepository()
 
     inMemoryCheckInsRepository = new InMemoryCheckInsRepository(
       inMemoryCheckInsAttachmentsRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryCustomerRepository,
     )
 
     inMemoryCustomsDeclarationItemsRepository =

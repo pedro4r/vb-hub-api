@@ -5,6 +5,7 @@ import { PrismaCheckInMapper } from '../mappers/prisma-check-in-mapper'
 import { PrismaService } from '../prisma.service'
 import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-check-in'
 import { CheckInAttachmentsRepository } from '@/domain/parcel-forwarding/application/repositories/check-in-attachments-repository'
+import { CheckInDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-details'
 
 @Injectable()
 export class PrismaCheckInsRepository implements CheckInsRepository {
@@ -12,6 +13,10 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     private prisma: PrismaService,
     private checkInAttachmentsRepository: CheckInAttachmentsRepository,
   ) {}
+
+  findDetailsById(checkInId: string): Promise<CheckInDetails | null> {
+    throw new Error('Method not implemented.')
+  }
 
   async findManyByPackageId(packadeId: string) {
     const checkIns = await this.prisma.checkIn.findMany({

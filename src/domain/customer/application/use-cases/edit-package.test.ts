@@ -16,7 +16,11 @@ import { CustomsDeclarationList } from '../../enterprise/entities/customs-declar
 import { makeCustomsDeclarationItems } from 'test/factories/make-customs-declaration-items'
 import { InMemoryDeclarationModelsRepository } from 'test/repositories/in-memory-declaration-model-repository'
 import { makeDeclarationModelWithItems } from 'test/factories/make-declaration-model-with-items'
+import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
+let inMemoryCustomerRepository: InMemoryCustomerRepository
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
 let inMemoryDeclarationModelsRepository: InMemoryDeclarationModelsRepository
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
@@ -29,11 +33,16 @@ let sut: EditPackagesUseCase
 
 describe('Edit Package', () => {
   beforeEach(async () => {
+    inMemoryCustomerRepository = new InMemoryCustomerRepository()
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
+
     inMemoryCheckInsAttachmentsRepository =
       new InMemoryCheckInsAttachmentsRepository()
 
     inMemoryCheckInsRepository = new InMemoryCheckInsRepository(
       inMemoryCheckInsAttachmentsRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryCustomerRepository,
     )
     inMemoryDeclarationModelsItemsRepository =
       new InMemoryDeclarationModelItemsRepository()

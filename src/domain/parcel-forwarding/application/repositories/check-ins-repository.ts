@@ -1,5 +1,6 @@
 import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-check-in'
 import { CheckIn } from '../../enterprise/entities/check-in'
+import { CheckInDetails } from '../../enterprise/entities/value-objects/check-in-details'
 
 export abstract class CheckInsRepository {
   abstract create(checkIn: CheckIn): Promise<void>
@@ -9,6 +10,7 @@ export abstract class CheckInsRepository {
     page: number,
   ): Promise<CheckIn[]>
 
+  abstract findDetailsById(checkInId: string): Promise<CheckInDetails | null>
   abstract findManyByPackageId(packadeId: string): Promise<CheckIn[]>
   abstract save(checkIn: CheckIn): Promise<void>
   abstract linkManyCheckInToPackage(checkIns: PackageCheckIn[]): Promise<void>

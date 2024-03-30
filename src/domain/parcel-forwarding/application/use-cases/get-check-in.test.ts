@@ -1,37 +1,46 @@
 import { InMemoryCheckInsAttachmentsRepository } from 'test/repositories/in-memory-check-ins-attachments-repository'
 import { InMemoryCheckInsRepository } from 'test/repositories/in-memory-check-ins-repository'
-import { DeleteCheckInUseCase } from './delete-check-in'
 import { makeCheckIn } from 'test/factories/make-check-in'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { makeCheckInAttachment } from 'test/factories/make-check-in-attachment'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
 import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
+import { GetCheckInUseCase } from './get-check-in'
+import { makeCustomer } from 'test/factories/make-customer'
 
 let inMemoryCustomerRepository: InMemoryCustomerRepository
 let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
-let sut: DeleteCheckInUseCase
+let sut: GetCheckInUseCase
 
-describe('Delete Check-in', () => {
+describe('Get Check-in', () => {
   beforeEach(() => {
     inMemoryCustomerRepository = new InMemoryCustomerRepository()
     inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
 
     inMemoryCheckInsAttachmentsRepository =
       new InMemoryCheckInsAttachmentsRepository()
-
     inMemoryCheckInsRepository = new InMemoryCheckInsRepository(
       inMemoryCheckInsAttachmentsRepository,
       inMemoryAttachmentsRepository,
       inMemoryCustomerRepository,
     )
 
-    sut = new DeleteCheckInUseCase(inMemoryCheckInsRepository)
+    sut = new GetCheckInUseCase(inMemoryCheckInsRepository)
   })
 
-  it('should be able to delete a check-in', async () => {
+  it('should be able to get a check-in', async () => {
+    const customer = makeCustomer(
+      {
+        parcelForwardingId: new UniqueEntityID('company-1'),
+      },
+      new UniqueEntityID('customer-1'),
+    )
+
+    await inMemoryCustomerRepository.create(customer)
+
     const newCheckIn = makeCheckIn(
       {
         parcelForwardingId: new UniqueEntityID('company-1'),
@@ -58,11 +67,20 @@ describe('Delete Check-in', () => {
       parcelForwardingId: 'company-1',
     })
 
-    expect(inMemoryCheckInsRepository.items).toHaveLength(0)
-    expect(inMemoryCheckInsAttachmentsRepository.items).toHaveLength(0)
+    expect(inMemoryCheckInsRepository.items).toHaveLength(1)
+    expect(inMemoryCheckInsAttachmentsRepository.items).toHaveLength(2)
   })
 
-  it('should not be able to delete a check-in through parcel-forwarding', async () => {
+  it('should not be able to get a check-in from another Parcel Forwarding Company', async () => {
+    const customer = makeCustomer(
+      {
+        parcelForwardingId: new UniqueEntityID('company-1'),
+      },
+      new UniqueEntityID('customer-1'),
+    )
+
+    await inMemoryCustomerRepository.create(customer)
+
     const newCheckIn = makeCheckIn(
       {
         parcelForwardingId: new UniqueEntityID('company-1'),

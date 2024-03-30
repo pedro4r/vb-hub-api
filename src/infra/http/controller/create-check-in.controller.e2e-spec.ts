@@ -43,6 +43,7 @@ describe('Create Check-in (E2E)', () => {
         parcelForwardingId: parcelForwarding.id,
         hubId: 'VBX-123',
         name: 'Pedro',
+        lastName: 'Requiao',
         email: 'alonsofts@gmail.com',
         password: '123456',
       },

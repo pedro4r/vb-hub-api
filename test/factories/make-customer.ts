@@ -21,6 +21,7 @@ export function makeCustomer(
         customerCode: faker.number.int(4),
       }),
       name: faker.person.fullName(),
+      lastName: faker.person.fullName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
       ...override,

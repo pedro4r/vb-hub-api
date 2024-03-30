@@ -13,7 +13,11 @@ import { PackageCheckIn } from '../../enterprise/entities/package-check-in'
 import { PackageCheckInsList } from '../../enterprise/entities/package-check-ins-list'
 import { makeCustomsDeclarationItems } from 'test/factories/make-customs-declaration-items'
 import { CustomsDeclarationList } from '../../enterprise/entities/customs-declaration-list'
+import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
+import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 
+let inMemoryCustomerRepository: InMemoryCustomerRepository
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
 let inMemoryCheckInsRepository: InMemoryCheckInsRepository
 let inMemoryCustomsDeclarationItemsRepository: InMemoryCustomsDeclarationItemsRepository
@@ -24,11 +28,16 @@ let sut: FetchPackageUseCase
 
 describe('Get an Package', () => {
   beforeEach(async () => {
+    inMemoryCustomerRepository = new InMemoryCustomerRepository()
+    inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
+
     inMemoryCheckInsAttachmentsRepository =
       new InMemoryCheckInsAttachmentsRepository()
 
     inMemoryCheckInsRepository = new InMemoryCheckInsRepository(
       inMemoryCheckInsAttachmentsRepository,
+      inMemoryAttachmentsRepository,
+      inMemoryCustomerRepository,
     )
 
     inMemoryCustomsDeclarationItemsRepository =
