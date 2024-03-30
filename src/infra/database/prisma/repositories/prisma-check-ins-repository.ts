@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma.service'
 import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-check-in'
 import { CheckInAttachmentsRepository } from '@/domain/parcel-forwarding/application/repositories/check-in-attachments-repository'
 import { CheckInDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-details'
+import { PrismaAttachmentMapper } from '../mappers/prisma-attachment-mapper'
 
 @Injectable()
 export class PrismaCheckInsRepository implements CheckInsRepository {
@@ -13,10 +14,6 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     private prisma: PrismaService,
     private checkInAttachmentsRepository: CheckInAttachmentsRepository,
   ) {}
-
-  findDetailsById(checkInId: string): Promise<CheckInDetails | null> {
-    throw new Error('Method not implemented.')
-  }
 
   async findManyByPackageId(packadeId: string) {
     const checkIns = await this.prisma.checkIn.findMany({
@@ -119,6 +116,71 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       where: {
         id: data.id,
       },
+    })
+  }
+
+  async findDetailsById(checkInId: string): Promise<CheckInDetails | null> {
+    const checkIn = await this.prisma.checkIn.findUnique({
+      where: {
+        id: checkInId,
+      },
+    })
+
+    if (!checkIn) {
+      return null
+    }
+
+    const customer = await this.prisma.customer.findUnique({
+      where: {
+        id: checkIn.customerId,
+      },
+    })
+
+    if (!customer) {
+      throw new Error(
+        `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
+      )
+    }
+
+    const checkInAttachments = await this.prisma.checkInAttachment.findMany({
+      where: {
+        checkInId: checkIn.id,
+      },
+    })
+
+    const attachmentsId = checkInAttachments.map((checkInAttachment) => {
+      return checkInAttachment.attachmentId.toString()
+    })
+
+    const attachments = await this.prisma.attachment.findMany({
+      where: {
+        id: {
+          in: attachmentsId,
+        },
+      },
+    })
+
+    if (attachments.length === 0) {
+      throw new Error(`Attachments do not exist.`)
+    }
+
+    const attachmentsDomain = attachments.map(PrismaAttachmentMapper.toDomain)
+    const checkInDomain = PrismaCheckInMapper.toDomain(checkIn)
+
+    return CheckInDetails.create({
+      checkInId: checkInDomain.id,
+      parcelForwardingId: checkInDomain.parcelForwardingId,
+      customerId: checkInDomain.customerId,
+      hubId: customer.hubId,
+      customerName: customer.name,
+      customerLastName: customer.lastName,
+      packageId: checkInDomain.packageId,
+      details: checkInDomain.details,
+      status: checkInDomain.status,
+      attachments: attachmentsDomain,
+      weight: checkInDomain.weight,
+      createdAt: checkInDomain.createdAt,
+      updatedAt: checkInDomain.updatedAt,
     })
   }
 }

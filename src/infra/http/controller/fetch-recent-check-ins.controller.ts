@@ -12,7 +12,7 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
-import { CheckInDetailsPresenter } from '../presenters/check-in-details-presenter'
+import { CheckInPresenter } from '../presenters/check-in-presenter'
 
 const pageQueryParamSchema = z
   .string()
@@ -55,6 +55,6 @@ export class FetchRecentCheckInsController {
 
     const checkIns = result.value.checkIns
 
-    return { checkIns: checkIns.map(CheckInDetailsPresenter.toHTTP) }
+    return { checkIns: checkIns.map(CheckInPresenter.toHTTP) }
   }
 }

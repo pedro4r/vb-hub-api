@@ -8,6 +8,7 @@ import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer
 import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
 import { GetCheckInUseCase } from './get-check-in'
 import { makeCustomer } from 'test/factories/make-customer'
+import { makeAttachment } from 'test/factories/make-attachment'
 
 let inMemoryCustomerRepository: InMemoryCustomerRepository
 let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
@@ -40,6 +41,11 @@ describe('Get Check-in', () => {
     )
 
     await inMemoryCustomerRepository.create(customer)
+
+    inMemoryAttachmentsRepository.items.push(
+      makeAttachment({}, new UniqueEntityID('1')),
+      makeAttachment({}, new UniqueEntityID('1')),
+    )
 
     const newCheckIn = makeCheckIn(
       {
@@ -80,6 +86,11 @@ describe('Get Check-in', () => {
     )
 
     await inMemoryCustomerRepository.create(customer)
+
+    inMemoryAttachmentsRepository.items.push(
+      makeAttachment({}, new UniqueEntityID('1')),
+      makeAttachment({}, new UniqueEntityID('1')),
+    )
 
     const newCheckIn = makeCheckIn(
       {

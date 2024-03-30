@@ -23,6 +23,18 @@ export class CheckInDetails extends ValueObject<CheckInDetailsProps> {
     return this.props.checkInId
   }
 
+  get hubId() {
+    return this.props.hubId
+  }
+
+  get customerName() {
+    return this.props.customerName
+  }
+
+  get customerLastName() {
+    return this.props.customerLastName
+  }
+
   get parcelForwardingId() {
     return this.props.parcelForwardingId
   }

@@ -1,15 +1,24 @@
-import { CheckIn } from '@/domain/parcel-forwarding/enterprise/entities/check-in'
+import { CheckInDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-details'
+import { AttachmentPresenter } from './attachment-presenter'
 
 export class CheckInDetailsPresenter {
-  static toHTTP(checkIn: CheckIn) {
+  static toHTTP(checkInDetails: CheckInDetails) {
     return {
-      id: checkIn.id.toString(),
-      status: checkIn.status,
-      weight: checkIn.weight,
-      customerId: checkIn.customerId,
-      parcelForwardingId: checkIn.parcelForwardingId,
-      attachments: checkIn.attachments.getItems(),
-      createdAt: checkIn.createdAt,
+      checkInId: checkInDetails.checkInId.toString(),
+      parcelForwardingId: checkInDetails.parcelForwardingId.toString(),
+      customerId: checkInDetails.customerId.toString(),
+      hubId: checkInDetails.hubId,
+      customerName: checkInDetails.customerName,
+      customerLastName: checkInDetails.customerLastName,
+      packageId: checkInDetails.packageId
+        ? checkInDetails.packageId.toString()
+        : null,
+      details: checkInDetails.details ?? null,
+      status: checkInDetails.status,
+      attachments: checkInDetails.attachments.map(AttachmentPresenter.toHTTP),
+      weight: checkInDetails.weight ?? null,
+      createdAt: checkInDetails.createdAt,
+      updatedAt: checkInDetails.updatedAt ?? null,
     }
   }
 }

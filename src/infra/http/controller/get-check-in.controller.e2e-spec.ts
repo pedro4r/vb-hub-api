@@ -76,7 +76,7 @@ describe('Get Check-in (E2E)', () => {
       attachmentId: attachment2.id,
     })
 
-    let checkInOnDatabase = await prisma.checkIn.findUnique({
+    const checkInOnDatabase = await prisma.checkIn.findUnique({
       where: {
         id: checkIn.id.toString(),
       },
@@ -84,44 +84,42 @@ describe('Get Check-in (E2E)', () => {
 
     expect(checkInOnDatabase).not.toBeNull()
 
-    let checkInAttachmentOnDatabase = await prisma.checkInAttachment.findMany({
-      where: {
-        checkInId: checkIn.id.toString(),
+    const checkInAttachmentOnDatabase = await prisma.checkInAttachment.findMany(
+      {
+        where: {
+          checkInId: checkIn.id.toString(),
+        },
       },
-    })
+    )
 
     expect(checkInAttachmentOnDatabase).toHaveLength(2)
 
-    let attachmentOnDatabase = await prisma.attachment.findMany()
+    const attachmentOnDatabase = await prisma.attachment.findMany()
 
     expect(attachmentOnDatabase).toHaveLength(2)
 
     const accessToken = jwt.sign({ sub: parcelForwarding.id.toString() })
 
     const response = await request(app.getHttpServer())
-      .delete(`/check-in/${checkIn.id.toString()}`)
+      .get(`/check-in/${checkIn.id.toString()}`)
       .set('Authorization', `Bearer ${accessToken}`)
+      .send()
 
-    expect(response.statusCode).toBe(204)
-
-    checkInOnDatabase = await prisma.checkIn.findUnique({
-      where: {
-        id: checkIn.id.toString(),
-      },
+    expect(response.statusCode).toBe(200)
+    expect(response.body).toEqual({
+      checkInDetails: expect.objectContaining({
+        status: expect.any(String),
+        attachments: expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(String),
+            url: expect.any(String),
+          }),
+          expect.objectContaining({
+            id: expect.any(String),
+            url: expect.any(String),
+          }),
+        ]),
+      }),
     })
-
-    expect(checkInOnDatabase).toBeNull()
-
-    checkInAttachmentOnDatabase = await prisma.checkInAttachment.findMany({
-      where: {
-        id: checkIn.id.toString(),
-      },
-    })
-
-    expect(checkInAttachmentOnDatabase).toHaveLength(0)
-
-    attachmentOnDatabase = await prisma.attachment.findMany()
-
-    expect(attachmentOnDatabase).toHaveLength(0)
   })
 })

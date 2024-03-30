@@ -36,6 +36,8 @@ import { UploadAndCreateAttachmentUseCase } from '@/domain/parcel-forwarding/app
 import { StorageModule } from '../storage/storage.module'
 import { DeleteCheckInController } from './controller/delete-check-in.controller'
 import { DeleteCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/delete-check-in'
+import { GetCheckInController } from './controller/get-check-in.controller'
+import { GetCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-check-in'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -58,6 +60,7 @@ import { DeleteCheckInUseCase } from '@/domain/parcel-forwarding/application/use
     GetDeclarationModelController,
     UploadAttachmentController,
     DeleteCheckInController,
+    GetCheckInController,
   ],
   providers: [
     CheckInUseCase,
@@ -77,6 +80,7 @@ import { DeleteCheckInUseCase } from '@/domain/parcel-forwarding/application/use
     GetDeclarationModelUseCase,
     UploadAndCreateAttachmentUseCase,
     DeleteCheckInUseCase,
+    GetCheckInUseCase,
   ],
 })
 export class HttpModule {}

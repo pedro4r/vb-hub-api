@@ -3,7 +3,6 @@ import {
   ConflictException,
   Controller,
   Get,
-  HttpCode,
   Param,
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
@@ -11,13 +10,13 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { GetCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-check-in'
+import { CheckInDetailsPresenter } from '../presenters/check-in-details-presenter'
 
 @Controller('/check-in/:id')
 export class GetCheckInController {
   constructor(private getCheckInUseCase: GetCheckInUseCase) {}
 
   @Get()
-  @HttpCode(204)
   async handle(
     @CurrentUser() user: UserPayload,
     @Param('id') checkInId: string,
@@ -40,6 +39,14 @@ export class GetCheckInController {
         default:
           throw new BadRequestException(error.message)
       }
+    }
+
+    const checkInDetails = CheckInDetailsPresenter.toHTTP(
+      result.value.checkInDetails,
+    )
+
+    return {
+      checkInDetails,
     }
   }
 }

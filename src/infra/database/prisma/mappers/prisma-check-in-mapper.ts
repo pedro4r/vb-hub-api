@@ -11,6 +11,7 @@ export class PrismaCheckInMapper {
         status: raw.status,
         details: raw.details,
         weight: raw.weight,
+        packageId: raw.packageId ? new UniqueEntityID(raw.packageId) : null,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
       },

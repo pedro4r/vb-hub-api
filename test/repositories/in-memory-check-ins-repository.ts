@@ -133,7 +133,7 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     const attachments =
       await this.attachmentsRepository.findManyByIds(attachmentsId)
 
-    if (attachments.length !== 0) {
+    if (attachments.length === 0) {
       throw new Error(`Attachments do not exist.`)
     }
 

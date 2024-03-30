@@ -13,7 +13,7 @@ interface GetCheckInUseCaseRequest {
 type GetCheckInUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {
-    checkIn: CheckInDetails
+    checkInDetails: CheckInDetails
   }
 >
 
@@ -25,16 +25,17 @@ export class GetCheckInUseCase {
     checkInId,
     parcelForwardingId,
   }: GetCheckInUseCaseRequest): Promise<GetCheckInUseCaseResponse> {
-    const checkIn = await this.checkInsRepository.findDetailsById(checkInId)
+    const checkInDetails =
+      await this.checkInsRepository.findDetailsById(checkInId)
 
-    if (!checkIn) {
+    if (!checkInDetails) {
       return left(new ResourceNotFoundError())
     }
 
-    if (parcelForwardingId !== checkIn.parcelForwardingId.toString()) {
+    if (parcelForwardingId !== checkInDetails.parcelForwardingId.toString()) {
       return left(new NotAllowedError())
     }
 
-    return right({ checkIn })
+    return right({ checkInDetails })
   }
 }
