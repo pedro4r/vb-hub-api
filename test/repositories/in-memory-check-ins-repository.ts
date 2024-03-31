@@ -6,6 +6,7 @@ import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-ch
 import { InMemoryCustomerRepository } from './in-memory-customer-repository'
 import { InMemoryAttachmentsRepository } from './in-memory-attachments-repository'
 import { CheckInDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-details'
+import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
 
 export class InMemoryCheckInsRepository implements CheckInsRepository {
   public items: CheckIn[] = []
@@ -56,7 +57,35 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20)
 
-    return checkIns
+    const checkInDetails = await Promise.all(
+      checkIns.map(async (checkIn) => {
+        const customer = await this.customerRepository.findById(
+          checkIn.customerId.toString(),
+        )
+
+        if (!customer) {
+          throw new Error(
+            `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
+          )
+        }
+
+        return CheckInPreview.create({
+          checkInId: checkIn.id,
+          parcelForwardingId: checkIn.parcelForwardingId,
+          customerId: checkIn.customerId,
+          hubId: customer.hubId.value,
+          customerName: customer.name,
+          customerLastName: customer.lastName,
+          packageId: checkIn.packageId,
+          status: checkIn.status,
+          weight: checkIn.weight,
+          createdAt: checkIn.createdAt,
+          updatedAt: checkIn.updatedAt,
+        })
+      }),
+    )
+
+    return checkInDetails
   }
 
   async delete(checkin: CheckIn) {

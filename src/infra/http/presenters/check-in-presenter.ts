@@ -1,15 +1,19 @@
-import { CheckIn } from '@/domain/parcel-forwarding/enterprise/entities/check-in'
+import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
 
 export class CheckInPresenter {
-  static toHTTP(checkIn: CheckIn) {
+  static toHTTP(checkInPreview: CheckInPreview) {
     return {
-      id: checkIn.id.toString(),
-      status: checkIn.status,
-      weight: checkIn.weight,
-      customerId: checkIn.customerId,
-      parcelForwardingId: checkIn.parcelForwardingId,
-      attachments: checkIn.attachments.getItems(),
-      createdAt: checkIn.createdAt,
+      checkInId: checkInPreview.checkInId.toString(),
+      parcelForwardingId: checkInPreview.parcelForwardingId.toString(),
+      customerId: checkInPreview.customerId.toString(),
+      hubId: checkInPreview.hubId,
+      customerName: checkInPreview.customerName,
+      customerLastName: checkInPreview.customerLastName,
+      packageId: checkInPreview.packageId?.toString() || null,
+      status: checkInPreview.status,
+      weight: checkInPreview.weight || null,
+      createdAt: checkInPreview.createdAt,
+      updatedAt: checkInPreview.updatedAt || null,
     }
   }
 }

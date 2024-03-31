@@ -10,7 +10,9 @@ import { CheckInAttachmentList } from '../../enterprise/entities/check-in-attach
 
 interface EditCheckInUseCaseRequest {
   checkInId: string
+  parcelForwardingId: string
   customerId: string
+  status: number
   details?: string | null
   weight?: number | null
   attachmentsIds: string[]
@@ -31,8 +33,11 @@ export class EditCheckInUseCase {
 
   async execute({
     checkInId,
+    parcelForwardingId,
     customerId,
+    status,
     details,
+    weight,
     attachmentsIds,
   }: EditCheckInUseCaseRequest): Promise<EditCheckInUseCaseResponse> {
     const checkin = await this.checkInsRepository.findById(checkInId)
@@ -41,8 +46,12 @@ export class EditCheckInUseCase {
       return left(new ResourceNotFoundError())
     }
 
+    if (checkin.parcelForwardingId.toString() !== parcelForwardingId) {
+      return left(new NotAllowedError('This check-in cannot be edited by you.'))
+    }
+
     if (customerId !== checkin.customerId.toString()) {
-      return left(new NotAllowedError())
+      return left(new NotAllowedError('This check-in cannot be edited by you.'))
     }
 
     const currentCheckinAttachments =
@@ -63,6 +72,8 @@ export class EditCheckInUseCase {
 
     checkin.attachments = checkInAttachmentList
     details ? (checkin.details = details) : (details = null)
+    checkin.status = status
+    weight ? (checkin.weight = weight) : (weight = null)
 
     await this.checkInsRepository.save(checkin)
 

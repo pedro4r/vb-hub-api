@@ -53,8 +53,12 @@ export class FetchRecentCheckInsController {
       }
     }
 
-    const checkIns = result.value.checkIns
+    const checkInsPreview = result.value.checkInsPreview.map(
+      CheckInPresenter.toHTTP,
+    )
 
-    return { checkIns: checkIns.map(CheckInPresenter.toHTTP) }
+    return {
+      checkInsPreview,
+    }
   }
 }

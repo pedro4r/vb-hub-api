@@ -62,9 +62,17 @@ describe('Fetch Recent Check-ins (E2E)', () => {
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
-      checkIns: expect.arrayContaining([
-        expect.objectContaining({ id: expect.any(String) }),
-        expect.objectContaining({ id: expect.any(String) }),
+      checkInsPreview: expect.arrayContaining([
+        expect.objectContaining({
+          checkInId: expect.any(String),
+          customerId: customer1.id.toString(),
+          parcelForwardingId: parcelForwarding.id.toString(),
+        }),
+        expect.objectContaining({
+          checkInId: expect.any(String),
+          customerId: customer2.id.toString(),
+          parcelForwardingId: parcelForwarding.id.toString(),
+        }),
       ]),
     })
   })

@@ -1,6 +1,7 @@
 import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-check-in'
 import { CheckIn } from '../../enterprise/entities/check-in'
 import { CheckInDetails } from '../../enterprise/entities/value-objects/check-in-details'
+import { CheckInPreview } from '../../enterprise/entities/value-objects/check-in-preview'
 
 export abstract class CheckInsRepository {
   abstract create(checkIn: CheckIn): Promise<void>
@@ -8,7 +9,7 @@ export abstract class CheckInsRepository {
   abstract findManyRecent(
     parcelForwardingId: string,
     page: number,
-  ): Promise<CheckIn[]>
+  ): Promise<CheckInPreview[]>
 
   abstract findDetailsById(checkInId: string): Promise<CheckInDetails | null>
   abstract findManyByPackageId(packadeId: string): Promise<CheckIn[]>

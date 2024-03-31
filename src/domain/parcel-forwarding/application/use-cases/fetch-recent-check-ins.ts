@@ -2,8 +2,8 @@ import { Either, left, right } from '@/core/either'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { CheckInsRepository } from '../repositories/check-ins-repository'
-import { CheckIn } from '../../enterprise/entities/check-in'
 import { Injectable } from '@nestjs/common'
+import { CheckInPreview } from '../../enterprise/entities/value-objects/check-in-preview'
 
 interface FetchCheckInsUseCaseRequest {
   parcelForwardingId: string
@@ -13,7 +13,7 @@ interface FetchCheckInsUseCaseRequest {
 type FetchCheckInsUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {
-    checkIns: CheckIn[]
+    checkInsPreview: CheckInPreview[]
   }
 >
 @Injectable()
@@ -24,21 +24,23 @@ export class FetchRecentCheckInsUseCase {
     parcelForwardingId,
     page,
   }: FetchCheckInsUseCaseRequest): Promise<FetchCheckInsUseCaseResponse> {
-    const checkIns = await this.checkInsRepository.findManyRecent(
+    const checkInsPreview = await this.checkInsRepository.findManyRecent(
       parcelForwardingId,
       page,
     )
 
-    if (checkIns.length === 0) {
+    if (checkInsPreview.length === 0) {
       return left(new ResourceNotFoundError('Check-ins not found.'))
     }
 
-    if (parcelForwardingId !== checkIns[0].parcelForwardingId.toString()) {
+    if (
+      parcelForwardingId !== checkInsPreview[0].parcelForwardingId.toString()
+    ) {
       return left(
         new NotAllowedError('You are not allowed to fetch these check-ins.'),
       )
     }
 
-    return right({ checkIns })
+    return right({ checkInsPreview })
   }
 }

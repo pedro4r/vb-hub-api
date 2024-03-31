@@ -63,6 +63,11 @@ export class CheckIn extends AggregateRoot<CheckInProps> {
     return this.props.weight
   }
 
+  set weight(weight: number) {
+    this.props.weight = weight
+    this.touch()
+  }
+
   get status(): string {
     return CheckInStatus[this.props.status]
   }

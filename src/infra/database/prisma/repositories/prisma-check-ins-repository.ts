@@ -7,6 +7,8 @@ import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-ch
 import { CheckInAttachmentsRepository } from '@/domain/parcel-forwarding/application/repositories/check-in-attachments-repository'
 import { CheckInDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-details'
 import { PrismaAttachmentMapper } from '../mappers/prisma-attachment-mapper'
+import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
+import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
 
 @Injectable()
 export class PrismaCheckInsRepository implements CheckInsRepository {
@@ -67,7 +69,39 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       skip: (page - 1) * 20,
     })
 
-    return checkIns.map(PrismaCheckInMapper.toDomain)
+    const checkInDetails = await Promise.all(
+      checkIns.map(async (checkIn) => {
+        const customer = await this.prisma.customer.findUnique({
+          where: {
+            id: checkIn.customerId.toString(),
+          },
+        })
+
+        if (!customer) {
+          throw new ResourceNotFoundError(
+            `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
+          )
+        }
+
+        const checkInDomain = PrismaCheckInMapper.toDomain(checkIn)
+
+        return CheckInPreview.create({
+          checkInId: checkInDomain.id,
+          parcelForwardingId: checkInDomain.parcelForwardingId,
+          customerId: checkInDomain.customerId,
+          hubId: customer.hubId,
+          customerName: customer.name,
+          customerLastName: customer.lastName,
+          packageId: checkInDomain.packageId,
+          status: checkInDomain.status,
+          weight: checkInDomain.weight,
+          createdAt: checkInDomain.createdAt,
+          updatedAt: checkInDomain.updatedAt,
+        })
+      }),
+    )
+
+    return checkInDetails
   }
 
   async create(checkIn: CheckIn) {
