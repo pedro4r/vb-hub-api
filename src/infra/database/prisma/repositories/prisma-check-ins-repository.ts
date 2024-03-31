@@ -9,6 +9,7 @@ import { CheckInDetails } from '@/domain/parcel-forwarding/enterprise/entities/v
 import { PrismaAttachmentMapper } from '../mappers/prisma-attachment-mapper'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
+import { DomainEvents } from '@/core/events/domain-events'
 
 @Injectable()
 export class PrismaCheckInsRepository implements CheckInsRepository {
@@ -139,6 +140,16 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       },
       data,
     })
+
+    await this.checkInAttachmentsRepository.createMany(
+      checkIn.attachments.getNewItems(),
+    )
+
+    await this.checkInAttachmentsRepository.deleteMany(
+      checkIn.attachments.getRemovedItems(),
+    )
+
+    DomainEvents.dispatchEventsForAggregate(checkIn.id)
   }
 
   async delete(checkIn: CheckIn): Promise<void> {

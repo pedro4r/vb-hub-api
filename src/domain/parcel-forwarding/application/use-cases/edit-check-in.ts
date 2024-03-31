@@ -7,6 +7,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { CheckInAttachmentsRepository } from '../repositories/check-in-attachments-repository'
 import { CheckInAttachmentList } from '../../enterprise/entities/check-in-attachment-list'
+import { Injectable } from '@nestjs/common'
 
 interface EditCheckInUseCaseRequest {
   checkInId: string
@@ -24,7 +25,7 @@ type EditCheckInUseCaseResponse = Either<
     checkin: CheckIn
   }
 >
-
+@Injectable()
 export class EditCheckInUseCase {
   constructor(
     private checkInsRepository: CheckInsRepository,

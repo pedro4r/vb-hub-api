@@ -18,7 +18,7 @@ import { EditCheckInUseCase } from '@/domain/parcel-forwarding/application/use-c
 const editCheckInBodySchema = z.object({
   customerId: z.string().uuid(),
   details: z.string().optional().default(''),
-  status: z.number().optional().default(1),
+  status: z.string().transform(Number).pipe(z.number().min(1)),
   weight: z
     .string()
     .optional()
@@ -32,7 +32,7 @@ const bodyValidationPipe = new ZodValidationPipe(editCheckInBodySchema)
 
 type EditCheckInBodySchema = z.infer<typeof editCheckInBodySchema>
 
-@Controller('/declaration-model/:id')
+@Controller('/check-in/:id')
 export class EditCheckInController {
   constructor(private editCheckInUseCase: EditCheckInUseCase) {}
 

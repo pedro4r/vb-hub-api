@@ -21,9 +21,9 @@ export class PrismaCheckInAttachmentsRepository
     )
   }
 
-  async deleteMany(attachments: CheckInAttachment[]): Promise<void> {
-    const attachmentIds = attachments.map((attachment) => {
-      return attachment.id.toString()
+  async deleteMany(checkInAttachments: CheckInAttachment[]): Promise<void> {
+    const attachmentIds = checkInAttachments.map((attachment) => {
+      return attachment.attachmentId.toString()
     })
     await this.prisma.checkInAttachment.deleteMany({
       where: {
