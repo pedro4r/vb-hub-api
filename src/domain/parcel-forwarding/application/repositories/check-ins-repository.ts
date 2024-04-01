@@ -11,7 +11,7 @@ export abstract class CheckInsRepository {
     page: number,
   ): Promise<CheckInPreview[]>
 
-  abstract findManyRecentCheckInsAttachments(
+  abstract findManyRecentCheckInsDetails(
     parcelForwardingId: string,
     page: number,
   ): Promise<CheckInDetails[]>

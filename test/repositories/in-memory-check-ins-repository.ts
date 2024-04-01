@@ -183,7 +183,7 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     })
   }
 
-  async findManyRecentCheckInsAttachments(
+  async findManyRecentCheckInsDetails(
     parcelForwardingId: string,
     page: number,
   ) {
