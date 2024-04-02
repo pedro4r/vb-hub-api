@@ -66,7 +66,9 @@ describe('Edit Package', () => {
       inMemoryCustomsDeclarationItemsRepository,
       inMemoryPackageShippingAddressRepository,
       inMemoryCheckInsRepository,
+      inMemoryCustomerRepository,
     )
+
     sut = new EditPackagesUseCase(
       inMemoryPackageRepository,
       inMemoryDeclarationModelsItemsRepository,

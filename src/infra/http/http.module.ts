@@ -42,6 +42,8 @@ import { EditCheckInUseCase } from '@/domain/parcel-forwarding/application/use-c
 import { EditCheckInController } from './controller/edit-check-in.controller'
 import { FetchRecentCheckInsDetailsController } from './controller/fetch-recent-check-ins-details.controller'
 import { FetchRecentCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-check-ins-details'
+import { FetchRecentPackagesController } from './controller/fetch-recent-packages.controller'
+import { FetchRecentPackagesUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-packages'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -67,6 +69,7 @@ import { FetchRecentCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/ap
     GetCheckInController,
     EditCheckInController,
     FetchRecentCheckInsDetailsController,
+    FetchRecentPackagesController,
   ],
   providers: [
     CheckInUseCase,
@@ -89,6 +92,7 @@ import { FetchRecentCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/ap
     GetCheckInUseCase,
     EditCheckInUseCase,
     FetchRecentCheckInsDetailsUseCase,
+    FetchRecentPackagesUseCase,
   ],
 })
 export class HttpModule {}

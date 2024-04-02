@@ -54,6 +54,7 @@ describe('Delete an Package', () => {
       inMemoryCustomsDeclarationItemsRepository,
       inMemoryPackageShippingAddressRepository,
       inMemoryCheckInsRepository,
+      inMemoryCustomerRepository,
     )
     sut = new DeletePackageUseCase(inMemoryPackageRepository)
 

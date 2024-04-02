@@ -4,6 +4,8 @@ import { PackageRepository } from '@/domain/customer/application/repositories/pa
 import { Package } from '@/domain/customer/enterprise/entities/package'
 import { PrismaPackageMapper } from '../mappers/prisma-package-mapper'
 import { PackageShippingAddressRepository } from '@/domain/customer/application/repositories/package-shipping-address-repository'
+import { PackagePreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-preview'
+import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 
 @Injectable()
 export class PrismaPackageRepository implements PackageRepository {
@@ -65,5 +67,55 @@ export class PrismaPackageRepository implements PackageRepository {
     })
 
     return packages.map((pkg) => PrismaPackageMapper.toDomain(pkg))
+  }
+
+  async findManyRecentByParcelForwardingId(
+    parcelForwardingId: string,
+    page: number,
+  ) {
+    const packages = await this.prisma.package.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        parcelForwardingId,
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+    })
+
+    const packagesPreviews = await Promise.all(
+      packages.map(async (pkg) => {
+        const customer = await this.prisma.customer.findUnique({
+          where: {
+            id: pkg.customerId.toString(),
+          },
+        })
+
+        if (!customer) {
+          throw new ResourceNotFoundError(
+            `Customer with ID "${pkg.customerId.toString()}" does not exist.`,
+          )
+        }
+
+        const packageDomain = PrismaPackageMapper.toDomain(pkg)
+
+        return PackagePreview.create({
+          packageId: packageDomain.id,
+          parcelForwardingId: packageDomain.parcelForwardingId,
+          customerId: packageDomain.customerId,
+          hubId: customer.hubId,
+          customerName: customer.name,
+          customerLastName: customer.lastName,
+          hasBattery: packageDomain.hasBattery,
+          weight: packageDomain.weight,
+          trackingNumber: packageDomain.trackingNumber,
+          createdAt: packageDomain.createdAt,
+          updatedAt: packageDomain.updatedAt,
+        })
+      }),
+    )
+
+    return packagesPreviews
   }
 }

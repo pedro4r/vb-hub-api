@@ -113,8 +113,6 @@ describe('Fetch Recent Check-ins Details', () => {
 
     expect(result.isRight()).toBeTruthy()
 
-    console.log(JSON.stringify(result.value, null, 2))
-
     expect(result.value).toEqual({
       checkInsDetails: expect.arrayContaining([
         expect.objectContaining({
@@ -169,7 +167,7 @@ describe('Fetch Recent Check-ins Details', () => {
     })
   })
 
-  it.skip('should not be able to fetch recent check-ins', async () => {
+  it('should not be able to fetch recent check-ins', async () => {
     const checkIn1 = makeCheckIn({
       parcelForwardingId: new UniqueEntityID('parcel-forwarding-1'),
       createdAt: new Date('2021-01-01'),

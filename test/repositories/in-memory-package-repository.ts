@@ -1,9 +1,11 @@
 import { DomainEvents } from '@/core/events/domain-events'
+import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
 import { CustomsDeclarationItemsRepository } from '@/domain/customer/application/repositories/customs-declaration-items-repository'
 import { PackageRepository } from '@/domain/customer/application/repositories/package-repository'
 import { PackageShippingAddressRepository } from '@/domain/customer/application/repositories/package-shipping-address-repository'
 import { Package } from '@/domain/customer/enterprise/entities/package'
 import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repositories/check-ins-repository'
+import { PackagePreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-preview'
 
 export class InMemoryPackageRepository implements PackageRepository {
   public items: Package[] = []
@@ -12,7 +14,50 @@ export class InMemoryPackageRepository implements PackageRepository {
     private customsDeclarationItemsRepository: CustomsDeclarationItemsRepository,
     private packageShippingAddressRepository: PackageShippingAddressRepository,
     private checkInsRepository: CheckInsRepository,
+    private customerRepository: CustomerRepository,
   ) {}
+
+  async findManyRecentByParcelForwardingId(
+    parcelForwardingId: string,
+    page: number,
+  ) {
+    const packages = this.items
+      .filter(
+        (item) => item.parcelForwardingId.toString() === parcelForwardingId,
+      )
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice((page - 1) * 20, page * 20)
+
+    const packagesPreviews = await Promise.all(
+      packages.map(async (pkg) => {
+        const customer = await this.customerRepository.findById(
+          pkg.customerId.toString(),
+        )
+
+        if (!customer) {
+          throw new Error(
+            `Customer with ID "${pkg.customerId.toString()}" does not exist.`,
+          )
+        }
+
+        return PackagePreview.create({
+          packageId: pkg.id,
+          parcelForwardingId: pkg.parcelForwardingId,
+          customerId: pkg.customerId,
+          hubId: customer.hubId.value,
+          customerName: customer.name,
+          customerLastName: customer.lastName,
+          weight: pkg.weight,
+          hasBattery: pkg.hasBattery,
+          trackingNumber: pkg.trackingNumber,
+          createdAt: pkg.createdAt,
+          updatedAt: pkg.updatedAt,
+        })
+      }),
+    )
+
+    return packagesPreviews
+  }
 
   async findManyByCustomerId(id: string) {
     const packages = this.items.filter(

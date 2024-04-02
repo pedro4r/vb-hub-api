@@ -25,7 +25,7 @@ export class FetchRecentCheckInsDetailsUseCase {
     page,
   }: FetchRecentCheckInsDetailsUseCaseRequest): Promise<FetchRecentCheckInsDetailsUseCaseResponse> {
     const checkInsDetails =
-      await this.checkInsRepository.findManyRecentCheckInsDetails(
+      await this.checkInsRepository.findManyRecentByParcelForwardingIdCheckInsDetails(
         parcelForwardingId,
         page,
       )

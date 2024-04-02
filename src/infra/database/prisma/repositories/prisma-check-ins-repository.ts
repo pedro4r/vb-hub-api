@@ -58,7 +58,10 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     )
   }
 
-  async findManyRecent(parcelForwardingId: string, page: number) {
+  async findManyRecentByParcelForwardingId(
+    parcelForwardingId: string,
+    page: number,
+  ) {
     const checkIns = await this.prisma.checkIn.findMany({
       orderBy: {
         createdAt: 'desc',
@@ -229,7 +232,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     })
   }
 
-  async findManyRecentCheckInsDetails(
+  async findManyRecentByParcelForwardingIdCheckInsDetails(
     parcelForwardingId: string,
     page: number,
   ) {

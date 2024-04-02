@@ -6,12 +6,12 @@ import { CheckInPreview } from '../../enterprise/entities/value-objects/check-in
 export abstract class CheckInsRepository {
   abstract create(checkIn: CheckIn): Promise<void>
   abstract findById(id: string): Promise<CheckIn | null>
-  abstract findManyRecent(
+  abstract findManyRecentByParcelForwardingId(
     parcelForwardingId: string,
     page: number,
   ): Promise<CheckInPreview[]>
 
-  abstract findManyRecentCheckInsDetails(
+  abstract findManyRecentByParcelForwardingIdCheckInsDetails(
     parcelForwardingId: string,
     page: number,
   ): Promise<CheckInDetails[]>

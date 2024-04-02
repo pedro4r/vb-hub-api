@@ -1,3 +1,4 @@
+import { PackagePreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-preview'
 import { Package } from '../../enterprise/entities/package'
 
 export abstract class PackageRepository {
@@ -6,4 +7,8 @@ export abstract class PackageRepository {
   abstract save(pkg: Package): Promise<void>
   abstract delete(pkg: Package): Promise<void>
   abstract findManyByCustomerId(id: string): Promise<Package[]>
+  abstract findManyRecentByParcelForwardingId(
+    id: string,
+    page: number,
+  ): Promise<PackagePreview[]>
 }

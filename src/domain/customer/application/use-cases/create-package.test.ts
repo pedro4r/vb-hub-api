@@ -64,6 +64,7 @@ describe('Create Package', () => {
       inMemoryCustomsDeclarationItemsRepository,
       inMemoryPackageShippingAddressRepository,
       inMemoryCheckInsRepository,
+      inMemoryCustomerRepository,
     )
 
     sut = new CreatePackageUseCase(

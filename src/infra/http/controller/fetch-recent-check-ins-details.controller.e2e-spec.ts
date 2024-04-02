@@ -112,8 +112,6 @@ describe('Fetch Recent Check-ins Details (E2E)', () => {
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
-    console.log(JSON.stringify(response.body, null, 2))
-
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
       checkInsDetails: expect.arrayContaining([

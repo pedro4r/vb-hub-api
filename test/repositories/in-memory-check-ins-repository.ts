@@ -49,7 +49,10 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     })
   }
 
-  async findManyRecent(parcelForwardingId: string, page: number) {
+  async findManyRecentByParcelForwardingId(
+    parcelForwardingId: string,
+    page: number,
+  ) {
     const checkIns = this.items
       .filter(
         (item) => item.parcelForwardingId.toString() === parcelForwardingId,
@@ -183,7 +186,7 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     })
   }
 
-  async findManyRecentCheckInsDetails(
+  async findManyRecentByParcelForwardingIdCheckInsDetails(
     parcelForwardingId: string,
     page: number,
   ) {

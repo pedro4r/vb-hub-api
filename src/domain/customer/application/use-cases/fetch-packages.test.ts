@@ -15,7 +15,6 @@ import { makeCustomsDeclarationItems } from 'test/factories/make-customs-declara
 import { CustomsDeclarationList } from '../../enterprise/entities/customs-declaration-list'
 import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
 import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
-
 let inMemoryCustomerRepository: InMemoryCustomerRepository
 let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
 let inMemoryCheckInsAttachmentsRepository: InMemoryCheckInsAttachmentsRepository
@@ -54,6 +53,7 @@ describe('Get an Package', () => {
       inMemoryCustomsDeclarationItemsRepository,
       inMemoryPackageShippingAddressRepository,
       inMemoryCheckInsRepository,
+      inMemoryCustomerRepository,
     )
     sut = new FetchPackageUseCase(inMemoryPackageRepository)
 

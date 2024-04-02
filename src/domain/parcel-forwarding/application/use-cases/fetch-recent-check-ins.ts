@@ -5,12 +5,12 @@ import { CheckInsRepository } from '../repositories/check-ins-repository'
 import { Injectable } from '@nestjs/common'
 import { CheckInPreview } from '../../enterprise/entities/value-objects/check-in-preview'
 
-interface FetchCheckInsUseCaseRequest {
+interface FetchRecentCheckInsUseCaseRequest {
   parcelForwardingId: string
   page: number
 }
 
-type FetchCheckInsUseCaseResponse = Either<
+type FetchRecentCheckInsUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {
     checkInsPreview: CheckInPreview[]
@@ -23,11 +23,12 @@ export class FetchRecentCheckInsUseCase {
   async execute({
     parcelForwardingId,
     page,
-  }: FetchCheckInsUseCaseRequest): Promise<FetchCheckInsUseCaseResponse> {
-    const checkInsPreview = await this.checkInsRepository.findManyRecent(
-      parcelForwardingId,
-      page,
-    )
+  }: FetchRecentCheckInsUseCaseRequest): Promise<FetchRecentCheckInsUseCaseResponse> {
+    const checkInsPreview =
+      await this.checkInsRepository.findManyRecentByParcelForwardingId(
+        parcelForwardingId,
+        page,
+      )
 
     if (checkInsPreview.length === 0) {
       return left(new ResourceNotFoundError('Check-ins not found.'))

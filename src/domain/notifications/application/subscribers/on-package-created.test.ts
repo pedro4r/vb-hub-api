@@ -68,6 +68,7 @@ describe('On Check-in Created', () => {
       inMemoryCustomsDeclarationItemsRepository,
       inMemoryPackageShippingAddressRepository,
       inMemoryCheckInsRepository,
+      inMemoryCustomerRepository,
     )
 
     inMemoryNotificationsRepository = new InMemoryNotificationsRepository()
