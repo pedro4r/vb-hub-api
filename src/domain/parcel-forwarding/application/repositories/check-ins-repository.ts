@@ -11,13 +11,17 @@ export abstract class CheckInsRepository {
     page: number,
   ): Promise<CheckInPreview[]>
 
-  abstract findManyRecentByParcelForwardingIdCheckInsDetails(
+  abstract findManyRecentCheckInsDetailsByParcelForwardingId(
     parcelForwardingId: string,
     page: number,
   ): Promise<CheckInDetails[]>
 
   abstract findDetailsById(checkInId: string): Promise<CheckInDetails | null>
-  abstract findManyByPackageId(packadeId: string): Promise<CheckIn[]>
+  abstract findManyByPackageId(
+    packadeId: string,
+    page: number,
+  ): Promise<CheckInDetails[]>
+
   abstract save(checkIn: CheckIn): Promise<void>
   abstract linkManyCheckInToPackage(checkIns: PackageCheckIn[]): Promise<void>
   abstract unlinkManyCheckInToPackage(checkIns: PackageCheckIn[]): Promise<void>

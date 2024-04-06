@@ -232,7 +232,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     })
   }
 
-  async findManyRecentByParcelForwardingIdCheckInsDetails(
+  async findManyRecentCheckInsDetailsByParcelForwardingId(
     parcelForwardingId: string,
     page: number,
   ) {

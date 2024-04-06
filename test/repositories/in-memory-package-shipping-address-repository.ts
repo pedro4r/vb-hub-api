@@ -12,16 +12,16 @@ export class InMemoryPackageShippingAddressRepository
 
   constructor(private shippingAddressRepository: ShippingAddressRepository) {}
 
-  async findById(shippingAddressId: string) {
-    const address = this.items.find(
-      (item) => item.id.toString() === shippingAddressId,
+  async findById(id: string) {
+    const packageShippingAddress = this.items.find(
+      (item) => item.id.toString() === id,
     )
 
-    if (!address) {
+    if (!packageShippingAddress) {
       return null
     }
 
-    return address
+    return packageShippingAddress
   }
 
   async create(shippingAddressId: string) {

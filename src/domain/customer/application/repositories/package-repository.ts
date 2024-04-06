@@ -1,5 +1,6 @@
 import { PackagePreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-preview'
 import { Package } from '../../enterprise/entities/package'
+import { PackageDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-details'
 
 export abstract class PackageRepository {
   abstract create(pkg: Package): Promise<void>
@@ -11,4 +12,9 @@ export abstract class PackageRepository {
     id: string,
     page: number,
   ): Promise<PackagePreview[]>
+
+  abstract findDetailsById(
+    id: string,
+    checkInsPageNumber: number,
+  ): Promise<PackageDetails | null>
 }

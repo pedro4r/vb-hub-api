@@ -5,6 +5,7 @@ import { PackageRepository } from '@/domain/customer/application/repositories/pa
 import { PackageShippingAddressRepository } from '@/domain/customer/application/repositories/package-shipping-address-repository'
 import { Package } from '@/domain/customer/enterprise/entities/package'
 import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repositories/check-ins-repository'
+import { PackageDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-details'
 import { PackagePreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-preview'
 
 export class InMemoryPackageRepository implements PackageRepository {
@@ -133,5 +134,55 @@ export class InMemoryPackageRepository implements PackageRepository {
     )
 
     this.items = this.items.filter((item) => !item.id.equals(pkg.id))
+  }
+
+  async findDetailsById(packageId: string, checkInsPageNumber: number) {
+    const pkg = this.items.find((item) => item.id.toString() === packageId)
+
+    if (!pkg) {
+      return null
+    }
+
+    const customer = await this.customerRepository.findById(
+      pkg.customerId.toString(),
+    )
+
+    if (!customer) {
+      throw new Error(
+        `Customer with ID "${pkg.customerId.toString()}" does not exist.`,
+      )
+    }
+
+    const checkInsDetails = await this.checkInsRepository.findManyByPackageId(
+      pkg.id.toString(),
+      checkInsPageNumber,
+    )
+
+    const packageShippindAddress =
+      await this.packageShippingAddressRepository.findById(
+        pkg.shippingAddressId.toString(),
+      )
+
+    if (!packageShippindAddress) {
+      throw new Error(
+        `Package shipping address with ID "${pkg.shippingAddressId.toString()}" does not exist.`,
+      )
+    }
+
+    return PackageDetails.create({
+      packageId: pkg.id,
+      parcelForwardingId: pkg.parcelForwardingId,
+      customerId: pkg.customerId,
+      packageShippingAddress: packageShippindAddress,
+      checkIns: checkInsDetails,
+      hubId: customer.hubId.value,
+      customerName: customer.name,
+      customerLastName: customer.lastName,
+      weight: pkg.weight,
+      hasBattery: pkg.hasBattery,
+      trackingNumber: pkg.trackingNumber,
+      createdAt: pkg.createdAt,
+      updatedAt: pkg.updatedAt,
+    })
   }
 }

@@ -17,12 +17,59 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     private customerRepository: InMemoryCustomerRepository,
   ) {}
 
-  async findManyByPackageId(packadeId: string) {
-    const checkIns = this.items.filter(
-      (item) => item.packageId?.toString() === packadeId,
+  async findManyByPackageId(packageId: string, page: number) {
+    const checkIns = this.items
+      .filter((item) => item.packageId?.toString() === packageId)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice((page - 1) * 20, page * 20)
+
+    const checkInsDetails = await Promise.all(
+      checkIns.map(async (checkIn) => {
+        const customer = await this.customerRepository.findById(
+          checkIn.customerId.toString(),
+        )
+
+        if (!customer) {
+          throw new Error(
+            `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
+          )
+        }
+
+        const checkInAttachments =
+          await this.checkInsAttachmentsRepository.findManyByCheckInId(
+            checkIn.id.toString(),
+          )
+
+        const attachmentsId = checkInAttachments.map((checkInAttachment) => {
+          return checkInAttachment.attachmentId.toString()
+        })
+
+        const attachments =
+          await this.attachmentsRepository.findManyByIds(attachmentsId)
+
+        if (attachments.length === 0) {
+          throw new Error(`Attachments do not exist.`)
+        }
+
+        return CheckInDetails.create({
+          checkInId: checkIn.id,
+          parcelForwardingId: checkIn.parcelForwardingId,
+          customerId: checkIn.customerId,
+          hubId: customer.hubId.value,
+          customerName: customer.name,
+          customerLastName: customer.lastName,
+          packageId: checkIn.packageId,
+          details: checkIn.details,
+          status: checkIn.status,
+          attachments,
+          weight: checkIn.weight,
+          createdAt: checkIn.createdAt,
+          updatedAt: checkIn.updatedAt,
+        })
+      }),
     )
 
-    return checkIns
+    return checkInsDetails
   }
 
   async linkManyCheckInToPackage(checkIns: PackageCheckIn[]) {
@@ -186,7 +233,7 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     })
   }
 
-  async findManyRecentByParcelForwardingIdCheckInsDetails(
+  async findManyRecentCheckInsDetailsByParcelForwardingId(
     parcelForwardingId: string,
     page: number,
   ) {
