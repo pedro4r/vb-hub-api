@@ -5,7 +5,7 @@ import { Entity } from '@/core/entities/entity'
 export interface CustomerProps {
   parcelForwardingId: UniqueEntityID
   hubId: HubId
-  name: string
+  firstName: string
   lastName: string
   email: string
   password: string
@@ -20,12 +20,12 @@ export class Customer extends Entity<CustomerProps> {
     return this.props.hubId
   }
 
-  get name() {
-    return this.props.name
+  get firstName() {
+    return this.props.firstName
   }
 
-  set name(name: string) {
-    this.props.name = name
+  set firstName(firstName: string) {
+    this.props.firstName = firstName
   }
 
   get lastName() {

@@ -7,7 +7,7 @@ export interface CheckInDetailsProps {
   parcelForwardingId: UniqueEntityID
   customerId: UniqueEntityID
   hubId: string
-  customerName: string
+  customerFirstName: string
   customerLastName: string
   packageId?: UniqueEntityID | null
   details?: string | null
@@ -27,8 +27,8 @@ export class CheckInDetails extends ValueObject<CheckInDetailsProps> {
     return this.props.hubId
   }
 
-  get customerName() {
-    return this.props.customerName
+  get customerFirstName() {
+    return this.props.customerFirstName
   }
 
   get customerLastName() {

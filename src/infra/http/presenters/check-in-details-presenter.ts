@@ -8,7 +8,7 @@ export class CheckInDetailsPresenter {
       parcelForwardingId: checkInDetails.parcelForwardingId.toString(),
       customerId: checkInDetails.customerId.toString(),
       hubId: checkInDetails.hubId,
-      customerName: checkInDetails.customerName,
+      customerFirstName: checkInDetails.customerFirstName,
       customerLastName: checkInDetails.customerLastName,
       packageId: checkInDetails.packageId
         ? checkInDetails.packageId.toString()

@@ -1,7 +1,6 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ValueObject } from '@/core/entities/value-object'
 
-import { CheckInDetails } from './check-in-details'
 import { PackageShippingAddress } from '@/domain/customer/enterprise/entities/package-shipping-address'
 
 export interface PackageDetailsProps {
@@ -9,9 +8,8 @@ export interface PackageDetailsProps {
   parcelForwardingId: UniqueEntityID
   customerId: UniqueEntityID
   packageShippingAddress: PackageShippingAddress
-  checkIns: CheckInDetails[]
   hubId: string
-  customerName: string
+  customerFirstName: string
   customerLastName: string
   weight?: number | null
   hasBattery: boolean
@@ -29,16 +27,12 @@ export class PackageDetails extends ValueObject<PackageDetailsProps> {
     return this.props.packageShippingAddress
   }
 
-  get checkIns() {
-    return this.props.checkIns
-  }
-
   get hubId() {
     return this.props.hubId
   }
 
-  get customerName() {
-    return this.props.customerName
+  get customerFirstName() {
+    return this.props.customerFirstName
   }
 
   get customerLastName() {

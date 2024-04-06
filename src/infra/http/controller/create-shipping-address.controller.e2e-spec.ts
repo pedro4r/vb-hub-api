@@ -37,7 +37,7 @@ describe('Create Shipping Address (E2E)', () => {
       data: {
         parcelForwardingId: parcelForwarding.id,
         hubId: 'VBX-123',
-        name: 'Pedro',
+        firstName: 'Pedro',
         lastName: 'Requiao',
         email: 'alonsofts@gmail.com',
         password: '123456',

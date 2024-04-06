@@ -34,7 +34,7 @@ describe('Register Customer', () => {
 
     const result = await sut.execute({
       parcelForwardingId: parcelforwarding.id.toString(),
-      name: 'Pedro',
+      firstName: 'Pedro',
       lastName: 'Requiao',
       email: 'pedro@example.com',
       password: '123456',
@@ -56,7 +56,7 @@ describe('Register Customer', () => {
 
     const result = await sut.execute({
       parcelForwardingId: parcelforwarding.id.toString(),
-      name: 'Pedro',
+      firstName: 'Pedro',
       lastName: 'Requiao',
       email: 'pedro@example.com',
       password: '123456',

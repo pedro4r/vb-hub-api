@@ -6,6 +6,7 @@ import { PrismaPackageMapper } from '../mappers/prisma-package-mapper'
 import { PackageShippingAddressRepository } from '@/domain/customer/application/repositories/package-shipping-address-repository'
 import { PackagePreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-preview'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
+import { PackageDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-details'
 
 @Injectable()
 export class PrismaPackageRepository implements PackageRepository {
@@ -13,6 +14,8 @@ export class PrismaPackageRepository implements PackageRepository {
     private prisma: PrismaService,
     private packageShippingAddressRepository: PackageShippingAddressRepository,
   ) {}
+
+  async findDetailsById(id: string): Promise<PackageDetails | null> {}
 
   async create(pkg: Package): Promise<void> {
     await this.packageShippingAddressRepository.create(
@@ -105,7 +108,7 @@ export class PrismaPackageRepository implements PackageRepository {
           parcelForwardingId: packageDomain.parcelForwardingId,
           customerId: packageDomain.customerId,
           hubId: customer.hubId,
-          customerName: customer.name,
+          customerFirstName: customer.firstName,
           customerLastName: customer.lastName,
           hasBattery: packageDomain.hasBattery,
           weight: packageDomain.weight,

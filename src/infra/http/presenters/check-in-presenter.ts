@@ -7,7 +7,7 @@ export class CheckInPresenter {
       parcelForwardingId: checkInPreview.parcelForwardingId.toString(),
       customerId: checkInPreview.customerId.toString(),
       hubId: checkInPreview.hubId,
-      customerName: checkInPreview.customerName,
+      customerFirstName: checkInPreview.customerFirstName,
       customerLastName: checkInPreview.customerLastName,
       packageId: checkInPreview.packageId?.toString() || null,
       status: checkInPreview.status,

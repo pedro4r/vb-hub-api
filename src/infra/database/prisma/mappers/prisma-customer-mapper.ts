@@ -8,7 +8,7 @@ export class PrismaCustomerMapper {
     const [parcelForwadingInitials, customerCode] = raw.hubId.split('-')
     return Customer.create(
       {
-        name: raw.name,
+        firstName: raw.firstName,
         lastName: raw.lastName,
         hubId: HubId.create({
           parcelForwadingInitials,
@@ -25,7 +25,7 @@ export class PrismaCustomerMapper {
   static toPrisma(customer: Customer): Prisma.CustomerUncheckedCreateInput {
     return {
       id: customer.id.toString(),
-      name: customer.name,
+      firstName: customer.firstName,
       lastName: customer.lastName,
       parcelForwardingId: customer.parcelForwardingId.toString(),
       hubId: `${customer.hubId.parcelForwadingInitials}-${customer.hubId.customerCode}`,

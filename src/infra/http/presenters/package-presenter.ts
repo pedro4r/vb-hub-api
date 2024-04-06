@@ -7,7 +7,7 @@ export class PackagePresenter {
       parcelForwardingId: packagePreview.parcelForwardingId.toString(),
       customerId: packagePreview.customerId.toString(),
       hubId: packagePreview.hubId,
-      customerName: packagePreview.customerName,
+      customerFirstName: packagePreview.customerFirstName,
       customerLastName: packagePreview.customerLastName,
       weight: packagePreview.weight || null,
       trackingNumber: packagePreview.trackingNumber || null,

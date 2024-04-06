@@ -6,7 +6,7 @@ export interface PackagePreviewProps {
   parcelForwardingId: UniqueEntityID
   customerId: UniqueEntityID
   hubId: string
-  customerName: string
+  customerFirstName: string
   customerLastName: string
   weight?: number | null
   hasBattery: boolean
@@ -24,8 +24,8 @@ export class PackagePreview extends ValueObject<PackagePreviewProps> {
     return this.props.hubId
   }
 
-  get customerName() {
-    return this.props.customerName
+  get customerFirstName() {
+    return this.props.customerFirstName
   }
 
   get customerLastName() {

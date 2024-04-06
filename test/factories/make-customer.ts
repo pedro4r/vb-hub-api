@@ -20,7 +20,7 @@ export function makeCustomer(
         parcelForwadingInitials: faker.string.fromCharacters('ABCDEF', 3),
         customerCode: faker.number.int(4),
       }),
-      name: faker.person.fullName(),
+      firstName: faker.person.fullName(),
       lastName: faker.person.fullName(),
       email: faker.internet.email(),
       password: faker.internet.password(),

@@ -46,7 +46,7 @@ export class InMemoryPackageRepository implements PackageRepository {
           parcelForwardingId: pkg.parcelForwardingId,
           customerId: pkg.customerId,
           hubId: customer.hubId.value,
-          customerName: customer.name,
+          customerFirstName: customer.firstName,
           customerLastName: customer.lastName,
           weight: pkg.weight,
           hasBattery: pkg.hasBattery,
@@ -136,7 +136,7 @@ export class InMemoryPackageRepository implements PackageRepository {
     this.items = this.items.filter((item) => !item.id.equals(pkg.id))
   }
 
-  async findDetailsById(packageId: string, checkInsPageNumber: number) {
+  async findDetailsById(packageId: string) {
     const pkg = this.items.find((item) => item.id.toString() === packageId)
 
     if (!pkg) {
@@ -152,11 +152,6 @@ export class InMemoryPackageRepository implements PackageRepository {
         `Customer with ID "${pkg.customerId.toString()}" does not exist.`,
       )
     }
-
-    const checkInsDetails = await this.checkInsRepository.findManyByPackageId(
-      pkg.id.toString(),
-      checkInsPageNumber,
-    )
 
     const packageShippindAddress =
       await this.packageShippingAddressRepository.findById(
@@ -174,9 +169,8 @@ export class InMemoryPackageRepository implements PackageRepository {
       parcelForwardingId: pkg.parcelForwardingId,
       customerId: pkg.customerId,
       packageShippingAddress: packageShippindAddress,
-      checkIns: checkInsDetails,
       hubId: customer.hubId.value,
-      customerName: customer.name,
+      customerFirstName: customer.firstName,
       customerLastName: customer.lastName,
       weight: pkg.weight,
       hasBattery: pkg.hasBattery,

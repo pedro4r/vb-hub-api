@@ -8,7 +8,6 @@ import { PackageRepository } from '@/domain/customer/application/repositories/pa
 interface GetPackageUseCaseRequest {
   packageId: string
   parcelForwardingId: string
-  checkInsPageNumber: number
 }
 
 type GetPackageUseCaseResponse = Either<
@@ -25,12 +24,9 @@ export class GetPackageUseCase {
   async execute({
     packageId,
     parcelForwardingId,
-    checkInsPageNumber,
   }: GetPackageUseCaseRequest): Promise<GetPackageUseCaseResponse> {
-    const packageDetails = await this.packageRepository.findDetailsById(
-      packageId,
-      checkInsPageNumber,
-    )
+    const packageDetails =
+      await this.packageRepository.findDetailsById(packageId)
 
     if (!packageDetails) {
       return left(new ResourceNotFoundError())

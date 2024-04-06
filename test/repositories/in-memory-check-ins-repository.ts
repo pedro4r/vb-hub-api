@@ -17,7 +17,15 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     private customerRepository: InMemoryCustomerRepository,
   ) {}
 
-  async findManyByPackageId(packageId: string, page: number) {
+  async findManyByPackageId(packadeId: string) {
+    const checkIns = this.items.filter(
+      (item) => item.packageId?.toString() === packadeId,
+    )
+
+    return checkIns
+  }
+
+  async findManyWithDetailsByPackageId(packageId: string, page: number) {
     const checkIns = this.items
       .filter((item) => item.packageId?.toString() === packageId)
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
@@ -56,7 +64,7 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
           parcelForwardingId: checkIn.parcelForwardingId,
           customerId: checkIn.customerId,
           hubId: customer.hubId.value,
-          customerName: customer.name,
+          customerFirstName: customer.firstName,
           customerLastName: customer.lastName,
           packageId: checkIn.packageId,
           details: checkIn.details,
@@ -124,7 +132,7 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
           parcelForwardingId: checkIn.parcelForwardingId,
           customerId: checkIn.customerId,
           hubId: customer.hubId.value,
-          customerName: customer.name,
+          customerFirstName: customer.firstName,
           customerLastName: customer.lastName,
           packageId: checkIn.packageId,
           status: checkIn.status,
@@ -221,7 +229,7 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
       parcelForwardingId: checkIn.parcelForwardingId,
       customerId: checkIn.customerId,
       hubId: customer.hubId.value,
-      customerName: customer.name,
+      customerFirstName: customer.firstName,
       customerLastName: customer.lastName,
       packageId: checkIn.packageId,
       details: checkIn.details,
@@ -277,7 +285,7 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
           parcelForwardingId: checkIn.parcelForwardingId,
           customerId: checkIn.customerId,
           hubId: customer.hubId.value,
-          customerName: customer.name,
+          customerFirstName: customer.firstName,
           customerLastName: customer.lastName,
           packageId: checkIn.packageId,
           details: checkIn.details,

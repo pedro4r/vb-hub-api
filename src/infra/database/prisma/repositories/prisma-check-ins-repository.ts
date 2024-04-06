@@ -18,6 +18,13 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     private checkInAttachmentsRepository: CheckInAttachmentsRepository,
   ) {}
 
+  findManyWithDetailsByPackageId(
+    packadeId: string,
+    page: number,
+  ): Promise<CheckInDetails[]> {
+    throw new Error('Method not implemented.')
+  }
+
   async findManyByPackageId(packadeId: string) {
     const checkIns = await this.prisma.checkIn.findMany({
       where: {
@@ -94,7 +101,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
           parcelForwardingId: checkInDomain.parcelForwardingId,
           customerId: checkInDomain.customerId,
           hubId: customer.hubId,
-          customerName: customer.name,
+          customerFirstName: customer.firstName,
           customerLastName: customer.lastName,
           packageId: checkInDomain.packageId,
           status: checkInDomain.status,
@@ -220,7 +227,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       parcelForwardingId: checkInDomain.parcelForwardingId,
       customerId: checkInDomain.customerId,
       hubId: customer.hubId,
-      customerName: customer.name,
+      customerFirstName: customer.firstName,
       customerLastName: customer.lastName,
       packageId: checkInDomain.packageId,
       details: checkInDomain.details,
@@ -295,7 +302,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
           parcelForwardingId: checkInDomain.parcelForwardingId,
           customerId: checkInDomain.customerId,
           hubId: customer.hubId,
-          customerName: customer.name,
+          customerFirstName: customer.firstName,
           customerLastName: customer.lastName,
           packageId: checkInDomain.packageId,
           details: checkInDomain.details,

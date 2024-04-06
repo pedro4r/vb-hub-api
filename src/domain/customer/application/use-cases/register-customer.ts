@@ -9,7 +9,7 @@ import { HubId } from '../../enterprise/entities/value-objects/hub-id'
 
 interface RegisterCustomerUseCaseRequest {
   parcelForwardingId: string
-  name: string
+  firstName: string
   lastName: string
   email: string
   password: string
@@ -52,7 +52,7 @@ export class RegisterCustomerUseCase {
 
   async execute({
     parcelForwardingId,
-    name,
+    firstName,
     lastName,
     email,
     password,
@@ -69,7 +69,7 @@ export class RegisterCustomerUseCase {
     const customer = Customer.create({
       parcelForwardingId: new UniqueEntityID(parcelForwardingId),
       hubId: await this.handleHubId(parcelForwardingId),
-      name,
+      firstName,
       lastName,
       email,
       password: hashedPassword,

@@ -13,8 +13,5 @@ export abstract class PackageRepository {
     page: number,
   ): Promise<PackagePreview[]>
 
-  abstract findDetailsById(
-    id: string,
-    checkInsPageNumber: number,
-  ): Promise<PackageDetails | null>
+  abstract findDetailsById(id: string): Promise<PackageDetails | null>
 }

@@ -17,7 +17,10 @@ export abstract class CheckInsRepository {
   ): Promise<CheckInDetails[]>
 
   abstract findDetailsById(checkInId: string): Promise<CheckInDetails | null>
-  abstract findManyByPackageId(
+
+  abstract findManyByPackageId(packadeId: string): Promise<CheckIn[]>
+
+  abstract findManyWithDetailsByPackageId(
     packadeId: string,
     page: number,
   ): Promise<CheckInDetails[]>
