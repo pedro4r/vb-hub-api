@@ -31,7 +31,7 @@ let inMemoryPackageShippingAddressRepository: InMemoryPackageShippingAddressRepo
 let inMemoryPackageRepository: InMemoryPackageRepository
 let sut: GetPackageUseCase
 
-describe('Delete an Package', () => {
+describe('Get a Package', () => {
   beforeEach(async () => {
     inMemoryCustomerRepository = new InMemoryCustomerRepository()
     inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()

@@ -44,6 +44,10 @@ import { FetchRecentCheckInsDetailsController } from './controller/fetch-recent-
 import { FetchRecentCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-check-ins-details'
 import { FetchRecentPackagesController } from './controller/fetch-recent-packages.controller'
 import { FetchRecentPackagesUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-packages'
+import { GetPackageController } from './controller/get-package.controller'
+import { GetPackageUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package'
+import { GetPackageCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package-check-ins-details'
+import { GetPackageCheckInsDetailsController } from './controller/get-package-check-ins-details.controller'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -70,6 +74,8 @@ import { FetchRecentPackagesUseCase } from '@/domain/parcel-forwarding/applicati
     EditCheckInController,
     FetchRecentCheckInsDetailsController,
     FetchRecentPackagesController,
+    GetPackageController,
+    GetPackageCheckInsDetailsController,
   ],
   providers: [
     CheckInUseCase,
@@ -93,6 +99,8 @@ import { FetchRecentPackagesUseCase } from '@/domain/parcel-forwarding/applicati
     EditCheckInUseCase,
     FetchRecentCheckInsDetailsUseCase,
     FetchRecentPackagesUseCase,
+    GetPackageUseCase,
+    GetPackageCheckInsDetailsUseCase,
   ],
 })
 export class HttpModule {}

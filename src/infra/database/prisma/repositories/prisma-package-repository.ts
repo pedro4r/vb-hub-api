@@ -15,7 +15,57 @@ export class PrismaPackageRepository implements PackageRepository {
     private packageShippingAddressRepository: PackageShippingAddressRepository,
   ) {}
 
-  async findDetailsById(id: string): Promise<PackageDetails | null> {}
+  async findDetailsById(id: string): Promise<PackageDetails | null> {
+    const pkg = await this.prisma.package.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    if (!pkg) {
+      return null
+    }
+
+    const shippingAddress =
+      await this.packageShippingAddressRepository.findById(
+        pkg.packageShippingAddressId.toString(),
+      )
+
+    if (!shippingAddress) {
+      throw new ResourceNotFoundError(
+        `Shipping address with ID "${pkg.packageShippingAddressId.toString()}" does not exist.`,
+      )
+    }
+
+    const customer = await this.prisma.customer.findUnique({
+      where: {
+        id: pkg.customerId.toString(),
+      },
+    })
+
+    if (!customer) {
+      throw new ResourceNotFoundError(
+        `Customer with ID "${pkg.customerId.toString()}" does not exist.`,
+      )
+    }
+
+    const packageToDomain = PrismaPackageMapper.toDomain(pkg)
+
+    return PackageDetails.create({
+      packageId: packageToDomain.id,
+      parcelForwardingId: packageToDomain.parcelForwardingId,
+      customerId: packageToDomain.customerId,
+      hubId: customer.hubId,
+      customerFirstName: customer.firstName,
+      customerLastName: customer.lastName,
+      packageShippingAddress: shippingAddress,
+      hasBattery: packageToDomain.hasBattery,
+      weight: packageToDomain.weight,
+      trackingNumber: packageToDomain.trackingNumber,
+      createdAt: packageToDomain.createdAt,
+      updatedAt: packageToDomain.updatedAt,
+    })
+  }
 
   async create(pkg: Package): Promise<void> {
     await this.packageShippingAddressRepository.create(
