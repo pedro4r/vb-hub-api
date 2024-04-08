@@ -3,33 +3,30 @@ import {
   ConflictException,
   Controller,
   Get,
-  Param,
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
+import { FetchShippingAddressUseCase } from '@/domain/customer/application/use-cases/fetch-shipping-address'
+import { ShippingAddressPresenter } from '../../presenters/shipping-address-presenter'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
-import { GetPackageUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package'
-import { PackagePresenter } from '../presenters/package-presenter'
 
-@Controller('/package/:id')
-export class GetPackageController {
-  constructor(private getPackageUseCase: GetPackageUseCase) {}
+@Controller('/shipping-address')
+export class FetchShippingAddressController {
+  constructor(
+    private fetchShippingAddressUseCase: FetchShippingAddressUseCase,
+  ) {}
 
   @Get()
-  async handle(
-    @CurrentUser() user: UserPayload,
-    @Param('id') packageId: string,
-  ) {
+  async handle(@CurrentUser() user: UserPayload) {
     const userId = user.sub
 
-    const resultPackageDetails = await this.getPackageUseCase.execute({
-      parcelForwardingId: userId,
-      packageId,
+    const result = await this.fetchShippingAddressUseCase.execute({
+      customerId: userId,
     })
 
-    if (resultPackageDetails.isLeft()) {
-      const error = resultPackageDetails.value
+    if (result.isLeft()) {
+      const error = result.value
 
       switch (error.constructor) {
         case ResourceNotFoundError:
@@ -40,13 +37,10 @@ export class GetPackageController {
           throw new BadRequestException(error.message)
       }
     }
-
-    const packageDetails = PackagePresenter.toHTTP(
-      resultPackageDetails.value.packageDetails,
-    )
+    const shippingAddresses = result.value.shippingAddresses
 
     return {
-      packageDetails,
+      shippingAddresses: shippingAddresses.map(ShippingAddressPresenter.toHTTP),
     }
   }
 }

@@ -7,7 +7,7 @@ import {
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { FetchDeclarationModelsUseCase } from '@/domain/customer/application/use-cases/fetch-declaration-model'
-import { DeclarationModelPresenter } from '../presenters/declaration-model-presenter'
+import { DeclarationModelPresenter } from '../../presenters/declaration-model-presenter'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 

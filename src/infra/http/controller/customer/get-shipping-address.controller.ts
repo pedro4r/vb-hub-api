@@ -7,25 +7,25 @@ import {
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
-import { GetDeclarationModelUseCase } from '@/domain/customer/application/use-cases/get-declaration-model'
-import { DeclarationModelPresenter } from '../presenters/declaration-model-presenter'
+import { ShippingAddressPresenter } from '../../presenters/shipping-address-presenter'
+import { GetShippingAddressUseCase } from '@/domain/customer/application/use-cases/get-shipping-address'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 
-@Controller('/declaration-model/:id')
-export class GetDeclarationModelController {
-  constructor(private getDeclarationModelUseCase: GetDeclarationModelUseCase) {}
+@Controller('/shipping-address/:id')
+export class GetShippingAddressController {
+  constructor(private getShippingAddressUseCase: GetShippingAddressUseCase) {}
 
   @Get()
   async handle(
     @CurrentUser() user: UserPayload,
-    @Param('id') declarationModelId: string,
+    @Param('id') shippingAddressId: string,
   ) {
     const userId = user.sub
 
-    const result = await this.getDeclarationModelUseCase.execute({
+    const result = await this.getShippingAddressUseCase.execute({
       customerId: userId,
-      declarationModelId,
+      shippingAddressId,
     })
 
     if (result.isLeft()) {
@@ -41,10 +41,10 @@ export class GetDeclarationModelController {
       }
     }
 
-    const declarationModel = result.value.declarationModel
+    const shippingAddress = result.value.shippingAddress
 
     return {
-      declarationModel: DeclarationModelPresenter.toHTTP(declarationModel),
+      shippingAddress: ShippingAddressPresenter.toHTTP(shippingAddress),
     }
   }
 }

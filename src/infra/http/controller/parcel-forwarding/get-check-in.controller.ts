@@ -3,26 +3,29 @@ import {
   ConflictException,
   Controller,
   Get,
+  Param,
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
-import { FetchShippingAddressUseCase } from '@/domain/customer/application/use-cases/fetch-shipping-address'
-import { ShippingAddressPresenter } from '../presenters/shipping-address-presenter'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
+import { GetCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-check-in'
+import { CheckInDetailsPresenter } from '../../presenters/check-in-details-presenter'
 
-@Controller('/shipping-address')
-export class FetchShippingAddressController {
-  constructor(
-    private fetchShippingAddressUseCase: FetchShippingAddressUseCase,
-  ) {}
+@Controller('/check-in/:id')
+export class GetCheckInController {
+  constructor(private getCheckInUseCase: GetCheckInUseCase) {}
 
   @Get()
-  async handle(@CurrentUser() user: UserPayload) {
+  async handle(
+    @CurrentUser() user: UserPayload,
+    @Param('id') checkInId: string,
+  ) {
     const userId = user.sub
 
-    const result = await this.fetchShippingAddressUseCase.execute({
-      customerId: userId,
+    const result = await this.getCheckInUseCase.execute({
+      parcelForwardingId: userId,
+      checkInId,
     })
 
     if (result.isLeft()) {
@@ -37,10 +40,13 @@ export class FetchShippingAddressController {
           throw new BadRequestException(error.message)
       }
     }
-    const shippingAddresses = result.value.shippingAddresses
+
+    const checkInDetails = CheckInDetailsPresenter.toHTTP(
+      result.value.checkInDetails,
+    )
 
     return {
-      shippingAddresses: shippingAddresses.map(ShippingAddressPresenter.toHTTP),
+      checkInDetails,
     }
   }
 }

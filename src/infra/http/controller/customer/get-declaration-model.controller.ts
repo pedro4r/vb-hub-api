@@ -7,25 +7,25 @@ import {
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
+import { GetDeclarationModelUseCase } from '@/domain/customer/application/use-cases/get-declaration-model'
+import { DeclarationModelPresenter } from '../../presenters/declaration-model-presenter'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
-import { GetCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-check-in'
-import { CheckInDetailsPresenter } from '../presenters/check-in-details-presenter'
 
-@Controller('/check-in/:id')
-export class GetCheckInController {
-  constructor(private getCheckInUseCase: GetCheckInUseCase) {}
+@Controller('/declaration-model/:id')
+export class GetDeclarationModelController {
+  constructor(private getDeclarationModelUseCase: GetDeclarationModelUseCase) {}
 
   @Get()
   async handle(
     @CurrentUser() user: UserPayload,
-    @Param('id') checkInId: string,
+    @Param('id') declarationModelId: string,
   ) {
     const userId = user.sub
 
-    const result = await this.getCheckInUseCase.execute({
-      parcelForwardingId: userId,
-      checkInId,
+    const result = await this.getDeclarationModelUseCase.execute({
+      customerId: userId,
+      declarationModelId,
     })
 
     if (result.isLeft()) {
@@ -41,12 +41,10 @@ export class GetCheckInController {
       }
     }
 
-    const checkInDetails = CheckInDetailsPresenter.toHTTP(
-      result.value.checkInDetails,
-    )
+    const declarationModel = result.value.declarationModel
 
     return {
-      checkInDetails,
+      declarationModel: DeclarationModelPresenter.toHTTP(declarationModel),
     }
   }
 }

@@ -11,7 +11,7 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
-import { CheckInDetailsPresenter } from '../presenters/check-in-details-presenter'
+import { CheckInDetailsPresenter } from '../../presenters/check-in-details-presenter'
 import { FetchRecentCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-check-ins-details'
 
 const pageQueryParamSchema = z

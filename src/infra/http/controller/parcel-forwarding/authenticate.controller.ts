@@ -8,7 +8,7 @@ import {
   UsePipes,
 } from '@nestjs/common'
 import { z } from 'zod'
-import { ZodValidationPipe } from '../pipe/zod-validation-pipe'
+import { ZodValidationPipe } from '../../pipe/zod-validation-pipe'
 import { WrongCredentialsError } from '@/domain/parcel-forwarding/application/use-cases/errors/wrong-credentials-error'
 import { Public } from '@/infra/auth/public'
 

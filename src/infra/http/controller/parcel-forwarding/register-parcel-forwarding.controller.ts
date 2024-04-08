@@ -9,7 +9,7 @@ import {
   UsePipes,
 } from '@nestjs/common'
 import { z } from 'zod'
-import { ZodValidationPipe } from '../pipe/zod-validation-pipe'
+import { ZodValidationPipe } from '../../pipe/zod-validation-pipe'
 import { AccountAlreadyExistsError } from '@/domain/parcel-forwarding/application/use-cases/errors/account-already-exists-error'
 import { Public } from '@/infra/auth/public'
 

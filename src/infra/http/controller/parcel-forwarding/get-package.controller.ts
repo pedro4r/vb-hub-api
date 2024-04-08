@@ -7,29 +7,29 @@ import {
 } from '@nestjs/common'
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
-import { ShippingAddressPresenter } from '../presenters/shipping-address-presenter'
-import { GetShippingAddressUseCase } from '@/domain/customer/application/use-cases/get-shipping-address'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
+import { GetPackageUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package'
+import { PackagePresenter } from '../../presenters/package-presenter'
 
-@Controller('/shipping-address/:id')
-export class GetShippingAddressController {
-  constructor(private getShippingAddressUseCase: GetShippingAddressUseCase) {}
+@Controller('/package/:id')
+export class GetPackageController {
+  constructor(private getPackageUseCase: GetPackageUseCase) {}
 
   @Get()
   async handle(
     @CurrentUser() user: UserPayload,
-    @Param('id') shippingAddressId: string,
+    @Param('id') packageId: string,
   ) {
     const userId = user.sub
 
-    const result = await this.getShippingAddressUseCase.execute({
-      customerId: userId,
-      shippingAddressId,
+    const resultPackageDetails = await this.getPackageUseCase.execute({
+      parcelForwardingId: userId,
+      packageId,
     })
 
-    if (result.isLeft()) {
-      const error = result.value
+    if (resultPackageDetails.isLeft()) {
+      const error = resultPackageDetails.value
 
       switch (error.constructor) {
         case ResourceNotFoundError:
@@ -41,10 +41,12 @@ export class GetShippingAddressController {
       }
     }
 
-    const shippingAddress = result.value.shippingAddress
+    const packageDetails = PackagePresenter.toHTTP(
+      resultPackageDetails.value.packageDetails,
+    )
 
     return {
-      shippingAddress: ShippingAddressPresenter.toHTTP(shippingAddress),
+      packageDetails,
     }
   }
 }
