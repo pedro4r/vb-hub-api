@@ -9,6 +9,7 @@ export interface CustomerProps {
   lastName: string
   email: string
   password: string
+  createdAt: Date
 }
 
 export class Customer extends Entity<CustomerProps> {
@@ -50,6 +51,10 @@ export class Customer extends Entity<CustomerProps> {
 
   set password(password: string) {
     this.props.password = password
+  }
+
+  get createdAt() {
+    return this.props.createdAt
   }
 
   static create(props: CustomerProps, id?: UniqueEntityID) {

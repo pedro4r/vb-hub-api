@@ -26,6 +26,7 @@ import { FetchRecentCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/ap
 import { FetchRecentPackagesUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-packages'
 import { GetPackageUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package'
 import { GetPackageCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package-check-ins-details'
+import { TestController } from './parcel-forwarding/test-route.controller'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -42,6 +43,7 @@ import { GetPackageCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/app
     FetchRecentPackagesController,
     GetPackageController,
     GetPackageCheckInsDetailsController,
+    TestController,
   ],
   providers: [
     CheckInUseCase,

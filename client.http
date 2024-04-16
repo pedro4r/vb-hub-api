@@ -1,6 +1,16 @@
 @baseUrl = http://localhost:3333
 @authToken = {{authenticate.response.body.access_token}}
 
+# @name test_route
+POST {{baseUrl}}/test
+Content-Type: application/json
+
+{
+  "message": "This is a test message"
+}
+
+###
+
 # @name create_account
 POST {{baseUrl}}/parcel-forwarding/register
 Content-Type: application/json
@@ -19,7 +29,7 @@ POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
-  "email": "contato4@voabox.com",
+  "email": "pf1@example.com",
   "password": "123456"
 }
 
@@ -31,10 +41,10 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "customerId": "d53a2bf5-42c3-4f52-88d0-b2e4380d823a",
-  "status": "1",
+  "customerId": "c2198e4b-1b6b-4bec-9023-6bb1ac841671",
   "details": "Everything is ok with the items",
   "weight": "6"
+  "atattachmentsIds": ['oiwiwow']
 }
 
 ###

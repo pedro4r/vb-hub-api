@@ -33,6 +33,8 @@ export class CreateCheckInController {
     const { customerId, details, weight, attachmentsIds } = body
     const userId = user.sub
 
+    // Imprime o payload do token JWT no console
+
     const result = await this.checkInUseCase.execute({
       customerId,
       details,

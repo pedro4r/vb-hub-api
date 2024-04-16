@@ -7,6 +7,12 @@ async function bootstrap() {
     // logger: false,
   })
 
+  // Enable CORS
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  })
+
   const configService = app.get(EnvService)
   const port = configService.get('PORT')
 
