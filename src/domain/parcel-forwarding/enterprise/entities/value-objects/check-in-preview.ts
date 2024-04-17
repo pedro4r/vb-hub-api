@@ -5,7 +5,7 @@ export interface CheckInPreviewProps {
   checkInId: UniqueEntityID
   parcelForwardingId: UniqueEntityID
   customerId: UniqueEntityID
-  hubId: string
+  hubId: number
   customerFirstName: string
   customerLastName: string
   packageId?: UniqueEntityID | null

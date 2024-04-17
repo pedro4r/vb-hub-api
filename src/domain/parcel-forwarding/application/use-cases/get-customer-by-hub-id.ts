@@ -5,12 +5,12 @@ import { Injectable } from '@nestjs/common'
 import { CustomerPreview } from '@/domain/customer/enterprise/entities/value-objects/customer-preview'
 import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
 
-interface GetCustomerByCodeUseCaseRequest {
-  customerCode: number
+interface GetCustomerByHubIdUseCaseRequest {
+  hubId: number
   parcelForwardingId: string
 }
 
-type GetCustomerByCodeUseCaseResponse = Either<
+type GetCustomerByHubIdUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {
     customerPreview: CustomerPreview
@@ -18,15 +18,14 @@ type GetCustomerByCodeUseCaseResponse = Either<
 >
 
 @Injectable()
-export class GetCustomerByCodeUseCase {
+export class GetCustomerByHubIdUseCase {
   constructor(private customerRepository: CustomerRepository) {}
 
   async execute({
-    customerCode,
+    hubId,
     parcelForwardingId,
-  }: GetCustomerByCodeUseCaseRequest): Promise<GetCustomerByCodeUseCaseResponse> {
-    const customerPreview =
-      await this.customerRepository.findByCustomerCode(customerCode)
+  }: GetCustomerByHubIdUseCaseRequest): Promise<GetCustomerByHubIdUseCaseResponse> {
+    const customerPreview = await this.customerRepository.findByHubId(hubId)
 
     if (!customerPreview) {
       return left(new ResourceNotFoundError())

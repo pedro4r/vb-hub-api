@@ -25,7 +25,7 @@ async function main() {
   const customer1 = await prisma.customer.create({
     data: {
       id: '0e329bb8-25a8-4c7e-b683-61df6819aed7',
-      hubId: 'PF-1',
+      hubId: 12,
       parcelForwardingId: parcelForwarding.id,
       firstName: 'Customer',
       lastName: 'One',
@@ -37,7 +37,7 @@ async function main() {
   const customer2 = await prisma.customer.create({
     data: {
       id: 'd2198e4b-1b6b-4bec-9023-6bb1ac841671',
-      hubId: 'PF-2',
+      hubId: 13,
       parcelForwardingId: parcelForwarding.id,
       firstName: 'Customer',
       lastName: 'Two',

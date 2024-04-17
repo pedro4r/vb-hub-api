@@ -5,8 +5,8 @@ import { CustomerPreview } from '@/domain/customer/enterprise/entities/value-obj
 export class InMemoryCustomerRepository implements CustomerRepository {
   public items: Customer[] = []
 
-  async findByCustomerCode(code: number) {
-    const customer = this.items.find((item) => item.hubId.customerCode === code)
+  async findByHubId(hubId: number) {
+    const customer = this.items.find((item) => item.hubId === hubId)
 
     if (!customer) {
       return null
@@ -15,8 +15,8 @@ export class InMemoryCustomerRepository implements CustomerRepository {
     return CustomerPreview.create({
       hubId: customer.hubId,
       parcelForwardingId: customer.parcelForwardingId,
-      customerFirstName: customer.firstName,
-      customerLastName: customer.lastName,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
       customerId: customer.id,
       createdAt: customer.createdAt,
     })

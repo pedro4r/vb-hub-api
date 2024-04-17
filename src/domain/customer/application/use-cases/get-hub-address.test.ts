@@ -57,20 +57,11 @@ describe('Get Hub Address', () => {
       customerId: customer.id.toString(),
     })
 
-    if (result.isRight()) {
-      console.log(
-        JSON.stringify(result.value.hubAddress.customerHubId.customerCode),
-      )
-    }
-
     expect(result.isRight()).toBeTruthy()
     expect(result.value).toEqual(
       expect.objectContaining({
         hubAddress: expect.objectContaining({
-          customerHubId: expect.objectContaining({
-            parcelForwadingInitials: expect.any(String),
-            customerCode: expect.any(Number),
-          }),
+          customerHubId: expect.any(Number),
           parcelForwardingAddress: expect.objectContaining({
             id: parcelForwardingAddress.id,
           }),

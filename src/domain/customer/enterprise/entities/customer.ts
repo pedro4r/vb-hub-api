@@ -1,10 +1,9 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { HubId } from './value-objects/hub-id'
 import { Entity } from '@/core/entities/entity'
 
 export interface CustomerProps {
   parcelForwardingId: UniqueEntityID
-  hubId: HubId
+  hubId: number
   firstName: string
   lastName: string
   email: string

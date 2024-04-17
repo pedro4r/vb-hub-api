@@ -1,6 +1,5 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { CustomerHubAddress } from './customer-hub-address'
-import { HubId } from './hub-id'
 import { makeParcelForwardingAddress } from 'test/factories/make-forwarding-address'
 
 describe('Create Customer Hub Address', () => {
@@ -8,19 +7,13 @@ describe('Create Customer Hub Address', () => {
     const parcelForwardingAddress = makeParcelForwardingAddress()
 
     const hubAddress = CustomerHubAddress.create({
-      customerHubId: HubId.create({
-        parcelForwadingInitials: 'VX',
-        customerCode: 1,
-      }),
+      customerHubId: 12,
       parcelForwardingAddress,
     })
 
     expect(hubAddress).toEqual(
       expect.objectContaining({
-        customerHubId: expect.objectContaining({
-          parcelForwadingInitials: 'VX',
-          customerCode: 1,
-        }),
+        customerHubId: expect.any(Number),
         parcelForwardingAddress: expect.objectContaining({
           id: expect.any(UniqueEntityID),
         }),

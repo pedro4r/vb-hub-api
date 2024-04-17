@@ -5,7 +5,6 @@ import { CustomerRepository } from '../repositories/customer-repository'
 import { HashGenerator } from '@/core/cryptography/hash-generator'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ParcelForwardingsRepository } from '@/domain/parcel-forwarding/application/repositories/parcel-forwardings-repository'
-import { HubId } from '../../enterprise/entities/value-objects/hub-id'
 
 interface RegisterCustomerUseCaseRequest {
   parcelForwardingId: string
@@ -29,13 +28,13 @@ export class RegisterCustomerUseCase {
     private hashGenerator: HashGenerator,
   ) {}
 
-  private async handleHubId(parcelForwardingId: string): Promise<HubId> {
+  private async handleHubId(parcelForwardingId: string): Promise<number> {
     const totalOfParcelForwardingCustomers =
       await this.customersRepository.countParcelForwardingCustomers(
         parcelForwardingId,
       )
 
-    const customerCode = totalOfParcelForwardingCustomers + 1
+    const hubId = totalOfParcelForwardingCustomers + 1
 
     const parcelForwarding =
       await this.parcelForwardingsRepository.findById(parcelForwardingId)
@@ -44,10 +43,7 @@ export class RegisterCustomerUseCase {
       throw new Error('Parcel forwarding not found')
     }
 
-    return HubId.create({
-      parcelForwadingInitials: parcelForwarding.initials,
-      customerCode,
-    })
+    return hubId
   }
 
   async execute({
@@ -73,6 +69,7 @@ export class RegisterCustomerUseCase {
       lastName,
       email,
       password: hashedPassword,
+      createdAt: new Date(),
     })
 
     await this.customersRepository.create(customer)

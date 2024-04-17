@@ -1,9 +1,8 @@
 import { ValueObject } from '@/core/entities/value-object'
-import { HubId } from './hub-id'
 import { ParcelForwardingAddress } from '@/domain/parcel-forwarding/enterprise/entities/forwarding-address'
 
 export interface CustomerHubAddressProps {
-  customerHubId: HubId
+  customerHubId: number
   parcelForwardingAddress: ParcelForwardingAddress
 }
 

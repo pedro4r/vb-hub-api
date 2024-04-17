@@ -1,13 +1,12 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ValueObject } from '@/core/entities/value-object'
-import { HubId } from './hub-id'
 
 export interface CustomerPreviewProps {
   customerId: UniqueEntityID
   parcelForwardingId: UniqueEntityID
-  hubId: HubId
-  customerFirstName: string
-  customerLastName: string
+  hubId: number
+  firstName: string
+  lastName: string
   createdAt: Date
 }
 
@@ -20,12 +19,12 @@ export class CustomerPreview extends ValueObject<CustomerPreviewProps> {
     return this.props.parcelForwardingId
   }
 
-  get customerFirstName() {
-    return this.props.customerFirstName
+  get firstName() {
+    return this.props.firstName
   }
 
-  get customerLastName() {
-    return this.props.customerLastName
+  get lastName() {
+    return this.props.lastName
   }
 
   get customerId() {

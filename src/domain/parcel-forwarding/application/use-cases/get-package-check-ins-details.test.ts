@@ -165,7 +165,7 @@ describe('Get a Package Check-ins Details', () => {
       checkInsDetails: expect.arrayContaining([
         expect.objectContaining({
           checkInId: new UniqueEntityID('check-in-1'),
-          hubId: expect.any(String),
+          hubId: expect.any(Number),
           customerFirstName: expect.any(String),
           customerLastName: expect.any(String),
           status: expect.any(String),

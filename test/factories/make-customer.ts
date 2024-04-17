@@ -3,7 +3,6 @@ import {
   Customer,
   CustomerProps,
 } from '@/domain/customer/enterprise/entities/customer'
-import { HubId } from '@/domain/customer/enterprise/entities/value-objects/hub-id'
 import { PrismaCustomerMapper } from '@/infra/database/prisma/mappers/prisma-customer-mapper'
 import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { faker } from '@faker-js/faker'
@@ -16,14 +15,12 @@ export function makeCustomer(
   const student = Customer.create(
     {
       parcelForwardingId: new UniqueEntityID(),
-      hubId: HubId.create({
-        parcelForwadingInitials: faker.string.fromCharacters('ABCDEF', 3),
-        customerCode: faker.number.int(4),
-      }),
+      hubId: faker.number.int({ min: 1, max: 1000 }),
       firstName: faker.person.fullName(),
       lastName: faker.person.fullName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
+      createdAt: new Date(),
       ...override,
     },
     id,

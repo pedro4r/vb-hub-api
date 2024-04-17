@@ -36,7 +36,7 @@ describe('Create Declaration Model (E2E)', () => {
     const customer = await prisma.customer.create({
       data: {
         parcelForwardingId: parcelForwarding.id,
-        hubId: 'VBX-123',
+        hubId: 13,
         firstName: 'Pedro',
         lastName: 'Requiao',
         email: 'alonsofts@gmail.com',

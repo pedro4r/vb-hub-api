@@ -5,7 +5,7 @@ export interface PackagePreviewProps {
   packageId: UniqueEntityID
   parcelForwardingId: UniqueEntityID
   customerId: UniqueEntityID
-  hubId: string
+  hubId: number
   customerFirstName: string
   customerLastName: string
   weight?: number | null

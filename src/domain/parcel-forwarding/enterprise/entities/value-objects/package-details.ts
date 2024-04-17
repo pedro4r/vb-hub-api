@@ -8,7 +8,7 @@ export interface PackageDetailsProps {
   parcelForwardingId: UniqueEntityID
   customerId: UniqueEntityID
   packageShippingAddress: PackageShippingAddress
-  hubId: string
+  hubId: number
   customerFirstName: string
   customerLastName: string
   weight?: number | null
