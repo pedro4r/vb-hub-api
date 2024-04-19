@@ -158,8 +158,6 @@ describe('Get a Package Check-ins Details', () => {
       page: 1,
     })
 
-    console.log(JSON.stringify(result.value, null, 2))
-
     expect(result.isRight()).toBeTruthy()
     expect(result.value).toEqual({
       checkInsDetails: expect.arrayContaining([

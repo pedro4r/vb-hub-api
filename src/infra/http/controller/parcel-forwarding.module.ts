@@ -27,6 +27,8 @@ import { FetchRecentPackagesUseCase } from '@/domain/parcel-forwarding/applicati
 import { GetPackageUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package'
 import { GetPackageCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package-check-ins-details'
 import { TestController } from './parcel-forwarding/test-route.controller'
+import { GetCustomerByHubIdController } from './parcel-forwarding/get-customer-by-hub-id.controller'
+import { GetCustomerByHubIdUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-customer-by-hub-id'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
@@ -44,6 +46,7 @@ import { TestController } from './parcel-forwarding/test-route.controller'
     GetPackageController,
     GetPackageCheckInsDetailsController,
     TestController,
+    GetCustomerByHubIdController,
   ],
   providers: [
     CheckInUseCase,
@@ -58,6 +61,7 @@ import { TestController } from './parcel-forwarding/test-route.controller'
     FetchRecentPackagesUseCase,
     GetPackageUseCase,
     GetPackageCheckInsDetailsUseCase,
+    GetCustomerByHubIdUseCase,
   ],
 })
 export class ParcelForwardingModule {}

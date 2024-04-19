@@ -18,10 +18,16 @@ import { AttachmentsRepository } from '@/domain/parcel-forwarding/application/re
 import { PrismaAttachmentsRepository } from './prisma/repositories/prisma-attachments-repository'
 import { CheckInAttachmentsRepository } from '@/domain/parcel-forwarding/application/repositories/check-in-attachments-repository'
 import { PrismaCheckInAttachmentsRepository } from './prisma/repositories/prisma-check-in-attachments-repository'
+import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
+import { PrismaCustomerRepository } from './prisma/repositories/prisma-customers-repository'
 
 @Module({
   providers: [
     PrismaService,
+    {
+      provide: CustomerRepository,
+      useClass: PrismaCustomerRepository,
+    },
     {
       provide: CheckInsRepository,
       useClass: PrismaCheckInsRepository,
@@ -71,6 +77,7 @@ import { PrismaCheckInAttachmentsRepository } from './prisma/repositories/prisma
     PackageShippingAddressRepository,
     AttachmentsRepository,
     CheckInAttachmentsRepository,
+    CustomerRepository,
   ],
 })
 export class DatabaseModule {}
