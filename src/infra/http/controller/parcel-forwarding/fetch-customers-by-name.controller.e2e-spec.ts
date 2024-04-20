@@ -7,7 +7,7 @@ import request from 'supertest'
 import { CustomerFactory } from 'test/factories/make-customer'
 import { ParcelForwardingFactory } from 'test/factories/make-parcel-forwarding'
 
-describe('Get Customer by Hub ID (E2E)', () => {
+describe('Fetch Customers by Name (E2E)', () => {
   let app: INestApplication
 
   let parcelForwardingFactory: ParcelForwardingFactory
@@ -31,28 +31,41 @@ describe('Get Customer by Hub ID (E2E)', () => {
     await app.init()
   })
 
-  test('[GET] /customer/:id', async () => {
+  test('[GET] /customers/:name', async () => {
     const parcelForwarding =
       await parcelForwardingFactory.makePrismaParcelForwarding()
 
-    const customer = await customerFactory.makePrismaCustomer({
+    const customer1 = await customerFactory.makePrismaCustomer({
       parcelForwardingId: parcelForwarding.id,
+      firstName: 'John',
+      lastName: 'Doe',
+    })
+
+    const customer2 = await customerFactory.makePrismaCustomer({
+      parcelForwardingId: parcelForwarding.id,
+      firstName: 'Jane',
+      lastName: 'Doe',
     })
 
     const accessToken = jwt.sign({ sub: parcelForwarding.id.toString() })
 
     const response = await request(app.getHttpServer())
-      .get(`/customer/${customer.hubId.toString()}`)
+      .get('/customers/doe')
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
     expect(response.status).toBe(200)
     expect(response.body).toEqual({
-      customerPreview: expect.objectContaining({
-        firstName: expect.any(String),
-        lastName: expect.any(String),
-        hubId: expect.any(Number),
-      }),
+      customersPreview: expect.arrayContaining([
+        expect.objectContaining({
+          firstName: customer1.firstName,
+          lastName: customer1.lastName,
+        }),
+        expect.objectContaining({
+          firstName: customer2.firstName,
+          lastName: customer2.lastName,
+        }),
+      ]),
     })
   })
 })

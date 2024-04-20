@@ -26,7 +26,7 @@ export class CreateCheckInController {
     @CurrentUser() user: UserPayload,
   ) {
     const { customerId, details, weight, attachmentsIds } = body
-    console.log(body)
+
     const userId = user.sub
 
     // Imprime o payload do token JWT no console

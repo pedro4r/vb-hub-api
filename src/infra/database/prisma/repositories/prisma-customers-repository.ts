@@ -9,6 +9,40 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 @Injectable()
 export class PrismaCustomerRepository implements CustomerRepository {
   constructor(private prisma: PrismaService) {}
+  async findManyByName(name: string): Promise<CustomerPreview[]> {
+    const customers = await this.prisma.customer.findMany({
+      where: {
+        OR: [
+          {
+            firstName: {
+              contains: name,
+              mode: 'insensitive',
+            },
+          },
+          {
+            lastName: {
+              contains: name,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    })
+
+    console.log(customers)
+
+    return customers.map((customer) =>
+      CustomerPreview.create({
+        hubId: customer.hubId,
+        parcelForwardingId: new UniqueEntityID(customer.parcelForwardingId),
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        customerId: new UniqueEntityID(customer.id),
+        createdAt: customer.createdAt,
+      }),
+    )
+  }
+
   async findByEmail(email: string): Promise<Customer | null> {
     const customer = await this.prisma.customer.findUnique({
       where: {
