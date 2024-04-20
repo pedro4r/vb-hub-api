@@ -53,8 +53,6 @@ export class UploadAttachmentController {
 
     const { attachment } = result.value
 
-    console.log(attachment.id.toString())
-
     return {
       attachmentId: attachment.id.toString(),
     }

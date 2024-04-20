@@ -3,6 +3,7 @@ import { CustomerPreview } from '../../enterprise/entities/value-objects/custome
 
 export abstract class CustomerRepository {
   abstract findByEmail(email: string): Promise<Customer | null>
+  abstract findManyByName(name: string): Promise<CustomerPreview[]>
   abstract findById(id: string): Promise<Customer | null>
   abstract findByHubId(hubId: number): Promise<CustomerPreview | null>
   abstract create(customer: Customer): Promise<void>

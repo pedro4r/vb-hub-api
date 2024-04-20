@@ -5,6 +5,26 @@ import { CustomerPreview } from '@/domain/customer/enterprise/entities/value-obj
 export class InMemoryCustomerRepository implements CustomerRepository {
   public items: Customer[] = []
 
+  async findManyByName(name: string) {
+    const lowerCaseName = name.toLowerCase()
+    const customers = this.items.filter(
+      (item) =>
+        item.firstName.toLowerCase().includes(lowerCaseName) ||
+        item.lastName.toLowerCase().includes(lowerCaseName),
+    )
+
+    return customers.map((customer) =>
+      CustomerPreview.create({
+        hubId: customer.hubId,
+        parcelForwardingId: customer.parcelForwardingId,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        customerId: customer.id,
+        createdAt: customer.createdAt,
+      }),
+    )
+  }
+
   async findByHubId(hubId: number) {
     const customer = this.items.find((item) => item.hubId === hubId)
 
