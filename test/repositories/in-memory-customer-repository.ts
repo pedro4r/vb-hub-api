@@ -5,13 +5,15 @@ import { CustomerPreview } from '@/domain/customer/enterprise/entities/value-obj
 export class InMemoryCustomerRepository implements CustomerRepository {
   public items: Customer[] = []
 
-  async findManyByName(name: string) {
+  async findManyByName(name: string, page: number) {
     const lowerCaseName = name.toLowerCase()
-    const customers = this.items.filter(
-      (item) =>
-        item.firstName.toLowerCase().includes(lowerCaseName) ||
-        item.lastName.toLowerCase().includes(lowerCaseName),
-    )
+    const customers = this.items
+      .filter(
+        (item) =>
+          item.firstName.toLowerCase().includes(lowerCaseName) ||
+          item.lastName.toLowerCase().includes(lowerCaseName),
+      )
+      .slice((page - 1) * 20, page * 20)
 
     return customers.map((customer) =>
       CustomerPreview.create({

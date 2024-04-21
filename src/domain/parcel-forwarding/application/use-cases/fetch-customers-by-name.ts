@@ -7,6 +7,7 @@ import { CustomerRepository } from '@/domain/customer/application/repositories/c
 
 interface FetchCustomersByNameUseCaseRequest {
   name: string
+  page: number
   parcelForwardingId: string
 }
 
@@ -23,9 +24,13 @@ export class FetchCustomersByNameUseCase {
 
   async execute({
     name,
+    page,
     parcelForwardingId,
   }: FetchCustomersByNameUseCaseRequest): Promise<FetchCustomersByNameUseCaseResponse> {
-    const customersPreview = await this.customerRepository.findManyByName(name)
+    const customersPreview = await this.customerRepository.findManyByName(
+      name,
+      page,
+    )
 
     if (customersPreview.length === 0) {
       return left(new ResourceNotFoundError())

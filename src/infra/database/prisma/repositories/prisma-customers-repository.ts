@@ -9,7 +9,7 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 @Injectable()
 export class PrismaCustomerRepository implements CustomerRepository {
   constructor(private prisma: PrismaService) {}
-  async findManyByName(name: string): Promise<CustomerPreview[]> {
+  async findManyByName(name: string, page: number): Promise<CustomerPreview[]> {
     const customers = await this.prisma.customer.findMany({
       where: {
         OR: [
@@ -27,6 +27,8 @@ export class PrismaCustomerRepository implements CustomerRepository {
           },
         ],
       },
+      take: 20,
+      skip: (page - 1) * 20,
     })
 
     console.log(customers)

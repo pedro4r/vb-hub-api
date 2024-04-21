@@ -50,7 +50,7 @@ describe('Fetch Customers by Name (E2E)', () => {
     const accessToken = jwt.sign({ sub: parcelForwarding.id.toString() })
 
     const response = await request(app.getHttpServer())
-      .get('/customers/doe')
+      .get('/customers/doe?page=1')
       .set('Authorization', `Bearer ${accessToken}`)
       .send()
 
