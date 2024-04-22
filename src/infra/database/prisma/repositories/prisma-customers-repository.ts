@@ -27,11 +27,9 @@ export class PrismaCustomerRepository implements CustomerRepository {
           },
         ],
       },
-      take: 20,
-      skip: (page - 1) * 20,
+      take: 5,
+      skip: (page - 1) * 5,
     })
-
-    console.log(customers)
 
     return customers.map((customer) =>
       CustomerPreview.create({

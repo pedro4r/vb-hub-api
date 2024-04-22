@@ -2,8 +2,8 @@ import { Either, left, right } from '@/core/either'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { Injectable } from '@nestjs/common'
-import { CustomerPreview } from '@/domain/customer/enterprise/entities/value-objects/customer-preview'
 import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
+import { FetchCustomerByNameResponseData } from '@/domain/customer/enterprise/entities/value-objects/fetch-customers-by-name-response-data'
 
 interface FetchCustomersByNameUseCaseRequest {
   name: string
@@ -14,7 +14,7 @@ interface FetchCustomersByNameUseCaseRequest {
 type FetchCustomersByNameUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {
-    customersPreview: CustomerPreview[]
+    customersData: FetchCustomerByNameResponseData
   }
 >
 
@@ -27,21 +27,22 @@ export class FetchCustomersByNameUseCase {
     page,
     parcelForwardingId,
   }: FetchCustomersByNameUseCaseRequest): Promise<FetchCustomersByNameUseCaseResponse> {
-    const customersPreview = await this.customerRepository.findManyByName(
+    const customersData = await this.customerRepository.findManyByName(
       name,
       page,
     )
 
-    if (customersPreview.length === 0) {
+    if (customersData.customers.length === 0) {
       return left(new ResourceNotFoundError())
     }
 
     if (
-      parcelForwardingId !== customersPreview[0].parcelForwardingId.toString()
+      parcelForwardingId !==
+      customersData.customers[0].parcelForwardingId.toString()
     ) {
       return left(new NotAllowedError())
     }
 
-    return right({ customersPreview })
+    return right({ customersData })
   }
 }

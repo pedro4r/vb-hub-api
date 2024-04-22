@@ -1,6 +1,7 @@
 import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
 import { Customer } from '@/domain/customer/enterprise/entities/customer'
 import { CustomerPreview } from '@/domain/customer/enterprise/entities/value-objects/customer-preview'
+import { FetchCustomerByNameResponseData } from '@/domain/customer/enterprise/entities/value-objects/fetch-customers-by-name-response-data'
 
 export class InMemoryCustomerRepository implements CustomerRepository {
   public items: Customer[] = []
@@ -15,16 +16,23 @@ export class InMemoryCustomerRepository implements CustomerRepository {
       )
       .slice((page - 1) * 20, page * 20)
 
-    return customers.map((customer) =>
-      CustomerPreview.create({
-        hubId: customer.hubId,
-        parcelForwardingId: customer.parcelForwardingId,
-        firstName: customer.firstName,
-        lastName: customer.lastName,
-        customerId: customer.id,
-        createdAt: customer.createdAt,
-      }),
-    )
+    return FetchCustomerByNameResponseData.create({
+      customers: customers.map((customer) =>
+        CustomerPreview.create({
+          hubId: customer.hubId,
+          parcelForwardingId: customer.parcelForwardingId,
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          customerId: customer.id,
+          createdAt: customer.createdAt,
+        }),
+      ),
+      meta: {
+        pageIndex: page,
+        perPage: 5,
+        totalCount: customers.length,
+      },
+    })
   }
 
   async findByHubId(hubId: number) {

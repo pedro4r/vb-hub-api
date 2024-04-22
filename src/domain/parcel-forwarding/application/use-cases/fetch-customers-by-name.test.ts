@@ -37,36 +37,52 @@ describe('Fetch Customers By Name', () => {
 
     const result = await sut.execute({
       name: 'do',
+      page: 1,
       parcelForwardingId: 'company-1',
     })
 
     expect(result.isRight()).toBe(true)
 
     expect(result.value).toEqual({
-      customersPreview: expect.arrayContaining([
-        expect.objectContaining({
-          firstName: 'John',
-          lastName: 'Doe',
+      customersData: expect.objectContaining({
+        customers: expect.arrayContaining([
+          expect.objectContaining({
+            firstName: 'John',
+            lastName: 'Doe',
+          }),
+          expect.objectContaining({
+            firstName: 'Jane',
+            lastName: 'Doe',
+          }),
+        ]),
+        meta: expect.objectContaining({
+          pageIndex: 1,
+          perPage: 5,
+          totalCount: 2,
         }),
-        expect.objectContaining({
-          firstName: 'Jane',
-          lastName: 'Doe',
-        }),
-      ]),
+      }),
     })
 
     const result2 = await sut.execute({
       name: 'jo',
+      page: 1,
       parcelForwardingId: 'company-1',
     })
 
     expect(result2.value).toEqual({
-      customersPreview: expect.arrayContaining([
-        expect.objectContaining({
-          firstName: 'John',
-          lastName: 'Doe',
+      customersData: expect.objectContaining({
+        customers: expect.arrayContaining([
+          expect.objectContaining({
+            firstName: 'John',
+            lastName: 'Doe',
+          }),
+        ]),
+        meta: expect.objectContaining({
+          pageIndex: 1,
+          perPage: 5,
+          totalCount: 1,
         }),
-      ]),
+      }),
     })
   })
 })

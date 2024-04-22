@@ -1,3 +1,4 @@
+import { UniqueEntityID } from '../src/core/entities/unique-entity-id'
 import { faker } from '@faker-js/faker'
 import { PrismaClient } from '@prisma/client'
 import { hash } from 'bcryptjs'
@@ -23,31 +24,24 @@ async function main() {
     },
   })
 
-  const customer1 = await prisma.customer.create({
-    data: {
-      id: '0e329bb8-25a8-4c7e-b683-61df6819aed7',
-      hubId: 10,
-      parcelForwardingId: parcelForwarding.id,
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      email: faker.internet.email(),
-      password: hashedPassword,
-    },
+  const customersPromises = Array.from({ length: 30 }, async (_, index) => {
+    const id = new UniqueEntityID()
+    return await prisma.customer.create({
+      data: {
+        id: id.toString(),
+        hubId: index + 1,
+        parcelForwardingId: parcelForwarding.id,
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        email: faker.internet.email(),
+        password: hashedPassword,
+      },
+    })
   })
 
-  const customer2 = await prisma.customer.create({
-    data: {
-      id: 'd2198e4b-1b6b-4bec-9023-6bb1ac841671',
-      hubId: 11,
-      parcelForwardingId: parcelForwarding.id,
-      firstName: faker.person.fullName(),
-      lastName: faker.person.fullName(),
-      email: faker.internet.email(),
-      password: hashedPassword,
-    },
-  })
+  const customers = await Promise.all(customersPromises)
 
-  console.log({ parcelForwarding, customer1, customer2 })
+  console.log({ parcelForwarding, customers })
 }
 
 main()
