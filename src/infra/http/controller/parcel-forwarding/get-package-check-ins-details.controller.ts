@@ -30,6 +30,7 @@ type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 export class GetPackageCheckInsDetailsController {
   constructor(
     private getPackageCheckInsDetailsUseCase: GetPackageCheckInsDetailsUseCase,
+    private checkInDetailsPresenter: CheckInDetailsPresenter,
   ) {}
 
   @Get()
@@ -59,10 +60,14 @@ export class GetPackageCheckInsDetailsController {
       }
     }
 
-    const checkInsDetails = result.value.checkInsDetails.map(
-      (checkInDetails) => {
-        return CheckInDetailsPresenter.toHTTP(checkInDetails)
-      },
+    // const checkInsDetails = result.value.checkInsDetails.map(
+    //   (checkInDetails) => {
+    //     return CheckInDetailsPresenter.toHTTP(checkInDetails)
+    //   },
+    // )
+
+    const checkInsDetails = result.value.checkInsDetails.map((checkInDetails) =>
+      this.checkInDetailsPresenter.toHTTP(checkInDetails),
     )
 
     return {

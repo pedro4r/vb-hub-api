@@ -1,8 +1,17 @@
 import { CheckInDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-details'
-import { AttachmentPresenter } from './attachment-presenter'
-
+import { EnvService } from '@/infra/env/env.service'
+import { Injectable } from '@nestjs/common'
+@Injectable()
 export class CheckInDetailsPresenter {
-  static toHTTP(checkInDetails: CheckInDetails) {
+  constructor(private envService: EnvService) {}
+
+  toHTTP(checkInDetails: CheckInDetails) {
+    const r2DevURL = this.envService.get('CLOUDFLARE_DEV_URL')
+
+    const attachments = checkInDetails.attachments.map(
+      (attachment) => `${r2DevURL}/${attachment.url}`,
+    )
+
     return {
       checkInId: checkInDetails.checkInId.toString(),
       parcelForwardingId: checkInDetails.parcelForwardingId.toString(),
@@ -15,7 +24,7 @@ export class CheckInDetailsPresenter {
         : null,
       details: checkInDetails.details ?? null,
       status: checkInDetails.status,
-      attachments: checkInDetails.attachments.map(AttachmentPresenter.toHTTP),
+      attachments,
       weight: checkInDetails.weight ?? null,
       createdAt: checkInDetails.createdAt,
       updatedAt: checkInDetails.updatedAt ?? null,

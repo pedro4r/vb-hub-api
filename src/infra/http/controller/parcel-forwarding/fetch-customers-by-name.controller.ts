@@ -10,10 +10,10 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
-import { CustomerPreviewPresenter } from '../../presenters/customer-preview-presenter'
 import { FetchCustomersByNameUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-customers-by-name'
 import { ZodValidationPipe } from '../../pipe/zod-validation-pipe'
 import { z } from 'zod'
+import { CustomersPreviewPresenter } from '../../presenters/customers-preview-presenter'
 
 const routeParamsSchema = z.object({
   name: z.string(),
@@ -69,8 +69,8 @@ export class FetchCustomersByNameController {
       }
     }
 
-    const customersPreview = result.value.customersPreview.map((customer) =>
-      CustomerPreviewPresenter.toHTTP(customer),
+    const customersPreview = CustomersPreviewPresenter.toHTTP(
+      result.value.customersData,
     )
 
     return {

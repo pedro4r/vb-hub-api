@@ -29,6 +29,7 @@ type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 export class FetchRecentCheckInsDetailsController {
   constructor(
     private fetchRecentCheckInsDetailsUseCase: FetchRecentCheckInsDetailsUseCase,
+    private checkInDetailsPresenter: CheckInDetailsPresenter,
   ) {}
 
   @Get()
@@ -55,8 +56,8 @@ export class FetchRecentCheckInsDetailsController {
       }
     }
 
-    const checkInsDetails = result.value.checkInsDetails.map(
-      CheckInDetailsPresenter.toHTTP,
+    const checkInsDetails = result.value.checkInsDetails.map((checkInDetails) =>
+      this.checkInDetailsPresenter.toHTTP(checkInDetails),
     )
 
     return {

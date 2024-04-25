@@ -85,4 +85,34 @@ describe('Fetch Customers By Name', () => {
       }),
     })
   })
+
+  it('should not be able to fetch customers by name with another parcelForwardingId', async () => {
+    const customer1 = makeCustomer(
+      {
+        firstName: 'John',
+        lastName: 'Doe',
+        parcelForwardingId: new UniqueEntityID('company-1'),
+      },
+      new UniqueEntityID('customer-1'),
+    )
+
+    const customer2 = makeCustomer(
+      {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        parcelForwardingId: new UniqueEntityID('company-1'),
+      },
+      new UniqueEntityID('customer-1'),
+    )
+
+    await inMemoryCustomerRepository.create(customer1)
+    await inMemoryCustomerRepository.create(customer2)
+
+    const result = await sut.execute({
+      name: 'do',
+      page: 1,
+      parcelForwardingId: 'company-2',
+    })
+    expect(result.isLeft()).toBe(true)
+  })
 })

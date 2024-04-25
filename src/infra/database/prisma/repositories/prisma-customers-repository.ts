@@ -5,13 +5,39 @@ import { Customer } from '@/domain/customer/enterprise/entities/customer'
 import { CustomerPreview } from '@/domain/customer/enterprise/entities/value-objects/customer-preview'
 import { PrismaCustomerMapper } from '../mappers/prisma-customer-mapper'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { FetchCustomerByNameResponseData } from '@/domain/customer/enterprise/entities/value-objects/fetch-customers-by-name-response-data'
 
 @Injectable()
 export class PrismaCustomerRepository implements CustomerRepository {
   constructor(private prisma: PrismaService) {}
-  async findManyByName(name: string, page: number): Promise<CustomerPreview[]> {
+  async findManyByName(
+    name: string,
+    parcelForwardingId: string,
+    page: number,
+  ): Promise<FetchCustomerByNameResponseData> {
+    const totalCustomers = await this.prisma.customer.count({
+      where: {
+        parcelForwardingId,
+        OR: [
+          {
+            firstName: {
+              contains: name,
+              mode: 'insensitive',
+            },
+          },
+          {
+            lastName: {
+              contains: name,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
+    })
+
     const customers = await this.prisma.customer.findMany({
       where: {
+        parcelForwardingId,
         OR: [
           {
             firstName: {
@@ -31,16 +57,27 @@ export class PrismaCustomerRepository implements CustomerRepository {
       skip: (page - 1) * 5,
     })
 
-    return customers.map((customer) =>
-      CustomerPreview.create({
-        hubId: customer.hubId,
-        parcelForwardingId: new UniqueEntityID(customer.parcelForwardingId),
-        firstName: customer.firstName,
-        lastName: customer.lastName,
-        customerId: new UniqueEntityID(customer.id),
-        createdAt: customer.createdAt,
-      }),
+    const customersToDomain = customers.map((customer) =>
+      PrismaCustomerMapper.toDomain(customer),
     )
+
+    return FetchCustomerByNameResponseData.create({
+      customers: customersToDomain.map((customer) =>
+        CustomerPreview.create({
+          hubId: customer.hubId,
+          parcelForwardingId: customer.parcelForwardingId,
+          firstName: customer.firstName,
+          lastName: customer.lastName,
+          customerId: customer.id,
+          createdAt: customer.createdAt,
+        }),
+      ),
+      meta: {
+        pageIndex: page,
+        perPage: 5,
+        totalCount: totalCustomers,
+      },
+    })
   }
 
   async findByEmail(email: string): Promise<Customer | null> {

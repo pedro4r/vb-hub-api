@@ -29,6 +29,7 @@ export class FetchCustomersByNameUseCase {
   }: FetchCustomersByNameUseCaseRequest): Promise<FetchCustomersByNameUseCaseResponse> {
     const customersData = await this.customerRepository.findManyByName(
       name,
+      parcelForwardingId,
       page,
     )
 

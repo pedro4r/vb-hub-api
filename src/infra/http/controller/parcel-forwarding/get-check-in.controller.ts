@@ -14,7 +14,10 @@ import { CheckInDetailsPresenter } from '../../presenters/check-in-details-prese
 
 @Controller('/check-in/:id')
 export class GetCheckInController {
-  constructor(private getCheckInUseCase: GetCheckInUseCase) {}
+  constructor(
+    private getCheckInUseCase: GetCheckInUseCase,
+    private checkInDetailsPresenter: CheckInDetailsPresenter,
+  ) {}
 
   @Get()
   async handle(
@@ -41,7 +44,7 @@ export class GetCheckInController {
       }
     }
 
-    const checkInDetails = CheckInDetailsPresenter.toHTTP(
+    const checkInDetails = this.checkInDetailsPresenter.toHTTP(
       result.value.checkInDetails,
     )
 

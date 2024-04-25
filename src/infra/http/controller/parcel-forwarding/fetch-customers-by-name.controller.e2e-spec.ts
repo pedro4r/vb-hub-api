@@ -3,6 +3,7 @@ import { DatabaseModule } from '@/infra/database/database.module'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
+
 import request from 'supertest'
 import { CustomerFactory } from 'test/factories/make-customer'
 import { ParcelForwardingFactory } from 'test/factories/make-parcel-forwarding'
@@ -56,16 +57,31 @@ describe('Fetch Customers by Name (E2E)', () => {
 
     expect(response.status).toBe(200)
     expect(response.body).toEqual({
-      customersPreview: expect.arrayContaining([
-        expect.objectContaining({
-          firstName: customer1.firstName,
-          lastName: customer1.lastName,
+      customersPreview: expect.objectContaining({
+        customers: expect.arrayContaining([
+          expect.objectContaining({
+            hubId: customer1.hubId,
+            customerId: customer1.id.toString(),
+            parcelForwardingId: customer1.parcelForwardingId.toString(),
+            firstName: customer1.firstName,
+            lastName: customer1.lastName,
+            createdAt: expect.any(String),
+          }),
+          expect.objectContaining({
+            hubId: customer2.hubId,
+            customerId: customer2.id.toString(),
+            parcelForwardingId: customer2.parcelForwardingId.toString(),
+            firstName: customer2.firstName,
+            lastName: customer2.lastName,
+            createdAt: expect.any(String),
+          }),
+        ]),
+        meta: expect.objectContaining({
+          pageIndex: expect.any(Number),
+          perPage: expect.any(Number),
+          totalCount: expect.any(Number),
         }),
-        expect.objectContaining({
-          firstName: customer2.firstName,
-          lastName: customer2.lastName,
-        }),
-      ]),
+      }),
     })
   })
 })
