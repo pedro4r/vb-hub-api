@@ -58,12 +58,9 @@ jobs:
             echo "Waiting for postgres..."
             sleep 1
           done
-      # - name: Check if customers table exists
-      #   run: |
-      #         echo "SELECT to_regclass('public.customers');" | docker-compose exec -T postgres psql -U postgres -d hub-postgres-db
 
-      # - name: Run Prisma migrations
-      #   run: docker-compose exec -T prisma npx prisma migrate deploy
+      - name: Run Prisma migrations
+        run: npx prisma migrate deploy
       #   env:
       #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
