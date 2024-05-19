@@ -64,6 +64,9 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
+      - name: Change permissions
+        run: sudo chmod -R 777 ./data/pg
+        
       - name: Run tests
         run: npm run test:e2e
 
