@@ -61,8 +61,8 @@ jobs:
 
       - name: Run Prisma migrations
         run: npx prisma migrate deploy
-      #   env:
-      #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+        env:
+          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
       - name: Run tests
         run: npm run test:e2e
