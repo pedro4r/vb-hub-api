@@ -3,7 +3,7 @@ import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { Injectable } from '@nestjs/common'
 import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
-import { FetchCustomerByNameResponseData } from '@/domain/customer/enterprise/entities/value-objects/fetch-customers-by-name-response-data'
+import { FetchCustomerByNameData } from '@/domain/customer/enterprise/entities/value-objects/fetch-customers-by-name-data'
 
 interface FetchCustomersByNameUseCaseRequest {
   name: string
@@ -14,7 +14,7 @@ interface FetchCustomersByNameUseCaseRequest {
 type FetchCustomersByNameUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {
-    customersData: FetchCustomerByNameResponseData
+    customersData: FetchCustomerByNameData
   }
 >
 

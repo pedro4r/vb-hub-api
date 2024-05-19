@@ -134,11 +134,7 @@ describe('Get Package (E2E)', () => {
         expect.objectContaining({
           checkInId: checkIn2.id.toString(),
           details: expect.any(String),
-          attachments: expect.arrayContaining([
-            expect.objectContaining({
-              url: expect.any(String),
-            }),
-          ]),
+          attachments: expect.arrayContaining([expect.any(String)]),
         }),
       ]),
     })

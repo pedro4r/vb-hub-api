@@ -7,7 +7,7 @@ import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases
 
 const createCheckInBodySchema = z.object({
   customerId: z.string().uuid(),
-  details: z.string().optional().default(''),
+  details: z.string().max(100).optional().default(''),
   weight: z.number().max(453139).optional().default(0), // Max. 999 lbs (453139 grams)
   attachmentsIds: z.array(z.string().uuid()),
 })
@@ -28,8 +28,6 @@ export class CreateCheckInController {
     const { customerId, details, weight, attachmentsIds } = body
 
     const userId = user.sub
-
-    // Imprime o payload do token JWT no console
 
     const result = await this.checkInUseCase.execute({
       customerId,

@@ -1,7 +1,7 @@
-import { FetchCustomersByNameResponseDataProps } from '@/domain/customer/enterprise/entities/value-objects/fetch-customers-by-name-response-data'
+import { FetchCustomersByNameDataProps } from '@/domain/customer/enterprise/entities/value-objects/fetch-customers-by-name-data'
 
 export class CustomersPreviewPresenter {
-  static toHTTP(customersData: FetchCustomersByNameResponseDataProps) {
+  static toHTTP(customersData: FetchCustomersByNameDataProps) {
     const customers = customersData.customers.map((customer) => {
       return {
         hubId: customer.hubId,

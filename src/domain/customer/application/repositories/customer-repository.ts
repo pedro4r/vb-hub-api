@@ -1,6 +1,6 @@
 import { Customer } from '../../enterprise/entities/customer'
 import { CustomerPreview } from '../../enterprise/entities/value-objects/customer-preview'
-import { FetchCustomerByNameResponseData } from '../../enterprise/entities/value-objects/fetch-customers-by-name-response-data'
+import { FetchCustomerByNameData } from '../../enterprise/entities/value-objects/fetch-customers-by-name-data'
 
 export abstract class CustomerRepository {
   abstract findByEmail(email: string): Promise<Customer | null>
@@ -8,7 +8,7 @@ export abstract class CustomerRepository {
     name: string,
     parcelForwardingId: string,
     page: number,
-  ): Promise<FetchCustomerByNameResponseData>
+  ): Promise<FetchCustomerByNameData>
 
   abstract findById(id: string): Promise<Customer | null>
   abstract findByHubId(hubId: number): Promise<CustomerPreview | null>

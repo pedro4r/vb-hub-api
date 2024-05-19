@@ -5,7 +5,7 @@ import { Customer } from '@/domain/customer/enterprise/entities/customer'
 import { CustomerPreview } from '@/domain/customer/enterprise/entities/value-objects/customer-preview'
 import { PrismaCustomerMapper } from '../mappers/prisma-customer-mapper'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { FetchCustomerByNameResponseData } from '@/domain/customer/enterprise/entities/value-objects/fetch-customers-by-name-response-data'
+import { FetchCustomerByNameData } from '@/domain/customer/enterprise/entities/value-objects/fetch-customers-by-name-data'
 
 @Injectable()
 export class PrismaCustomerRepository implements CustomerRepository {
@@ -14,7 +14,7 @@ export class PrismaCustomerRepository implements CustomerRepository {
     name: string,
     parcelForwardingId: string,
     page: number,
-  ): Promise<FetchCustomerByNameResponseData> {
+  ): Promise<FetchCustomerByNameData> {
     const totalCustomers = await this.prisma.customer.count({
       where: {
         parcelForwardingId,
@@ -61,7 +61,7 @@ export class PrismaCustomerRepository implements CustomerRepository {
       PrismaCustomerMapper.toDomain(customer),
     )
 
-    return FetchCustomerByNameResponseData.create({
+    return FetchCustomerByNameData.create({
       customers: customersToDomain.map((customer) =>
         CustomerPreview.create({
           hubId: customer.hubId,

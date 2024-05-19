@@ -2,14 +2,56 @@ version: '3.8'
 
 services:
   postgres:
-    container_name: vb-hub-api
+    container_name: hub-postgres
     image: postgres
     ports:
       - 5432:5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: docker
-      POSTGRES_DB: vb-hub-api
+      POSTGRES_DB: hub-postgres-db
       PGDATA: /data/postgres
     volumes:
       - ./data/pg:/data/postgres
+    networks:
+      - hub-network
+  
+  prisma:
+    container_name: hub-prisma
+    environment:
+      - DATABASE_URL=postgresql://postgres:docker@postgres:5432/hub-postgres-db
+    build:
+      context: .
+    depends_on:
+      - postgres
+    networks:
+      - hub-network
+    command: ["npx", "prisma", "migrate", "deploy"]
+  
+  hub-api:
+    container_name: hub-api
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
+      - JWT_PUBLIC_KEY=${JWT_PUBLIC_KEY}
+      - CLOUDFLARE_DEV_URL=${CLOUDFLARE_DEV_URL}
+      - CLOUDFLARE_ACCOUNT_ID=${CLOUDFLARE_ACCOUNT_ID}
+      - TOKEN_VALUE=${TOKEN_VALUE}
+      - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    build:
+      context: .
+    ports:
+      - 3333:3333
+    depends_on:
+      - prisma
+    networks:
+      - hub-network
+
+networks:
+  hub-network:
+    driver: bridge
+
+volumes:
+  db:

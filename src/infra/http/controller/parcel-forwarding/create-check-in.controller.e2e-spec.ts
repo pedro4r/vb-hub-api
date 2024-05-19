@@ -58,10 +58,9 @@ describe('Create Check-in (E2E)', () => {
       .post('/check-in')
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        parcel_forwarding_id: parcelForwarding.id,
         customerId: customer.id,
         details: 'New Check-in',
-        weight: '10',
+        weight: 10,
         attachmentsIds: [attachment1.id.toString(), attachment2.id.toString()],
       })
 

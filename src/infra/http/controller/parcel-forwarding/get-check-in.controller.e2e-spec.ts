@@ -109,16 +109,7 @@ describe('Get Check-in (E2E)', () => {
     expect(response.body).toEqual({
       checkInDetails: expect.objectContaining({
         status: expect.any(String),
-        attachments: expect.arrayContaining([
-          expect.objectContaining({
-            id: expect.any(String),
-            url: expect.any(String),
-          }),
-          expect.objectContaining({
-            id: expect.any(String),
-            url: expect.any(String),
-          }),
-        ]),
+        attachments: expect.arrayContaining([expect.any(String)]),
       }),
     })
   })

@@ -1,7 +1,7 @@
 import { ValueObject } from '@/core/entities/value-object'
 import { CustomerPreview } from './customer-preview'
 
-export interface FetchCustomersByNameResponseDataProps {
+export interface FetchCustomersByNameDataProps {
   customers: CustomerPreview[]
   meta: {
     pageIndex: number
@@ -10,7 +10,7 @@ export interface FetchCustomersByNameResponseDataProps {
   }
 }
 
-export class FetchCustomerByNameResponseData extends ValueObject<FetchCustomersByNameResponseDataProps> {
+export class FetchCustomerByNameData extends ValueObject<FetchCustomersByNameDataProps> {
   get customers() {
     return this.props.customers
   }
@@ -19,7 +19,7 @@ export class FetchCustomerByNameResponseData extends ValueObject<FetchCustomersB
     return this.props.meta
   }
 
-  static create(props: FetchCustomersByNameResponseDataProps) {
-    return new FetchCustomerByNameResponseData(props)
+  static create(props: FetchCustomersByNameDataProps) {
+    return new FetchCustomerByNameData(props)
   }
 }
