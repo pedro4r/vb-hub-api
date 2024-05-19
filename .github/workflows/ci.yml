@@ -14,7 +14,7 @@ jobs:
       postgres:
         image: postgres:latest
         ports:
-          - 5433:5432  # Match the port mapping in docker-compose.yml
+          - 5433:5432  # Use a different port to avoid conflicts
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: docker
@@ -50,10 +50,14 @@ jobs:
           DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
       - name: Wait for Postgres to be ready
-        run: until docker-compose exec postgres pg_isready -U postgres -d hub-postgres-db; do sleep 1; done
+        run: |
+          until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
+            echo "Waiting for postgres..."
+            sleep 1
+          done
 
       # - name: Run Prisma migrations
-      #   run: docker-compose exec prisma npx prisma migrate deploy
+      #   run: docker-compose exec -T prisma npx prisma migrate deploy
       #   env:
       #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
