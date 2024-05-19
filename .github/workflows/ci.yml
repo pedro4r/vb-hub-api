@@ -59,13 +59,13 @@ jobs:
             sleep 1
           done
 
-      - name: Run Prisma migrations
-        run: docker-compose exec -T prisma npx prisma migrate deploy
-        env:
-          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+      # - name: Run Prisma migrations
+      #   run: docker-compose exec -T prisma npx prisma migrate deploy
+      #   env:
+      #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
-      # - name: Run tests
-      #   run: npm run test:e2e
+      - name: Run tests
+        run: npm run test:e2e
 
       # - name: Stop Docker Compose services
       #   if: always()
