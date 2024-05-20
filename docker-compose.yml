@@ -13,8 +13,8 @@ services:
       PGDATA: /data/postgres
     volumes:
       - ./data/pg:/data/postgres
-    networks:
-      - hub-network
+    # networks:
+    #   - hub-network
   
   prisma:
     container_name: hub-prisma
