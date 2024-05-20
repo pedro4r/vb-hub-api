@@ -24,8 +24,8 @@ services:
       context: .
     depends_on:
       - postgres
-    networks:
-      - hub-network
+    # networks:
+    #   - hub-network
     command: ["npx", "prisma", "migrate", "deploy"]
   
 #   hub-api:
