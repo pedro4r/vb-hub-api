@@ -5,7 +5,7 @@ services:
     container_name: hub-postgres
     image: postgres
     ports:
-      - 5432:5432
+      - 5432:5433
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: docker
@@ -19,7 +19,7 @@ services:
   prisma:
     container_name: hub-prisma
     environment:
-      - DATABASE_URL=postgresql://postgres:docker@postgres:5432/hub-postgres-db
+      - DATABASE_URL=postgresql://postgres:docker@postgres:5433/hub-postgres-db
     build:
       context: .
     depends_on:
