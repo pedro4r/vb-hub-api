@@ -102,5 +102,8 @@ jobs:
         with:
           push: true
           tags: pedro4r/vb-hub-api:${{ steps.generate_tag.outputs.sha }}, pedro4r/vb-hub-api:latest
-        
+      
+      - name: Deploy to AWS Lambda
+        run: |
+          zip -r deploy.zip ./dist/*
 
