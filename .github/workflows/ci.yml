@@ -84,7 +84,7 @@ jobs:
         if: always()
         run: docker-compose down -v  # Ensure volumes are removed
 
-      - name: Generate Tag
+      - name: Generate Tag and Write to File
         id: generate_tag
         run: |
          SHA=$(echo $GITHUB_SHA | head -c7)
