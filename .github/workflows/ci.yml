@@ -105,4 +105,4 @@ jobs:
       
       - name: Deploy to AWS
         run: |
-          zip -r deploy.zip ./dist/*
+          zip -j deploy.zip ./dist/*
