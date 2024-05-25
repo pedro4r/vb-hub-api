@@ -20,20 +20,20 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    services:
-      postgres:
-        image: postgres:latest
-        ports:
-          - 5433:5432  # Use a different port to avoid conflicts
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: docker
-          POSTGRES_DB: hub-postgres-db
-        options: >-
-          --health-cmd="pg_isready -U postgres -d hub-postgres-db"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+    # services:
+    #   postgres:
+    #     image: postgres:latest
+    #     ports:
+    #       - 5433:5432  # Use a different port to avoid conflicts
+    #     env:
+    #       POSTGRES_USER: postgres
+    #       POSTGRES_PASSWORD: docker
+    #       POSTGRES_DB: hub-postgres-db
+    #     options: >-
+    #       --health-cmd="pg_isready -U postgres -d hub-postgres-db"
+    #       --health-interval=10s
+    #       --health-timeout=5s
+    #       --health-retries=5
 
     steps:
       - name: Checkout
@@ -60,7 +60,7 @@ jobs:
       - name: Start Docker Compose services
         run: docker-compose up -d
         env:
-          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+          DATABASE_URL: postgresql://postgres:docker@localhost:5432/hub-postgres-db  # Match the port mapping
 
       - name: Wait for Postgres to be ready
         run: |
