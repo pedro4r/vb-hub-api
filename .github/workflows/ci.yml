@@ -69,10 +69,10 @@ jobs:
             sleep 1
           done
 
-      # - name: Run Prisma migrations
-      #   run: npx prisma migrate deploy
-      #   env:
-      #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+      - name: Run Prisma migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
       - name: Change permissions
         run: sudo chmod -R 777 ./data/pg
@@ -82,7 +82,7 @@ jobs:
 
       - name: Stop Docker Compose services
         if: always()
-        run: docker-compose down -v  # Ensure volumes are removed
+        run: docker-compose down -v
 
       - name: Generate Tag and Write to File
         id: generate_tag
