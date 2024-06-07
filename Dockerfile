@@ -54,8 +54,5 @@ COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/prisma ./prisma
 
-# Exponha a porta, se necessário (não é usado no Lambda)
-EXPOSE 3333
-
 # Defina o comando de inicialização do Lambda
 CMD ["index.handler"]
