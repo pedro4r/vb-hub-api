@@ -48,8 +48,7 @@ RUN npm prune --production
 # COPY --from=build /usr/src/app/node_modules ${LAMBDA_TASK_ROOT}/node_modules
 # COPY --from=build /usr/src/app/prisma ${LAMBDA_TASK_ROOT}/prisma
 
-# Copie os arquivos de construção para o diretório de trabalho
-COPY --from=build /usr/src/app/package.json ./
+COPY --from=build /usr/src/app/package.json ./package.json
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/prisma ./prisma
