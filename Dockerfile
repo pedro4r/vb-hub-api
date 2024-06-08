@@ -55,7 +55,7 @@
 FROM public.ecr.aws/lambda/nodejs:18
 
 # Defina o diretório de trabalho
-WORKDIR /var/task
+WORKDIR /usr/src/app
 
 # Copie os arquivos necessários para a imagem
 COPY package.json package-lock.json ./
