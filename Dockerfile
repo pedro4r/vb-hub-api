@@ -30,7 +30,8 @@
 # # Pipeline for AWS Lambda
 
 # Use a imagem base oficial da AWS Lambda para Node.js
-FROM public.ecr.aws/lambda/nodejs:20
+# FROM public.ecr.aws/lambda/nodejs:20
+FROM node:18
 
 # Defina o diretório de trabalho
 WORKDIR /usr/src/app
