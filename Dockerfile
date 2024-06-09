@@ -30,10 +30,10 @@
 # # Pipeline for AWS Lambda
 
 # Use a imagem base oficial da AWS Lambda para Node.js
-FROM public.ecr.aws/lambda/nodejs:14
+FROM public.ecr.aws/lambda/nodejs:20
 
 # Defina o diretório de trabalho
-WORKDIR /var/task
+WORKDIR /usr/src/app
 
 # Copie os arquivos necessários para a imagem
 COPY package.json package-lock.json ./
