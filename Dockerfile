@@ -39,7 +39,11 @@ FROM node:18 AS build
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+# COPY package*.json ./
+# COPY prisma ./prisma/
+# COPY . .
+
+COPY package.json package-lock.json ./
 COPY prisma ./prisma/
 COPY . .
 
