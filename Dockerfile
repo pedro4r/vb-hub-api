@@ -39,10 +39,6 @@ FROM node:18 AS build
 
 WORKDIR /usr/src/app
 
-# COPY package*.json ./
-# COPY prisma ./prisma/
-# COPY . .
-
 COPY package.json package-lock.json ./
 COPY prisma ./prisma/
 COPY . .
@@ -61,7 +57,7 @@ COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/prisma ./prisma
 
-CMD ["index.handler"]
+CMD ["dist/src/infra/lambda.handler"]
 
 
 
