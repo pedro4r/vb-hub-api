@@ -35,17 +35,17 @@
 
 #TEST
 # Defina o estágio de construção
-FROM public.ecr.aws/lambda/nodejs:18 AS build
+FROM node:18 AS build
 
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-
-RUN npm install
-
+COPY prisma ./prisma/
 COPY . .
 
+RUN npm install
 RUN npm run build
+RUN npm prune --production
 
 # Defina o estágio de produção
 FROM public.ecr.aws/lambda/nodejs:18
