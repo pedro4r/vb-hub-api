@@ -56,7 +56,7 @@ COPY --from=build /usr/src/app/package.json ./package.json
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/prisma ./prisma
-COPY --from=build /usr/src/app/dist/src/infra/lambda.js ./lambda.js
+COPY --from=build /usr/src/app/dist/src/infra/lambd.js ./lambda.js
 
 
 CMD ["dist/src/infra/lambda.handler"]
