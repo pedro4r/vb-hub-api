@@ -27,22 +27,28 @@
 # CMD ["index.handler"]
 
 
+
+
+
+
+
+
 #TEST
-# Etapa de build
-# FROM node:18 AS build
+# Defina o estágio de construção
 FROM public.ecr.aws/lambda/nodejs:18 AS build
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
-COPY prisma ./prisma/
-COPY . .
+COPY package*.json ./
 
 RUN npm install
+
+COPY . .
+
 RUN npm run build
-RUN npm prune --production
 
-
+# Defina o estágio de produção
+FROM public.ecr.aws/lambda/nodejs:18
 
 WORKDIR /var/task
 
@@ -51,10 +57,6 @@ COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/prisma ./prisma
 
-# Inclua o arquivo index.js para definir o handler
-# COPY --from=build /usr/src/app/dist/src/infra/index.js ./index.js
-
-# Defina o comando de inicialização do Lambda
 CMD ["index.handler"]
 
 
