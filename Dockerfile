@@ -29,7 +29,8 @@
 
 #TEST
 # Etapa de build
-FROM node:18 AS build
+# FROM node:18 AS build
+FROM public.ecr.aws/lambda/nodejs:18 AS build
 
 WORKDIR /usr/src/app
 
@@ -41,8 +42,7 @@ RUN npm install
 RUN npm run build
 RUN npm prune --production
 
-# Etapa final
-FROM public.ecr.aws/lambda/nodejs:18
+
 
 WORKDIR /var/task
 
@@ -52,7 +52,31 @@ COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/prisma ./prisma
 
 # Inclua o arquivo index.js para definir o handler
-COPY --from=build /usr/src/app/index.js ./index.js
+COPY --from=build /usr/src/app/dist/src/infra/index.js ./index.js
 
 # Defina o comando de inicialização do Lambda
 CMD ["index.handler"]
+
+
+
+
+
+
+
+
+
+# Etapa final
+# FROM public.ecr.aws/lambda/nodejs:18
+
+# WORKDIR /var/task
+
+# COPY --from=build /usr/src/app/package.json ./package.json
+# COPY --from=build /usr/src/app/dist ./dist
+# COPY --from=build /usr/src/app/node_modules ./node_modules
+# COPY --from=build /usr/src/app/prisma ./prisma
+
+# # Inclua o arquivo index.js para definir o handler
+# COPY --from=build /usr/src/app/dist/src/infra/index.js ./index.js
+
+# # Defina o comando de inicialização do Lambda
+# CMD ["index.handler"]
