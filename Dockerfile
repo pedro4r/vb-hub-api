@@ -52,7 +52,7 @@ COPY --from=build /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/prisma ./prisma
 
 # Inclua o arquivo index.js para definir o handler
-COPY --from=build /usr/src/app/dist/src/infra/index.js ./index.js
+# COPY --from=build /usr/src/app/dist/src/infra/index.js ./index.js
 
 # Defina o comando de inicialização do Lambda
 CMD ["index.handler"]
