@@ -118,16 +118,50 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        
+      
+      - name: Unit tests
+        run: npm run test
+
+      - name: Clean up Docker containers
+        run: docker-compose down -v || true
+
+      - name: Build Docker images
+        run: docker-compose build
+
+      - name: Start Docker Compose services
+        run: docker-compose up -d
+        env:
+          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+
+      - name: Wait for Postgres to be ready
+        run: |
+          until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
+            echo "Waiting for postgres..."
+            sleep 1
+          done
+
+      - name: Run Prisma migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+
+      - name: Change permissions
+        run: sudo chmod -R 777 ./data/pg
+
+      - name: Run tests
+        run: npm run test:e2e
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      
+      - name: Build NestJS
+        run: npm run build
 
-      - name: Zip dist folder and Deploy
+      - name: Zip dist folder and Deploy to Lambda
         run: |
-          npm run build
           zip -r deploy.zip ./dist/*
-          aws lambda update-function-code --function-name=MyLambdaFunction --zip-file=fileb://deploy.zip
+          aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
