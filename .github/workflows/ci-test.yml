@@ -1,0 +1,93 @@
+# name: CI
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     name: 'Build and Push'
+#     runs-on: ubuntu-latest
+#     env:
+#       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+#       JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+#       JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+#       CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
+#       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+#       TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
+#       AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+#       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: 18
+#           cache: 'npm'
+
+#       - name: Install dependencies
+#         run: npm install
+
+#       - name: Run Unit tests
+#         run: npm run test
+
+#       # - name: Clean up Docker containers
+#       #   run: docker-compose down -v || true
+
+#       # - name: Build Docker images
+#       #   run: docker-compose build
+
+#       # - name: Start Docker Compose services
+#       #   run: docker-compose up -d
+#       #   env:
+#       #     DATABASE_URL: postgresql://postgres:docker@localhost:5432/hub-postgres-db
+
+#       # - name: Wait for Postgres to be ready
+#       #   run: |
+#       #     until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
+#       #       echo "Waiting for postgres..."
+#       #       sleep 1
+#       #     done
+
+#       # - name: Change permissions
+#       #   run: sudo chmod -R 777 ./data/pg
+
+#       # - name: Run tests E2E
+#       #   run: npm run test:e2e
+
+#       # - name: Stop Docker Compose services
+#       #   if: always()
+#       #   run: docker-compose down -v
+
+#       # - name: Generate Tag and Write to File
+#       #   id: generate_tag
+#       #   run: |
+#       #    SHA=$(echo $GITHUB_SHA | head -c7)
+#       #    echo "sha=$SHA" >> $GITHUB_OUTPUT  
+
+#       # - name: Login to DockerHub
+#       #   uses: docker/login-action@v3
+#       #   with:
+#       #     username: ${{ secrets.DOCKER_USERNAME }}
+#       #     password: ${{ secrets.DOCKER_TOKEN }}  
+
+
+#       # - name: Build and Push Docker Image
+#       #   uses: docker/build-push-action@v5
+#       #   with:
+#       #     push: true
+#       #     tags: pedro4r/vb-hub-api:${{ steps.generate_tag.outputs.sha }}, pedro4r/vb-hub-api:latest
+
+#       - name: Build NestJS
+#         run: npm run build
+      
+#       - name: Zip dist folder
+#         run: zip -j deploy.zip ./dist/*
+
+        
+          

@@ -36,33 +36,33 @@ jobs:
       - name: Run Unit tests
         run: npm run test
 
-      # - name: Clean up Docker containers
-      #   run: docker-compose down -v || true
+      - name: Clean up Docker containers
+        run: docker-compose down -v || true
 
-      # - name: Build Docker images
-      #   run: docker-compose build
+      - name: Build Docker images
+        run: docker-compose build
 
-      # - name: Start Docker Compose services
-      #   run: docker-compose up -d
-      #   env:
-      #     DATABASE_URL: postgresql://postgres:docker@localhost:5432/hub-postgres-db
+      - name: Start Docker Compose services
+        run: docker-compose up -d
+        env:
+          DATABASE_URL: postgresql://postgres:docker@localhost:5432/hub-postgres-db
 
-      # - name: Wait for Postgres to be ready
-      #   run: |
-      #     until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
-      #       echo "Waiting for postgres..."
-      #       sleep 1
-      #     done
+      - name: Wait for Postgres to be ready
+        run: |
+          until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
+            echo "Waiting for postgres..."
+            sleep 1
+          done
 
-      # - name: Change permissions
-      #   run: sudo chmod -R 777 ./data/pg
+      - name: Change permissions
+        run: sudo chmod -R 777 ./data/pg
 
-      # - name: Run tests E2E
-      #   run: npm run test:e2e
+      - name: Run tests E2E
+        run: npm run test:e2e
 
-      # - name: Stop Docker Compose services
-      #   if: always()
-      #   run: docker-compose down -v
+      - name: Stop Docker Compose services
+        if: always()
+        run: docker-compose down -v
 
       # - name: Generate Tag and Write to File
       #   id: generate_tag
