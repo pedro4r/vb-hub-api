@@ -130,4 +130,4 @@ jobs:
         run: |
           npm run build
           zip -r deploy.zip ./dist/*
-          aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
+          aws lambda update-function-code --function-name=MyLambdaFunction --zip-file=fileb://deploy.zip
