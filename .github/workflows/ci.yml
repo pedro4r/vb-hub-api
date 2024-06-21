@@ -130,5 +130,5 @@ jobs:
       - name: Zip dist folder
         run: |
           npm run build
-          zip -j deploy.zip ./dist/*
+          zip -r deploy.zip ./dist/*
           aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
