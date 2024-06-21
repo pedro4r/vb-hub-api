@@ -157,6 +157,9 @@ jobs:
       - name: Zip dist folder
         run: zip -j deploy.zip ./dist/*
 
+      - name: Check zip file
+        run: ls -l deploy.zip
+
       - name: Deploy to AWS Lambda
         uses: appleboy/lambda-action@v0.2.0
         with:
