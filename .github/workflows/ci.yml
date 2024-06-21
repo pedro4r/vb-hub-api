@@ -147,7 +147,7 @@ jobs:
         run: zip -j deploy.zip ./dist/*
 
       - name: Deploy to AWS Lambda
-        uses: appleboy/aws-lambda-deploy@v1
+        uses: appleboy/lambda-action@v0.2.0
         with:
           args: dist.zip
         env:
