@@ -79,6 +79,12 @@ jobs:
 
       - name: Run tests
         run: npm run test:e2e
+      
+      - name: Build NestJS
+        run: npm run build
+      
+      - name: Zip dist folder
+        run: zip -j deploy.zip ./dist/*
 
       # - name: Stop Docker Compose services
       #   if: always()
