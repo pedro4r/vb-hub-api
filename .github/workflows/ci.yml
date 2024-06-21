@@ -1,3 +1,93 @@
+# # name: CI
+
+# # on:
+# #   push:
+# #     branches:
+# #       - main
+
+# # jobs:
+# #   build:
+# #     name: 'Build and Push'
+# #     runs-on: ubuntu-latest
+# #     env:
+# #       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+# #       JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+# #       JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+# #       CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
+# #       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+# #       TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
+# #       AWS_REGION: ${{ secrets.AWS_REGION }}
+# #       AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+# #       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+# #       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+# #     services:
+# #       postgres:
+# #         image: postgres:latest
+# #         ports:
+# #           - 5433:5432  # Use a different port to avoid conflicts
+# #         env:
+# #           POSTGRES_USER: postgres
+# #           POSTGRES_PASSWORD: docker
+# #           POSTGRES_DB: hub-postgres-db
+# #         options: >-
+# #           --health-cmd="pg_isready -U postgres -d hub-postgres-db"
+# #           --health-interval=10s
+# #           --health-timeout=5s
+# #           --health-retries=5
+
+# #     steps:
+# #       - name: Checkout
+# #         uses: actions/checkout@v4
+
+# #       - name: Set up Node.js
+# #         uses: actions/setup-node@v4
+# #         with:
+# #           node-version: 18
+# #           cache: 'npm'
+
+# #       - name: Install dependencies
+# #         run: npm install
+
+# #       # - name: Unit tests
+# #       #   run: npm run test
+
+# #       # - name: Clean up Docker containers
+# #       #   run: docker-compose down -v || true
+
+# #       # - name: Build Docker images
+# #       #   run: docker-compose build
+
+# #       # - name: Start Docker Compose services
+# #       #   run: docker-compose up -d
+# #       #   env:
+# #       #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+
+# #       # - name: Wait for Postgres to be ready
+# #       #   run: |
+# #       #     until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
+# #       #       echo "Waiting for postgres..."
+# #       #       sleep 1
+# #       #     done
+
+# #       # - name: Run Prisma migrations
+# #       #   run: npx prisma migrate deploy
+# #       #   env:
+# #       #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+
+# #       # - name: Change permissions
+# #       #   run: sudo chmod -R 777 ./data/pg
+
+# #       # - name: Run tests
+# #       #   run: npm run test:e2e
+      
+# #       - name: Build NestJS
+# #         run: npm run build
+      
+# #       - name: Zip dist folder
+# #         run: zip -j deploy.zip ./dist/*
+
+
 # name: CI
 
 # on:
@@ -7,7 +97,7 @@
 
 # jobs:
 #   build:
-#     name: 'Build and Push'
+#     name: 'Build and Deploy'
 #     runs-on: ubuntu-latest
 #     env:
 #       DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -16,10 +106,6 @@
 #       CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
 #       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 #       TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
-#       AWS_REGION: ${{ secrets.AWS_REGION }}
-#       AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
-#       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 #     services:
 #       postgres:
@@ -38,54 +124,68 @@
 
 #     steps:
 #       - name: Checkout
-#         uses: actions/checkout@v4
+#         uses: actions/checkout@v2
 
 #       - name: Set up Node.js
-#         uses: actions/setup-node@v4
+#         uses: actions/setup-node@v2
 #         with:
 #           node-version: 18
-#           cache: 'npm'
 
 #       - name: Install dependencies
 #         run: npm install
+      
+#       - name: Unit tests
+#         run: npm run test
 
-#       # - name: Unit tests
-#       #   run: npm run test
+#       - name: Clean up Docker containers
+#         run: docker-compose down -v || true
 
-#       # - name: Clean up Docker containers
-#       #   run: docker-compose down -v || true
+#       - name: Build Docker images
+#         run: docker-compose build
 
-#       # - name: Build Docker images
-#       #   run: docker-compose build
+#       - name: Start Docker Compose services
+#         run: docker-compose up -d
+#         env:
+#           DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
-#       # - name: Start Docker Compose services
-#       #   run: docker-compose up -d
-#       #   env:
-#       #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+#       - name: Wait for Postgres to be ready
+#         run: |
+#           until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
+#             echo "Waiting for postgres..."
+#             sleep 1
+#           done
 
-#       # - name: Wait for Postgres to be ready
-#       #   run: |
-#       #     until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
-#       #       echo "Waiting for postgres..."
-#       #       sleep 1
-#       #     done
+#       - name: Run Prisma migrations
+#         run: npx prisma migrate deploy
+#         env:
+#           DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
-#       # - name: Run Prisma migrations
-#       #   run: npx prisma migrate deploy
-#       #   env:
-#       #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+#       - name: Change permissions
+#         run: sudo chmod -R 777 ./data/pg
 
-#       # - name: Change permissions
-#       #   run: sudo chmod -R 777 ./data/pg
+#       - name: Run tests
+#         run: npm run test:e2e
 
-#       # - name: Run tests
-#       #   run: npm run test:e2e
+#       - name: Configure AWS Credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: us-east-1
       
 #       - name: Build NestJS
 #         run: npm run build
-      
-#       - name: Zip dist folder
-#         run: zip -j deploy.zip ./dist/*
+
+#       - name: Zip dist folder and Deploy to Lambda
+#         run: |
+#           zip -r deploy.zip ./dist/*
+#           aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
+
+
+
+
+
+
 
 
 name: CI
@@ -97,7 +197,7 @@ on:
 
 jobs:
   build:
-    name: 'Build and Deploy'
+    name: 'Build and Push'
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -106,6 +206,9 @@ jobs:
       CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
+      # AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+      # AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      # AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     services:
       postgres:
@@ -124,16 +227,17 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm install
-      
+
       - name: Unit tests
         run: npm run test
 
@@ -165,7 +269,7 @@ jobs:
 
       - name: Run tests
         run: npm run test:e2e
-
+      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
