@@ -16,9 +16,9 @@
 #       CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
 #       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 #       TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
-#       AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
-#       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#       CLOUDFLARE_BUCKET_NAME: ${{ secrets.CLOUDFLARE_BUCKET_NAME }}
+#       CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
+#       CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
 
 #     steps:
 #       - name: Checkout

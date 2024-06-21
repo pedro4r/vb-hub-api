@@ -18,8 +18,8 @@ export class R2Storage implements Uploader {
       endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
       region: 'auto',
       credentials: {
-        accessKeyId: envService.get('AWS_ACCESS_KEY_ID'),
-        secretAccessKey: envService.get('AWS_SECRET_ACCESS_KEY'),
+        accessKeyId: envService.get('CLOUDFLARE_ACCESS_KEY_ID'),
+        secretAccessKey: envService.get('CLOUDFLARE_SECRET_ACCESS_KEY'),
       },
     })
   }
@@ -30,7 +30,7 @@ export class R2Storage implements Uploader {
 
     await this.client.send(
       new PutObjectCommand({
-        Bucket: this.envService.get('AWS_BUCKET_NAME'),
+        Bucket: this.envService.get('CLOUDFLARE_BUCKET_NAME'),
         Key: uniqueFileName,
         ContentType: fileType,
         Body: body,
