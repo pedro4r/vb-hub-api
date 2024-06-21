@@ -367,3 +367,18 @@ jobs:
 
       - name: Run tests
         run: npm run test:e2e
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Build NestJS
+        run: npm run build
+
+      - name: Zip dist folder and Deploy to Lambda
+        run: |
+          zip -r deploy.zip ./dist/*
+          aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
