@@ -39,7 +39,7 @@ jobs:
       - name: Clean up Docker containers
         run: docker-compose down -v || true
 
-      - name: Build Docker imagess
+      - name: Build Docker images
         run: docker-compose build
 
       - name: Start Docker Compose services
