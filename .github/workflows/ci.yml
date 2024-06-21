@@ -20,6 +20,21 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5433:5432  # Use a different port to avoid conflicts
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: docker
+          POSTGRES_DB: hub-postgres-db
+        options: >-
+          --health-cmd="pg_isready -U postgres -d hub-postgres-db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,7 +48,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run Unit tests
+      - name: Unit tests
         run: npm run test
 
       - name: Clean up Docker containers
@@ -45,7 +60,7 @@ jobs:
       - name: Start Docker Compose services
         run: docker-compose up -d
         env:
-          DATABASE_URL: postgresql://postgres:docker@localhost:5432/hub-postgres-db
+          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
       - name: Wait for Postgres to be ready
         run: |
@@ -54,40 +69,24 @@ jobs:
             sleep 1
           done
 
+      - name: Run Prisma migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+
       - name: Change permissions
         run: sudo chmod -R 777 ./data/pg
 
-      - name: Run tests E2E
+      - name: Run tests
         run: npm run test:e2e
 
-      - name: Stop Docker Compose services
-        if: always()
-        run: docker-compose down -v
+      # - name: Stop Docker Compose services
+      #   if: always()
+      #   run: docker-compose down -v  # Ensure volumes are removed
 
-      # - name: Generate Tag and Write to File
-      #   id: generate_tag
-      #   run: |
-      #    SHA=$(echo $GITHUB_SHA | head -c7)
-      #    echo "sha=$SHA" >> $GITHUB_OUTPUT  
-
-      # - name: Login to DockerHub
-      #   uses: docker/login-action@v3
+      # - name: Upload test results
+      #   if: always()
+      #   uses: actions/upload-artifact@v2
       #   with:
-      #     username: ${{ secrets.DOCKER_USERNAME }}
-      #     password: ${{ secrets.DOCKER_TOKEN }}  
-
-
-      # - name: Build and Push Docker Image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     push: true
-      #     tags: pedro4r/vb-hub-api:${{ steps.generate_tag.outputs.sha }}, pedro4r/vb-hub-api:latest
-
-      - name: Build NestJS
-        run: npm run build
-      
-      - name: Zip dist folder
-        run: zip -j deploy.zip ./dist/*
-
-        
-          
+      #     name: test-results
+      #     path: test-results # Adjust the path as necessary
