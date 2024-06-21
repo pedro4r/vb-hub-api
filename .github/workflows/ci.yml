@@ -16,6 +16,7 @@ jobs:
       CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -85,6 +86,14 @@ jobs:
       
       - name: Zip dist folder
         run: zip -j deploy.zip ./dist/*
+
+      - name: Upload to AWS Lambda
+        run: |
+          aws lambda update-function-code \
+          --function-name MyLambdaFunction \
+          --zip-file fileb://deploy.zip
+        env:
+          
 
       # - name: Stop Docker Compose services
       #   if: always()
