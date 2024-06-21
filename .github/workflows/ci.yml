@@ -92,8 +92,6 @@ jobs:
           aws lambda update-function-code \
           --function-name MyLambdaFunction \
           --zip-file fileb://deploy.zip
-        env:
-          
 
       # - name: Stop Docker Compose services
       #   if: always()
