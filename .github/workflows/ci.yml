@@ -95,7 +95,7 @@ jobs:
           zip -r deploy.zip ./dist/*
           aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
       
-      - name: Run Prisma migrations on AWS RDS
+      - name: Run Prisma migrations on AWS RDSS
         run: npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
