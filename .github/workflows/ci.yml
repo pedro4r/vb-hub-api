@@ -94,14 +94,3 @@ jobs:
         run: |
           zip -r deploy.zip ./dist/*
           aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
-      
-      # - name: Run Prisma migrations on AWS RDSS
-      #   run: npx prisma migrate deploy
-      #   env:
-      #     DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
-      
-      - name: Install PostgreSQL client
-        run: sudo apt-get install -y postgresql-client
-
-      - name: Connect to RDS and run a command
-        run: psql ${{ secrets.RDS_DATABASE_URL }} -c "\dt"
