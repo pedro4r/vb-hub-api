@@ -21,26 +21,6 @@ jobs:
       JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
       CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
-      CLOUDFLARE_BUCKET_NAME: ${{ secrets.CLOUDFLARE_BUCKET_NAME }}
-      CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
-      CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
-
-    services:
-      postgres:
-        image: postgres:latest
-        ports:
-          - 5433:5432  # Use a different port to avoid conflicts
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: docker
-          POSTGRES_DB: hub-postgres-db
-        options: >-
-          --health-cmd="pg_isready -U postgres -d hub-postgres-db"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,56 +34,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Unit tests
-        run: npm run test
-
-      - name: Clean up Docker containers
-        run: docker-compose down -v || true
-
-      - name: Build Docker images
-        run: docker-compose build
-
-      - name: Start Docker Compose services
-        run: docker-compose up -d
-        env:
-          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
-
-      - name: Wait for Postgres to be ready
-        run: |
-          until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
-            echo "Waiting for postgres..."
-            sleep 1
-          done
-
-      - name: Run Prisma migrations
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
-
-      - name: Change permissions
-        run: sudo chmod -R 777 ./data/pg
-
       - name: Run tests
-        run: npm run test:e2e
-      
-      # - name: Configure AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #     role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
-      #     aws-region: us-east-1
+        run: npm test
 
-       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
-          aws-region: us-east-1
-      
-      - name: Build NestJS
+      - name: Build
         run: npm run build
 
-      - name: Zip dist folder and Deploy to Lambda
-        run: |
-          zip -r deploy.zip ./dist/*
-          aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
+      - name: Deploy to Cloudflare
+        uses: cloudflare/wrangler-action@1.3.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          environment: 'dev'
