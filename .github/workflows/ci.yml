@@ -81,11 +81,13 @@ jobs:
         run: npm run test:e2e
       
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          audience: sts.amazonaws.com
           aws-region: us-east-1
+          role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
       
       - name: Build NestJS
         run: npm run build
