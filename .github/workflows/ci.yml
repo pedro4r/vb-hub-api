@@ -89,14 +89,20 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
           aws-region: us-east-1
+
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-east-1
       
       - name: Build NestJS
         run: npm run build
 
-      - name: Zip dist folder and Deploy to Lambda
-        run: |
-          zip -r deploy.zip ./dist/*
-          aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
+      # - name: Zip dist folder and Deploy to Lambda
+      #   run: |
+      #     zip -r deploy.zip ./dist/*
+      #     aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
