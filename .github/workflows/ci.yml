@@ -102,7 +102,7 @@ jobs:
       - name: Build NestJS
         run: npm run build
 
-      # - name: Zip dist folder and Deploy to Lambda
-      #   run: |
-      #     zip -r deploy.zip ./dist/*
-      #     aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
+      - name: Zip dist folder and Deploy to Lambda
+        run: |
+          zip -r deploy.zip ./dist/*
+          aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
