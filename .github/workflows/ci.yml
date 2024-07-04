@@ -105,9 +105,10 @@ jobs:
           zip -r deploy.zip ./dist/*
           aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
 
-      - name: Configure AWS Environment Variables
+      - name: Update Lambda Environment Variables
         run: |
-          aws lambda update-function-configuration --function-name lambda-gh-action --environment "Variables={DATABASE_URL=${{ secrets.DATABASE_URL }},JWT_PRIVATE_KEY=${{ secrets.JWT_PRIVATE_KEY }},JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }},CLOUDFLARE_DEV_URL=${{ secrets.CLOUDFLARE_DEV_URL }},CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }},TOKEN_VALUE=${{ secrets.TOKEN_VALUE }},CLOUDFLARE_BUCKET_NAME=${{ secrets.CLOUDFLARE_BUCKET_NAME }},CLOUDFLARE_ACCESS_KEY_ID=${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }},CLOUDFLARE_SECRET_ACCESS_KEY=${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}}"
+          aws lambda update-function-configuration --function-name lambda-gh-action \
+          --environment "Variables={DATABASE_URL=your_database_url,JWT_SECRET=your_jwt_secret,ANOTHER_SECRET=your_other_secret}"
 
 
       
