@@ -103,4 +103,5 @@ jobs:
       - name: Run Prisma migrations on AWS RDS
         run: npx prisma migrate deploy
         env:
-          DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
+          DATABASE_URL: postgresql://postgres:hyfreT-kebme0-riwbit@database-2.c47iuqvhkpzd.us-east-1.rds.amazonaws.com:5432/database-1?sslmode=no-verify&schema=public
+          # DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
