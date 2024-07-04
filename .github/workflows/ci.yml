@@ -5,6 +5,12 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
   build:
     name: 'Build and Push'
@@ -85,9 +91,8 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          audience: sts.amazonaws.com
-          aws-region: us-east-1
           role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
+          aws-region: us-east-1
       
       - name: Build NestJS
         run: npm run build
