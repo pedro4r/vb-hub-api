@@ -92,7 +92,7 @@ jobs:
           role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
           aws-region: us-east-1
 
-      - name: Build NestJS
+      - name: Build Nest.js app
         run: npm run build
 
       - name: Zip dist folder and Deploy to Lambda
