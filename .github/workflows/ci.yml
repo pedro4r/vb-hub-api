@@ -99,28 +99,32 @@ jobs:
         run: npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
+      
+      - name: Update Lambda Handler
+        run: |
+          aws lambda update-function-configuration --function-name=lambda-gh-action --handler dist/src/infra/lambda.handler
 
       - name: Zip dist folder and Deploy to Lambda
         run: |
           zip -r deploy.zip ./dist/*
           aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
       
-      - name: Update Lambda Environment Variables
-        run: |
-          max_retries=5
-          retry_wait=10
-          for attempt in $(seq 1 $max_retries); do
-            echo "Attempt $attempt of $max_retries"
-            if aws lambda update-function-configuration --function-name lambda-gh-action \
-              --environment "Variables={DATABASE_URL=your_database_url,JWT_SECRET=your_jwt_secret,ANOTHER_SECRET=your_other_secret}"; then
-              echo "Update succeeded"
-              break
-            else
-              echo "Update failed, retrying in $retry_wait seconds..."
-              sleep $retry_wait
-              retry_wait=$((retry_wait * 2))
-            fi
-          done
+      # - name: Update Lambda Environment Variables
+      #   run: |
+      #     max_retries=5
+      #     retry_wait=10
+      #     for attempt in $(seq 1 $max_retries); do
+      #       echo "Attempt $attempt of $max_retries"
+      #       if aws lambda update-function-configuration --function-name lambda-gh-action \
+      #         --environment "Variables={DATABASE_URL=your_database_url,JWT_SECRET=your_jwt_secret,ANOTHER_SECRET=your_other_secret}"; then
+      #         echo "Update succeeded"
+      #         break
+      #       else
+      #         echo "Update failed, retrying in $retry_wait seconds..."
+      #         sleep $retry_wait
+      #         retry_wait=$((retry_wait * 2))
+      #       fi
+      #     done
 
 
       
