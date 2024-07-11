@@ -2,7 +2,7 @@
 dist
 node_modules
 
-# sensitive or high-churn files
+# serveless output
 .serverless
 
 # Logs
