@@ -1,0 +1,31 @@
+service: nestjs-lambda
+
+useDotenv: true
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  environment:
+    DATABASE_URL: ${env:DATABASE_URL}
+    JWT_PRIVATE_KEY: ${env:JWT_PRIVATE_KEY}
+    JWT_PUBLIC_KEY: ${env:JWT_PUBLIC_KEY}
+    CLOUDFLARE_DEV_URL: ${env:CLOUDFLARE_DEV_URL}
+    CLOUDFLARE_ACCOUNT_ID: ${env:CLOUDFLARE_ACCOUNT_ID}
+    TOKEN_VALUE: ${env:TOKEN_VALUE}
+    CLOUDFLARE_BUCKET_NAME: ${env:CLOUDFLARE_BUCKET_NAME}
+    CLOUDFLARE_ACCESS_KEY_ID: ${env:CLOUDFLARE_ACCESS_KEY_ID}
+    CLOUDFLARE_SECRET_ACCESS_KEY: ${env:CLOUDFLARE_SECRET_ACCESS_KEY}
+
+functions:
+  main:
+    handler: dist/src/infra/lambda.handler
+    events:
+      - http:
+          method: ANY
+          path: /
+      - http:
+          method: ANY
+          path: '{proxy+}'
