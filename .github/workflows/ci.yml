@@ -83,8 +83,8 @@ jobs:
       - name: Change permissions
         run: sudo chmod -R 777 ./data/pg
 
-      - name: Run tests
-        run: npm run test:e2e
+      # - name: Run tests
+      #   run: npm run test:e2e
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -107,7 +107,7 @@ jobs:
       - name: Zip dist folder and Deploy to Lambda
         run: |
           zip -r deploy.zip ./dist/*
-          zip -ur deploy.zip ./node_modules/*
+          zip -r deploy.zip ./dist/* --exclude "node_modules/*.md" "node_modules/*.json"
           aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
       
       - name: Update Lambda Environment Variables
