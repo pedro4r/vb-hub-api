@@ -107,9 +107,8 @@ jobs:
       - name: Zip dist folder and Deploy to Lambda
         run: |
           zip -r deploy.zip ./dist/*
+          zip -ur deploy.zip ./node_modules/*
           aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
-
-
       
       - name: Update Lambda Environment Variables
         run: |
