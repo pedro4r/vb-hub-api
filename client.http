@@ -5,10 +5,6 @@
 POST {{baseUrl}}/test
 Content-Type: application/json
 
-{
-  "message": "This is a test message"
-}
-
 ###
 
 # @name create_account
@@ -18,7 +14,7 @@ Content-Type: application/json
 {
   "name": "Voabox",
   "initials": "Vbs",
-  "email": "contato10@voabox.com",
+  "email": "contato12@voabox.com",
   "password": "123456"
 }
 
@@ -53,3 +49,4 @@ Authorization: Bearer {{authToken}}
 GET {{baseUrl}}/check-ins?page=1
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
+
