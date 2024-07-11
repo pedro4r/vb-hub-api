@@ -6,6 +6,6 @@ import { Public } from '@/infra/auth/public'
 export class TestController {
   @Get()
   async handle() {
-    return 'Hello World'
+    return 'Hello World!'
   }
 }
