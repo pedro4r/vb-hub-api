@@ -112,7 +112,7 @@ jobs:
       - name: Reinstall production dependencies
         run: |
           rm -rf node_modules
-          npm install --only=production
+          npm ci --only=production
           npm prune
 
       - name: Zip dist folder and Deploy to Lambda
