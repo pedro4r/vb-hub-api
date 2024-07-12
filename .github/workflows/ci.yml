@@ -116,7 +116,7 @@ jobs:
 
       - name: Zip dist folder and Deploy to Lambda
         run: |
-          zip -r deploy.zip ./dist ./node_modules package.json
+          zip -r deploy.zip ./dist
           ls -lh deploy.zip  # Mostra o tamanho do arquivo ZIP
           aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
       
