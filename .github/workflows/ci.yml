@@ -113,10 +113,11 @@ jobs:
         run: |
           rm -rf node_modules
           npm install --only=production
+          npm prune
 
       - name: Zip dist folder and Deploy to Lambda
         run: |
-          zip -r deploy.zip ./dist
+          zip -r deploy.zip ./dist ./node_modules package.json
           ls -lh deploy.zip  # Mostra o tamanho do arquivo ZIP
           aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
       
