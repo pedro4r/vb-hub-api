@@ -93,7 +93,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Reinstall production dependencies
-         run: |
+        run: |
           rm -rf node_modules
           npm install --only=production
 
