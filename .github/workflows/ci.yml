@@ -92,6 +92,11 @@ jobs:
           role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
           aws-region: us-east-1
 
+      - name: Reinstall production dependencies
+         run: |
+          rm -rf node_modules
+          npm install --only=production
+
       - name: Build Nest.js app
         run: npm run build
 
@@ -99,15 +104,14 @@ jobs:
         run: npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
-      
+
       - name: Update Lambda Handler
         run: |
           aws lambda update-function-configuration --function-name=lambda-gh-action --handler dist/src/infra/lambda.handler
 
       - name: Zip dist folder and Deploy to Lambda
         run: |
-          zip -r deploy.zip ./dist/*
-          zip -r deploy.zip ./dist/* --exclude "node_modules/*.md" "node_modules/*.json"
+          zip -r deploy.zip ./dist ./node_modules package.json
           aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
       
       - name: Update Lambda Environment Variables
