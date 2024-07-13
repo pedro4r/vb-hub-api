@@ -160,9 +160,19 @@ jobs:
 
       - name: Deploy to Lambda
         run: |
-          aws lambda update-function-code --function-name lambda-gh-action --zip-file fileb://deploy.zip
-          echo "Waiting for code deployment to complete..."
-          sleep 30  # Espera para garantir que a atualização de código seja concluída.
+          max_retries=5
+          retry_wait=30
+          for attempt in $(seq 1 $max_retries); do
+            echo "Attempt $attempt of $max_retries"
+            if aws lambda update-function-code --function-name lambda-gh-action --zip-file fileb://deploy.zip; then
+              echo "Code deployment succeeded"
+              break
+            else
+              echo "Code deployment failed, retrying in $retry_wait seconds..."
+              sleep $retry_wait
+              retry_wait=$((retry_wait * 2))
+            fi
+          done
 
       - name: Update Lambda Environment Variables
         run: |
