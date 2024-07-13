@@ -155,7 +155,7 @@ jobs:
             fi
           done
 
-      - name: Zip dist folder and Deploy to Lambda
+      - name: Zip dist folder and Deploy to Lambda Function
         run: zip -r deploy.zip ./dist
 
       - name: Deploy to Lambda
