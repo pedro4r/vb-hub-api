@@ -115,15 +115,15 @@ jobs:
 
       - name: Create Lambda Layer ZIP
         run: |
-          mkdir -p layer/nodejs
-          cp -r node_modules layer/nodejs/
+          mkdir -p layer
+          cp -r node_modules layer
           cd layer
-          zip -r layer.zip nodejs
+          zip -r layer.zip node_modules
 
       - name: Check Layer ZIP and Node.js folder size
         run: |
           ls -lh layer/layer.zip
-          ls -lh layer/nodejs
+          ls -lh layer/node_modules
 
       - name: Upload Layer ZIP to S3
         run: aws s3 cp layer/layer.zip s3://lambda-layer-hub-api/layer.zip
