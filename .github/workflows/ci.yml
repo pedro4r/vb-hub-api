@@ -106,27 +106,25 @@ jobs:
           DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
 
       - name: Update Lambda Handler
-        run: |
-          aws lambda update-function-configuration --function-name=lambda-gh-action --handler dist/src/infra/lambda.handler
+        run: aws lambda update-function-configuration --function-name=lambda-gh-action --handler dist/src/infra/lambda.handler
 
       - name: Reinstall production dependencies
         run: |
           rm -rf node_modules
           npm install --only=production
           npm prune
-      
+
       - name: Create Lambda Layer ZIP
         run: |
           mkdir -p layer/nodejs
           cp -r node_modules layer/nodejs/
           cd layer
           zip -r layer.zip nodejs
+          cd ..
+          ls -lh layer/layer.zip
 
       - name: Zip dist folder and Deploy to Lambda
         run: zip -r deploy.zip ./dist
-
-      - name: Show the size of the ZIP file to deploy
-        run: ls -lh deploy.zip
 
       - name: Upload Lambda Layer
         run: |
