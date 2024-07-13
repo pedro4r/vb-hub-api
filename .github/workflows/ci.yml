@@ -108,7 +108,7 @@ jobs:
       - name: Update Lambda Handler
         run: aws lambda update-function-configuration --function-name=lambda-gh-action --handler dist/src/infra/lambda.handler
 
-      - name: Reinstall production dependencies
+      - name: Reinstall production dependencies and create Lambda Layer
         run: |
           rm -rf node_modules
           npm install --only=production
