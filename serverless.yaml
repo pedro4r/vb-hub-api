@@ -22,6 +22,8 @@ provider:
 functions:
   main:
     handler: dist/src/infra/lambda.handler
+    layers:
+      - arn:aws:lambda:us-east-1:629500205300:layer:nodejs-dependencies:1  # Substitua pelo LayerVersionArn retornado
     events:
       - http:
           method: ANY

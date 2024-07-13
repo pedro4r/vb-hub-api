@@ -109,14 +109,8 @@ jobs:
         run: |
           aws lambda update-function-configuration --function-name=lambda-gh-action --handler dist/src/infra/lambda.handler
 
-      - name: Reinstall production dependencies
-        run: |
-          rm -rf node_modules
-          npm install --only=production
-          npm prune
-
       - name: Zip dist folder and Deploy to Lambda
-        run: zip -r deploy.zip ./dist ./node_modules package.json
+        run: zip -r deploy.zip ./dist package.json  # Remover ./node_modules
 
       - name: Show the size of the ZIP file
         run: ls -lh deploy.zip
