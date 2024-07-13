@@ -138,14 +138,6 @@ jobs:
           --content S3Bucket=lambda-layer-hub-api,S3Key=layer.zip \
           --compatible-runtimes nodejs18.x
 
-      - name: Zip dist folder and Deploy to Lambda
-        run: zip -r deploy.zip ./dist
-      - name: Deploy to Lambda
-        run: |
-          aws lambda update-function-code --function-name lambda-gh-action --zip-file fileb://deploy.zip
-          echo "Waiting for code deployment to complete..."
-          sleep 30  # Espera para garantir que a atualização de código seja concluída.
-
       - name: Update Lambda Function Configuration to Use Layer
         run: |
           max_retries=5
@@ -162,6 +154,15 @@ jobs:
               retry_wait=$((retry_wait * 2))
             fi
           done
+
+      - name: Zip dist folder and Deploy to Lambda
+        run: zip -r deploy.zip ./dist
+
+      - name: Deploy to Lambda
+        run: |
+          aws lambda update-function-code --function-name lambda-gh-action --zip-file fileb://deploy.zip
+          echo "Waiting for code deployment to complete..."
+          sleep 30  # Espera para garantir que a atualização de código seja concluída.
 
       - name: Update Lambda Environment Variables
         run: |
