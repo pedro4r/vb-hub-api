@@ -112,15 +112,18 @@ jobs:
       - name: Reinstall production dependencies
         run: |
           rm -rf node_modules
-          npm install production
+          npm install --only=production
           npm prune
 
       - name: Zip dist folder and Deploy to Lambda
-        run: |
-          zip -r deploy.zip ./dist ./node_modules package.json
-          ls -lh deploy.zip  # Mostra o tamanho do arquivo ZIP
-          aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
+        run: zip -r deploy.zip ./dist ./node_modules package.json
+
+      - name: Show the size of the ZIP file
+        run: ls -lh deploy.zip
       
+      - name: Deploy to Lambda
+        run: aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
+
       - name: Update Lambda Environment Variables
         run: |
           max_retries=5
