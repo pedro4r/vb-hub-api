@@ -112,7 +112,6 @@ jobs:
         run: |
           rm -rf node_modules
           npm install --only=production
-          npm prune
 
       - name: Create Lambda Layer ZIP
         run: |
@@ -121,8 +120,10 @@ jobs:
           cd layer
           zip -r layer.zip nodejs
 
-      - name: Create Lambda Layer ZIP
-        run: ls -lh layer/layer.zip
+      - name: Check Layer ZIP and Node.js folder size
+        run: |
+          ls -lh layer/layer.zip
+          ls -lh layer/nodejs
 
       - name: Zip dist folder and Deploy to Lambda
         run: zip -r deploy.zip ./dist
