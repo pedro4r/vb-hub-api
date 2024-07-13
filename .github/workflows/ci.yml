@@ -138,14 +138,28 @@ jobs:
 
       - name: Zip dist folder and Deploy to Lambda
         run: zip -r deploy.zip ./dist
-
       - name: Deploy to Lambda
-        run: aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
+        run: |
+          aws lambda update-function-code --function-name lambda-gh-action --zip-file fileb://deploy.zip
+          echo "Waiting for code deployment to complete..."
+          sleep 30  # Espera para garantir que a atualização de código seja concluída.
 
       - name: Update Lambda Function Configuration to Use Layer
         run: |
-          aws lambda update-function-configuration --function-name lambda-gh-action \
-            --layers arn:aws:lambda:us-east-1:629500205300:layer:nodejs-dependencies:1
+          max_retries=5
+          retry_wait=10
+          for attempt in $(seq 1 $max_retries); do
+            echo "Attempt $attempt of $max_retries"
+            if aws lambda update-function-configuration --function-name lambda-gh-action \
+              --layers arn:aws:lambda:us-east-1:629500205300:layer:nodejs-dependencies:1; then
+              echo "Layer update succeeded"
+              break
+            else
+              echo "Layer update failed, retrying in $retry_wait seconds..."
+              sleep $retry_wait
+              retry_wait=$((retry_wait * 2))
+            fi
+          done
 
       - name: Update Lambda Environment Variables
         run: |
@@ -155,16 +169,14 @@ jobs:
             echo "Attempt $attempt of $max_retries"
             if aws lambda update-function-configuration --function-name lambda-gh-action \
               --environment "Variables={DATABASE_URL=your_database_url,JWT_SECRET=your_jwt_secret,ANOTHER_SECRET=your_other_secret}"; then
-              echo "Update succeeded"
+              echo "Environment variable update succeeded"
               break
             else
-              echo "Update failed, retrying in $retry_wait seconds..."
+              echo "Environment variable update failed, retrying in $retry_wait seconds..."
               sleep $retry_wait
               retry_wait=$((retry_wait * 2))
             fi
           done
 
 
-      
-
-      
+    
