@@ -54,7 +54,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Unit tests
+      - name: Run Unit tests
         run: npm run test
 
       - name: Clean up Docker containers
