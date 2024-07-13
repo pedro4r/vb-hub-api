@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   build:
-    name: 'Build and Push'
+    name: 'Build and Deploy'
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -25,21 +25,6 @@ jobs:
       CLOUDFLARE_BUCKET_NAME: ${{ secrets.CLOUDFLARE_BUCKET_NAME }}
       CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
       CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
-
-    services:
-      postgres:
-        image: postgres:latest
-        ports:
-          - 5433:5432  # Use a different port to avoid conflicts
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: docker
-          POSTGRES_DB: hub-postgres-db
-        options: >-
-          --health-cmd="pg_isready -U postgres -d hub-postgres-db"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
 
     steps:
       - name: Checkout
@@ -57,66 +42,49 @@ jobs:
       - name: Unit tests
         run: npm run test
 
-      - name: Clean up Docker containers
-        run: docker-compose down -v || true
+      - name: Build Nest.js app
+        run: npm run build
 
-      - name: Build Docker images
-        run: docker-compose build
-
-      - name: Start Docker Compose services
-        run: docker-compose up -d
-        env:
-          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
-
-      - name: Wait for Postgres to be ready
+      - name: Reinstall production dependencies
         run: |
-          until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
-            echo "Waiting for postgres..."
-            sleep 1
-          done
+          rm -rf node_modules
+          npm install --only=production
+          npm prune
 
-      - name: Run Prisma migrations
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+      - name: Create Lambda Layer ZIP
+        run: |
+          mkdir -p layer/nodejs
+          cp -r node_modules layer/nodejs/
+          cd layer
+          zip -r layer.zip nodejs
 
-      - name: Change permissions
-        run: sudo chmod -R 777 ./data/pg
-
-      # - name: Run tests
-      #   run: npm run test:e2e
-      
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
           aws-region: us-east-1
 
-      - name: Remove test files
+      - name: Upload Lambda Layer
+        id: upload_lambda_layer
         run: |
-          find . -type f -name "*.e2e-spec.ts" -delete
-          find . -type f -name "*.test.ts" -delete
-
-      - name: Build Nest.js app
-        run: npm run build
-
-      - name: Run Prisma migrations on AWS RDS
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
-
-      - name: Update Lambda Handler
-        run: |
-          aws lambda update-function-configuration --function-name=lambda-gh-action --handler dist/src/infra/lambda.handler
+          LAYER_VERSION=$(aws lambda publish-layer-version --layer-name nodejs-dependencies \
+                        --zip-file fileb://layer/layer.zip --compatible-runtimes nodejs18.x \
+                        --query Version --output text)
+          echo "LAYER_VERSION=$LAYER_VERSION" >> $GITHUB_ENV
 
       - name: Zip dist folder and Deploy to Lambda
-        run: zip -r deploy.zip ./dist package.json  # Remover ./node_modules
+        run: zip -r deploy.zip ./dist package.json
 
       - name: Show the size of the ZIP file
         run: ls -lh deploy.zip
-      
+
       - name: Deploy to Lambda
         run: aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
+
+      - name: Update Lambda Configuration to Use Layer
+        run: |
+          aws lambda update-function-configuration --function-name lambda-gh-action \
+            --layers arn:aws:lambda:us-east-1:629500205300:layer:nodejs-dependencies:${{ env.LAYER_VERSION }}
 
       - name: Update Lambda Environment Variables
         run: |
@@ -125,7 +93,7 @@ jobs:
           for attempt in $(seq 1 $max_retries); do
             echo "Attempt $attempt of $max_retries"
             if aws lambda update-function-configuration --function-name lambda-gh-action \
-              --environment "Variables={DATABASE_URL=your_database_url,JWT_SECRET=your_jwt_secret,ANOTHER_SECRET=your_other_secret}"; then
+              --environment "Variables={DATABASE_URL=${{ secrets.DATABASE_URL }},JWT_SECRET=${{ secrets.JWT_SECRET }},ANOTHER_SECRET=${{ secrets.ANOTHER_SECRET }}}"; then
               echo "Update succeeded"
               break
             else
@@ -134,8 +102,3 @@ jobs:
               retry_wait=$((retry_wait * 2))
             fi
           done
-
-
-      
-
-      
