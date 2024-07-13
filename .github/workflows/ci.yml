@@ -125,16 +125,20 @@ jobs:
           ls -lh layer/layer.zip
           ls -lh layer/nodejs
 
-      - name: Zip dist folder and Deploy to Lambda
-        run: zip -r deploy.zip ./dist
+      - name: Upload Layer ZIP to S3
+        run: aws s3 cp layer/layer.zip s3://lambda-layer-hub-api/layer.zip
 
       - name: Upload Lambda Layer
         run: |
-          LAYER_VERSION=$(aws lambda publish-layer-version --layer-name nodejs-dependencies \
-                        --zip-file fileb://layer/layer.zip --compatible-runtimes nodejs18.x \
-                        --query Version --output text)
-          echo "::set-output name=LAYER_VERSION::$LAYER_VERSION"
-      
+          aws lambda publish-layer-version \
+          --layer-name nodejs-dependencies \
+          --description "Nova versão com dependências atualizadas" \
+          --content S3Bucket=lambda-layer-hub-api,S3Key=layer.zip \
+          --compatible-runtimes nodejs18.x
+
+      - name: Zip dist folder and Deploy to Lambda
+        run: zip -r deploy.zip ./dist
+
       - name: Deploy to Lambda
         run: aws lambda update-function-code --function-name=lambda-gh-action --zip-file=fileb://deploy.zip
 
