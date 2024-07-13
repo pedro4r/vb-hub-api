@@ -125,7 +125,7 @@ jobs:
       - name: Zip dist folder and Deploy to Lambda
         run: zip -r deploy.zip ./dist ./node_modules package.json
 
-      - name: Show the size of the ZIP file
+      - name: Show the size of the ZIP file to deploy
         run: ls -lh deploy.zip
 
       - name: Upload Lambda Layer
