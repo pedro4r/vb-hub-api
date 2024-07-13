@@ -113,12 +113,19 @@ jobs:
           rm -rf node_modules
           npm install --only=production
 
+      # - name: Create Lambda Layer ZIP
+      #   run: |
+      #     mkdir -p layer/nodejs
+      #     cp -r node_modules layer/nodejs/
+      #     cp package.json layer/nodejs/
+      #     cp package-lock.json layer/nodejs/
+      #     cd layer
+      #     zip -r layer.zip nodejs
+
       - name: Create Lambda Layer ZIP
         run: |
           mkdir -p layer/nodejs
           cp -r node_modules layer/nodejs/
-          cp package.json layer/nodejs/
-          cp package-lock.json layer/nodejs/
           cd layer
           zip -r layer.zip nodejs
 
@@ -155,8 +162,14 @@ jobs:
             fi
           done
 
-      - name: Zip dist folder and Deploy to Lambda Function
-        run: zip -r deploy.zip ./dist
+      # - name: Zip dist folder and Deploy to Lambda Function
+      #   run: zip -r deploy.zip ./dist
+
+      - name: Prepare deployment package
+        run: |
+          cp package.json dist/
+          cp package-lock.json dist/
+          zip -r deploy.zip ./dist
 
       - name: Deploy to Lambda
         run: |
