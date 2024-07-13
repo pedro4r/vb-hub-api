@@ -117,7 +117,8 @@ jobs:
         run: |
           mkdir -p layer/nodejs
           cp -r node_modules layer/nodejs/
-          zip -r layer.zip layer
+          cd layer
+          zip -r layer.zip nodejs
 
       - name: Check Layer ZIP and Node.js folder size
         run: |
