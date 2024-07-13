@@ -117,7 +117,8 @@ jobs:
         run: |
           mkdir -p layer/nodejs
           cp -r node_modules layer/nodejs/
-          cp -r package.json layer/nodejs/
+          cp package.json layer/nodejs/
+          cp package-lock.json layer/nodejs/
           cd layer
           zip -r layer.zip nodejs
 
