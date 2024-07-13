@@ -120,8 +120,9 @@ jobs:
           cp -r node_modules layer/nodejs/
           cd layer
           zip -r layer.zip nodejs
-          cd ..
-          ls -lh layer/layer.zip
+
+      - name: Create Lambda Layer ZIP
+        run: ls -lh layer/layer.zip
 
       - name: Zip dist folder and Deploy to Lambda
         run: zip -r deploy.zip ./dist
