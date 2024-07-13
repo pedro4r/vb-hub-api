@@ -92,7 +92,7 @@ jobs:
           role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
           aws-region: us-east-1
 
-      - name: Remove test files from production
+      - name: Remove test files from production build
         run: |
           find . -type f -name "*.e2e-spec.ts" -delete
           find . -type f -name "*.test.ts" -delete
