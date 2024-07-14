@@ -1,8 +1,8 @@
-@baseUrl = http://localhost:3000/dev
+@baseUrl = https://rr3c8zsgd5.execute-api.us-east-1.amazonaws.com/default/lambda-gh-action
 @authToken = {{authenticate.response.body.access_token}}
 
 # @name test_route
-POST {{baseUrl}}/test
+GET {{baseUrl}}/test
 Content-Type: application/json
 
 ###
