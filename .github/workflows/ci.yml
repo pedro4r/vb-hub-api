@@ -128,7 +128,7 @@ jobs:
       - name: Upload Layer ZIP to S3
         run: aws s3 cp layer/layer.zip s3://lambda-layer-hub-api/layer.zip
 
-      - name: Upload Lambda Layer and Update Function Configuration with Retry
+      - name: Upload Lambda Layer and Update Function Configuration with Retry Logic
         run: |
           publish_output=$(aws lambda publish-layer-version \
             --layer-name nodejs-dependencies \
