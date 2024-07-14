@@ -145,22 +145,22 @@ jobs:
           --content S3Bucket=lambda-layer-hub-api,S3Key=layer.zip \
           --compatible-runtimes nodejs18.x
 
-      - name: Update Lambda Function Configuration to Use Layer
-        run: |
-          max_retries=5
-          retry_wait=10
-          for attempt in $(seq 1 $max_retries); do
-            echo "Attempt $attempt of $max_retries"
-            if aws lambda update-function-configuration --function-name lambda-gh-action \
-              --layers arn:aws:lambda:us-east-1:629500205300:layer:nodejs-dependencies:1; then
-              echo "Layer update succeeded"
-              break
-            else
-              echo "Layer update failed, retrying in $retry_wait seconds..."
-              sleep $retry_wait
-              retry_wait=$((retry_wait * 2))
-            fi
-          done
+      # - name: Update Lambda Function Configuration to Use Layer
+      #   run: |
+      #     max_retries=5
+      #     retry_wait=10
+      #     for attempt in $(seq 1 $max_retries); do
+      #       echo "Attempt $attempt of $max_retries"
+      #       if aws lambda update-function-configuration --function-name lambda-gh-action \
+      #         --layers arn:aws:lambda:us-east-1:629500205300:layer:nodejs-dependencies:1; then
+      #         echo "Layer update succeeded"
+      #         break
+      #       else
+      #         echo "Layer update failed, retrying in $retry_wait seconds..."
+      #         sleep $retry_wait
+      #         retry_wait=$((retry_wait * 2))
+      #       fi
+      #     done
 
       # - name: Zip dist folder and Deploy to Lambda Function
       #   run: zip -r deploy.zip ./dist
