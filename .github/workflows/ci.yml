@@ -113,15 +113,6 @@ jobs:
           rm -rf node_modules
           npm install --only=production
 
-      # - name: Create Lambda Layer ZIP
-      #   run: |
-      #     mkdir -p layer/nodejs
-      #     cp -r node_modules layer/nodejs/
-      #     cp package.json layer/nodejs/
-      #     cp package-lock.json layer/nodejs/
-      #     cd layer
-      #     zip -r layer.zip nodejs
-
       - name: Create Lambda Layer ZIP
         run: |
           mkdir -p layer/nodejs
@@ -137,22 +128,21 @@ jobs:
       - name: Upload Layer ZIP to S3
         run: aws s3 cp layer/layer.zip s3://lambda-layer-hub-api/layer.zip
 
-      - name: Upload Lambda Layer
+      - name: Upload Lambda Layer and Update Function Configuration with Retry
         run: |
-          aws lambda publish-layer-version \
-          --layer-name nodejs-dependencies \
-          --description "Nova versão com dependências atualizadas" \
-          --content S3Bucket=lambda-layer-hub-api,S3Key=layer.zip \
-          --compatible-runtimes nodejs18.x
-
-      - name: Update Lambda Function Configuration to Use Layer
-        run: |
+          publish_output=$(aws lambda publish-layer-version \
+            --layer-name nodejs-dependencies \
+            --description "Nova versão com dependências atualizadas" \
+            --content S3Bucket=lambda-layer-hub-api,S3Key=layer.zip \
+            --compatible-runtimes nodejs18.x \
+            --query 'LayerVersionArn' --output text)
+          echo "Nova versão da layer publicada: $publish_output"
+          
           max_retries=5
           retry_wait=10
           for attempt in $(seq 1 $max_retries); do
-            echo "Attempt $attempt of $max_retries"
-            if aws lambda update-function-configuration --function-name lambda-gh-action \
-              --layers arn:aws:lambda:us-east-1:629500205300:layer:nodejs-dependencies:1; then
+            echo "Attempt $attempt of $max_retries to update function configuration"
+            if aws lambda update-function-configuration --function-name lambda-gh-action --layers $publish_output; then
               echo "Layer update succeeded"
               break
             else
@@ -161,9 +151,6 @@ jobs:
               retry_wait=$((retry_wait * 2))
             fi
           done
-
-      # - name: Zip dist folder and Deploy to Lambda Function
-      #   run: zip -r deploy.zip ./dist
 
       - name: Prepare deployment package
         run: |
