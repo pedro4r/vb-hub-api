@@ -1,4 +1,4 @@
-@baseUrl = https://te1oyovv88.execute-api.us-east-1.amazonaws.com/default
+@baseUrl = https://te1oyovv88.execute-api.us-east-1.amazonaws.com/dev/test
 @authToken = {{authenticate.response.body.access_token}}
 
 # @name test_route

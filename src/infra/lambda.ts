@@ -22,7 +22,16 @@ export const handler: Handler = async (
   context: Context,
   callback: Callback,
 ) => {
+  // Log da função Lambda invocada
   console.log('Lambda function has been invoked')
+
+  // Extrai e loga o caminho e o método da solicitação
+  const path = event.path // O caminho da solicitação
+  const httpMethod = event.httpMethod // O método HTTP da solicitação
+  console.log(`Request path: ${path}, HTTP method: ${httpMethod}`)
+
   server = server ?? (await bootstrap())
+  console.log(server)
+
   return server(event, context, callback)
 }
