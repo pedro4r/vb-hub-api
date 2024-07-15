@@ -13,25 +13,21 @@ async function bootstrap() {
   await app.init()
 
   const expressApp = app.getHttpAdapter().getInstance()
+  // Loga a inicialização do app
+  console.log('NestJS application initialized')
   return serverlessExpress({ app: expressApp })
 }
 
 export const handler: Handler = async (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   event: any,
   context: Context,
   callback: Callback,
 ) => {
-  // Log da função Lambda invocada
-  console.log('Lambda function has been invoked')
-
-  // Extrai e loga o caminho e o método da solicitação
-  const path = event.path // O caminho da solicitação
-  const httpMethod = event.httpMethod // O método HTTP da solicitação
-  console.log(`Request path: ${path}, HTTP method: ${httpMethod}`)
+  // Loga o evento recebido pela função Lambda
+  console.log('Received event:', JSON.stringify(event))
 
   server = server ?? (await bootstrap())
-  console.log(server)
-
+  // Loga a chamada para o servidor express
+  console.log('Calling serverless express server')
   return server(event, context, callback)
 }
