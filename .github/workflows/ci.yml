@@ -53,6 +53,9 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+      
+      - name: Generate Prisma Client
+        run: npx prisma generate
 
       - name: Run Unit tests
         run: npm run test
