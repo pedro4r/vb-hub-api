@@ -1,4 +1,4 @@
-@baseUrl = https://rr3c8zsgd5.execute-api.us-east-1.amazonaws.com/default/lambda-gh-action
+@baseUrl = https://te1oyovv88.execute-api.us-east-1.amazonaws.com/default
 @authToken = {{authenticate.response.body.access_token}}
 
 # @name test_route
