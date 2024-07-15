@@ -22,6 +22,7 @@ export const handler: Handler = async (
   context: Context,
   callback: Callback,
 ) => {
+  console.log('Lambda function has been invoked')
   server = server ?? (await bootstrap())
   return server(event, context, callback)
 }
