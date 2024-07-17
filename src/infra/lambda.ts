@@ -8,23 +8,12 @@ import { AppModule } from './app.module'
 let server: Handler
 
 async function bootstrap() {
-  try {
-    console.log(
-      '----------------------- Initializing NestJS application -----------------------',
-    )
-    const app = await NestFactory.create(AppModule)
-    app.useGlobalPipes(new ValidationPipe())
-    await app.init()
+  const app = await NestFactory.create(AppModule)
+  app.useGlobalPipes(new ValidationPipe())
+  await app.init()
 
-    const expressApp = app.getHttpAdapter().getInstance()
-    console.log(
-      '----------------------- NestJS application initialized -----------------------',
-    )
-    return serverlessExpress({ app: expressApp })
-  } catch (error) {
-    console.error('Error during NestJS application initialization:', error)
-    throw error
-  }
+  const expressApp = app.getHttpAdapter().getInstance()
+  return serverlessExpress({ app: expressApp })
 }
 
 export const handler: Handler = async (
@@ -33,15 +22,6 @@ export const handler: Handler = async (
   context: Context,
   callback: Callback,
 ) => {
-  console.log('----------------------- Received event:', JSON.stringify(event))
-  try {
-    server = server ?? (await bootstrap())
-    console.log(
-      '----------------------- Calling serverless express server -----------------------',
-    )
-    return server(event, context, callback)
-  } catch (error) {
-    console.error('Error during handler execution:', error)
-    throw error
-  }
+  server = server ?? (await bootstrap())
+  return server(event, context, callback)
 }
