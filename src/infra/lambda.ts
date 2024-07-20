@@ -1,25 +1,29 @@
-import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import serverlessExpress from '@vendia/serverless-express'
-import { Callback, Context, Handler } from 'aws-lambda'
-
 import { AppModule } from './app.module'
+import { EnvService } from './env/env.service'
+import serverlessExpress from '@vendia/serverless-express'
+import { Handler, Context, Callback } from 'aws-lambda'
 
 let server: Handler
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
-  app.useGlobalPipes(new ValidationPipe())
-
-  // Configuração de CORS
+  // Configuração de CORS adaptada para o Lambda
   app.enableCors({
-    origin: '*', // Ou use '*' para permitir todas as origens
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Authorization',
-    exposedHeaders: 'X-Custom-Header, Authorization',
-    credentials: true, // Adicione se você precisar enviar cookies ou autenticação HTTP
+    origin: [
+      'http://localhost:5173',
+      'http://192.168.1.237:5173',
+      'http://192.168.208.3:5173',
+    ],
+    credentials: true,
   })
+
+  const configService = app.get(EnvService)
+  // No contexto do Lambda, a porta não é diretamente relevante,
+  // mas você pode precisar dela para outras configurações
+  const port = configService.get('PORT')
+  console.log(`Application is configured to run on port: ${port}`)
 
   await app.init()
 
