@@ -12,9 +12,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe())
 
-  // Configuração de CORS
+  // Configuração de CORS - Método preferido
   app.enableCors({
-    origin: 'http://localhost:5173', // Ou use '*' para permitir todas as origens
+    origin: '*', // Ou especifique domínios específicos
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Authorization',
   })
