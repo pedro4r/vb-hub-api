@@ -9,16 +9,7 @@ let server: Handler
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-
   app.useGlobalPipes(new ValidationPipe())
-
-  // Configuração de CORS - Método preferido
-  app.enableCors({
-    origin: '*', // Ou especifique domínios específicos
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    allowedHeaders: 'Content-Type, Authorization',
-  })
-
   await app.init()
 
   const expressApp = app.getHttpAdapter().getInstance()
