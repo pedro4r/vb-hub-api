@@ -1,4 +1,4 @@
-@baseUrl = https://te1oyovv88.execute-api.us-east-1.amazonaws.com/dev/test
+@baseUrl = https://c9rd6ln3mk.execute-api.us-east-1.amazonaws.com/default
 @authToken = {{authenticate.response.body.access_token}}
 
 # @name test_route
@@ -14,7 +14,7 @@ Content-Type: application/json
 {
   "name": "Voabox",
   "initials": "Vbs",
-  "email": "contato12@voabox.com",
+  "email": "contato1234@voabox.com",
   "password": "123456"
 }
 
@@ -25,7 +25,7 @@ POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
-  "email": "pf1@example.com",
+  "email": "Lorena49@hotmail.com",
   "password": "123456"
 }
 
@@ -37,16 +37,23 @@ Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
 {
-  "customerId": "c2198e4b-1b6b-4bec-9023-6bb1ac841671",
+  "customerId": "2017bf2b-0b61-4d9f-b016-e43b9ca40123",
   "details": "Everything is ok with the items",
-  "weight": "6"
-  "atattachmentsIds": ['oiwiwow']
+  "weight": "6",
+  "atattachmentsIds": ["2017bf2b-0b61-4d9f-b016-e43b9ca40123"]
 }
 
 ###
 
 # @name fetch_recent_check_ins
 GET {{baseUrl}}/check-ins?page=1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+###
+
+# @name get_customer_by_hub_id
+GET {{baseUrl}}/customer/3
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 

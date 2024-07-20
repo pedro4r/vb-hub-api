@@ -4,6 +4,7 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipe/zod-validation-pipe'
 import { z } from 'zod'
 import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/check-in'
+import { Public } from '@/infra/auth/public'
 
 const createCheckInBodySchema = z.object({
   customerId: z.string().uuid(),
@@ -21,6 +22,7 @@ export class CreateCheckInController {
   constructor(private checkInUseCase: CheckInUseCase) {}
 
   @Post()
+  @Public()
   async handle(
     @Body(bodyValidationPipe) body: CreateCheckInBodySchema,
     @CurrentUser() user: UserPayload,
