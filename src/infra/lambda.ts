@@ -16,7 +16,7 @@ async function bootstrap() {
       'http://192.168.1.237:5173',
       'http://192.168.208.3:5173',
     ],
-    credentials: true,
+    credentials: false,
   })
 
   const configService = app.get(EnvService)
