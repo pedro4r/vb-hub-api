@@ -62,10 +62,12 @@ Authorization: Bearer {{authToken}}
 # @name upload_file
 POST {{baseUrl}}/attachments
 Content-Type: multipart/form-data; boundary=myBoundary
+Authorization: Bearer {{authToken}}
 
 --myBoundary
-Content-Disposition: form-data; name="file"; filename="image.png"
-Content-Type: image/png
+Content-Disposition: form-data; name="file"; filename="image.jpg"
+Content-Type: image/jpg
 
 < ./image.png
+--myBoundary--
 
