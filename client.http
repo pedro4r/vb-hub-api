@@ -57,3 +57,15 @@ GET {{baseUrl}}/customer/3
 Content-Type: application/json
 Authorization: Bearer {{authToken}}
 
+###
+
+# @name upload_file
+POST {{baseUrl}}/attachments
+Content-Type: multipart/form-data; boundary=myBoundary
+
+--myBoundary
+Content-Disposition: form-data; name="file"; filename="image.png"
+Content-Type: image/png
+
+< ./image.png
+
