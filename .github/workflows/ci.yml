@@ -86,8 +86,8 @@ jobs:
       - name: Change permissions
         run: sudo chmod -R 777 ./data/pg
 
-      # - name: Run tests
-      #   run: npm run test:e2e
+      - name: Run tests
+        run: npm run test:e2e
       
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
