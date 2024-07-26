@@ -1,4 +1,5 @@
-@baseUrl = https://c9rd6ln3mk.execute-api.us-east-1.amazonaws.com/default
+# @baseUrl = https://c9rd6ln3mk.execute-api.us-east-1.amazonaws.com/default
+@baseUrl = http://localhost:3000/dev
 @authToken = {{authenticate.response.body.access_token}}
 
 # @name test_route
@@ -14,7 +15,7 @@ Content-Type: application/json
 {
   "name": "Voabox",
   "initials": "Vbs",
-  "email": "contato1234@voabox.com",
+  "email": "contato12345@voabox.com",
   "password": "123456"
 }
 
@@ -25,7 +26,7 @@ POST {{baseUrl}}/sessions
 Content-Type: application/json
 
 {
-  "email": "Lorena49@hotmail.com",
+  "email": "contato12345@voabox.com",
   "password": "123456"
 }
 

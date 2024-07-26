@@ -36,16 +36,28 @@ export class R2Storage implements Uploader {
       `Uploading file with name: ${uniqueFileName} and type: ${fileType}`,
     )
 
+    // Função para criar uma Promise que rejeita após 30 segundos
+    const timeoutPromise = new Promise((_resolve, reject) => {
+      setTimeout(
+        () => reject(new Error('Upload timeout after 30 seconds')),
+        30000,
+      )
+    })
+
     try {
       const start = Date.now()
-      await this.client.send(
-        new PutObjectCommand({
-          Bucket: this.envService.get('CLOUDFLARE_BUCKET_NAME'),
-          Key: uniqueFileName,
-          ContentType: fileType,
-          Body: body,
-        }),
-      )
+      // Usando Promise.race para competir entre o upload e o timeout
+      await Promise.race([
+        this.client.send(
+          new PutObjectCommand({
+            Bucket: this.envService.get('CLOUDFLARE_BUCKET_NAME'),
+            Key: uniqueFileName,
+            ContentType: fileType,
+            Body: body,
+          }),
+        ),
+        timeoutPromise,
+      ])
       const end = Date.now()
       console.log(`Upload completed in ${end - start}ms`)
 
