@@ -15,7 +15,7 @@ Content-Type: application/json
 {
   "name": "Voabox",
   "initials": "Vbs",
-  "email": "contato1234567@voabox.com",
+  "email": "contato12345678@voabox.com",
   "password": "123456"
 }
 
