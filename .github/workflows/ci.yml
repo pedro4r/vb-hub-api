@@ -184,7 +184,7 @@ jobs:
           for attempt in $(seq 1 $max_retries); do
             echo "Attempt $attempt of $max_retries"
             if aws lambda update-function-configuration --function-name lambda-gh-action \
-              --environment "Variables={DATABASE_URL=${{ secrets.DATABASE_URL }},JWT_PRIVATE_KEY=${{ secrets.JWT_PRIVATE_KEY }},JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }},CLOUDFLARE_DEV_URL=${{ secrets.CLOUDFLARE_DEV_URL }},CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }},TOKEN_VALUE=${{ secrets.TOKEN_VALUE }},CLOUDFLARE_BUCKET_NAME=${{ secrets.CLOUDFLARE_BUCKET_NAME }},CLOUDFLARE_ACCESS_KEY_ID=${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }},CLOUDFLARE_SECRET_ACCESS_KEY=${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}}"; then
+              --environment "Variables={DATABASE_URL=${{ secrets.RDS_DATABASE_URL }},JWT_PRIVATE_KEY=${{ secrets.JWT_PRIVATE_KEY }},JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }},CLOUDFLARE_DEV_URL=${{ secrets.CLOUDFLARE_DEV_URL }},CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }},TOKEN_VALUE=${{ secrets.TOKEN_VALUE }},CLOUDFLARE_BUCKET_NAME=${{ secrets.CLOUDFLARE_BUCKET_NAME }},CLOUDFLARE_ACCESS_KEY_ID=${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }},CLOUDFLARE_SECRET_ACCESS_KEY=${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}}"; then
               echo "Environment variable update succeeded"
               break
             else

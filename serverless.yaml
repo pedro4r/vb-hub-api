@@ -23,11 +23,39 @@ functions:
   main:
     handler: dist/src/infra/lambda.handler
     layers:
-      - arn:aws:lambda:us-east-1:629500205300:layer:nodejs-dependencies:1  # Substitua pelo LayerVersionArn retornado
+      - arn:aws:lambda:us-east-1:629500205300:layer:nodejs-dependencies:1
     events:
       - http:
           method: ANY
           path: /
+          cors:
+            origins:
+              - http://172.20.10.2:5173
+              - http://localhost:5173
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Requested-With
+              - X-HTTP-Method-Override
+              - Accept
+              - Origin
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+            allowCredentials: true
       - http:
           method: ANY
           path: '{proxy+}'
+          cors:
+            origins:
+              - http://172.20.10.2:5173
+              - http://localhost:5173
+            headers:
+              - Content-Type
+              - Authorization
+              - X-Requested-With
+              - X-HTTP-Method-Override
+              - Accept
+              - Origin
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+            allowCredentials: true
