@@ -164,7 +164,7 @@ jobs:
       - name: Deploy to Lambda
         run: |
           max_retries=5
-          retry_wait=30
+          retry_wait=15
           for attempt in $(seq 1 $max_retries); do
             echo "Attempt $attempt of $max_retries"
             if aws lambda update-function-code --function-name lambda-gh-action --zip-file fileb://deploy.zip;
