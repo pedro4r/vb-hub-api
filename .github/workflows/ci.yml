@@ -14,7 +14,7 @@ permissions:
 jobs:
   build:
     name: 'Build and Push'
-    runs-on: [self-hosted, ubuntu-latest] 
+    runs-on: [self-hosted] 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
@@ -48,7 +48,7 @@ jobs:
 
       - name: Limpar cache do Docker
         run: docker system prune -af
-        
+
       - name: Checkout
         uses: actions/checkout@v4
 
