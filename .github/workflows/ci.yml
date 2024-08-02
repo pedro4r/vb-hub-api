@@ -43,11 +43,11 @@ jobs:
 
     steps:
 
-      - name: Limpar cache npm
-        run: npm cache clean --force
+      # - name: Limpar cache npm
+      #   run: npm cache clean --force
 
-      - name: Limpar cache do Docker
-        run: docker system prune -af
+      # - name: Limpar cache do Docker
+      #   run: docker system prune -af
 
       - name: Checkout
         uses: actions/checkout@v4
