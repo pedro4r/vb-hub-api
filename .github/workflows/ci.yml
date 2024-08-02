@@ -42,6 +42,13 @@ jobs:
           --health-retries=5
 
     steps:
+
+      - name: Limpar cache npm
+        run: npm cache clean --force
+
+      - name: Limpar cache do Docker
+        run: docker system prune -af
+        
       - name: Checkout
         uses: actions/checkout@v4
 
