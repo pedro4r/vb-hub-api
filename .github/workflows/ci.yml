@@ -43,6 +43,9 @@ jobs:
 
     steps:
 
+      - name: Restart DNS Resolver
+        run: sudo systemctl restart systemd-resolved
+
       - name: Clean NPM cache
         run: npm cache clean --force
 
