@@ -46,8 +46,8 @@ jobs:
     #  - name: Start Docker Service
     #     run: sudo systemctl start docker
 
-      - name: Limpar cache npm
-        run: npm cache clean --force
+      # - name: Limpar cache npm
+      #   run: npm cache clean --force
 
       # - name: Limpar cache do Docker
       #   run: docker system prune -af
