@@ -49,7 +49,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-       - name: Reconfigure NPM and increase timeout
+      - name: Reconfigure NPM and increase timeout
         run: |
           npm config set fetch-retries 5
           npm config set fetch-retry-mintimeout 20000
