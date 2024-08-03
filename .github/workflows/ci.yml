@@ -48,6 +48,13 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+      
+       - name: Reconfigure NPM and increase timeout
+        run: |
+          npm config set fetch-retries 5
+          npm config set fetch-retry-mintimeout 20000
+          npm config set fetch-retry-maxtimeout 120000
+          npm config set registry https://registry.npmjs.org/
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
