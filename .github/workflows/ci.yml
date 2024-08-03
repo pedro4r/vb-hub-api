@@ -46,8 +46,8 @@ jobs:
     #  - name: Start Docker Service
     #     run: sudo systemctl start docker
 
-      # - name: Limpar cache npm
-      #   run: npm cache clean --force
+      - name: Limpar cache npm
+        run: npm cache clean --force
 
       # - name: Limpar cache do Docker
       #   run: docker system prune -af
@@ -61,8 +61,11 @@ jobs:
           node-version: 18
           cache: 'npm'
 
+      - name: Limpar cache npm
+        run: npm cache clean --force
+
       - name: Install dependencies
-        run: npm install
+        run: npm install --verbose
       
       # - name: Generate Prisma Client
       #   run: npx prisma generate
