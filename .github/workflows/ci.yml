@@ -61,8 +61,8 @@ jobs:
           node-version: '18.20.4'
           cache: 'npm'
 
-      - name: Clean NPM cache
-        run: npm cache clean --force
+      # - name: Clean NPM cache
+      #   run: npm cache clean --force
       
       - name: Install dependencies
         run: npm install --verbose
