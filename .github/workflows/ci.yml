@@ -61,8 +61,8 @@ jobs:
       - name: Install dependencies
         run: npm install --verbose
 
-      - name: Clean Docker cache
-        run: docker system prune -af
+      # - name: Clean Docker cache
+      #   run: docker system prune -af
       
       # - name: Start Docker Service
       #   run: sudo systemctl start docker
