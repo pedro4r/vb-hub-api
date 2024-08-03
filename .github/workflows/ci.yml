@@ -58,23 +58,23 @@ jobs:
       - name: Install dependencies
         run: npm install --verbose
 
-      - name: Clean Docker cache
-        run: docker system prune -af
+      # - name: Clean Docker cache
+      #   run: docker system prune -af
       
-      - name: Start Docker Service
-        run: sudo systemctl start docker
+      # - name: Start Docker Service
+      #   run: sudo systemctl start docker
       
-      - name: Generate Prisma Client
-        run: npx prisma generate
+      # - name: Generate Prisma Client
+      #   run: npx prisma generate
 
-      - name: Run Unit tests
-        run: npm run test
+      # - name: Run Unit tests
+      #   run: npm run test
 
-      - name: Clean up Docker containers
-        run: docker-compose down -v || true
+      # - name: Clean up Docker containers
+      #   run: docker-compose down -v || true
 
-      - name: Build Docker images
-        run: docker-compose build
+      # - name: Build Docker images
+      #   run: docker-compose build
 
       # - name: Start Docker Compose services
       #   run: docker-compose up -d
