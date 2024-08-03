@@ -43,6 +43,9 @@ jobs:
 
     steps:
 
+      - name: Clean NPM cache
+        run: npm cache clean --force
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -57,6 +60,13 @@ jobs:
       
       - name: Install dependencies
         run: npm install --verbose
+
+      - name: Set NPM config
+        run: | 
+          npm config set fetch-timeout 120000
+          npm config set fetch-retries 5
+          npm config set fetch-retry-mintimeout 20000
+          npm config set fetch-retry-maxtimeout 120000
 
       # - name: Clean Docker cache
       #   run: docker system prune -af
