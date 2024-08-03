@@ -15,42 +15,33 @@ jobs:
   build:
     name: 'Build and Push'
     runs-on: [self-hosted] 
-    # env:
-    #   DATABASE_URL: ${{ secrets.DATABASE_URL }}
-    #   JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
-    #   JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
-    #   CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
-    #   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-    #   TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
-    #   CLOUDFLARE_BUCKET_NAME: ${{ secrets.CLOUDFLARE_BUCKET_NAME }}
-    #   CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
-    #   CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+      JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+      CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
+      CLOUDFLARE_BUCKET_NAME: ${{ secrets.CLOUDFLARE_BUCKET_NAME }}
+      CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
+      CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
 
-    # services:
-    #   postgres:
-    #     image: postgres:latest
-    #     ports:
-    #       - 5433:5432  # Use a different port to avoid conflicts
-    #     env:
-    #       POSTGRES_USER: postgres
-    #       POSTGRES_PASSWORD: docker
-    #       POSTGRES_DB: hub-postgres-db
-    #     options: >-
-    #       --health-cmd="pg_isready -U postgres -d hub-postgres-db"
-    #       --health-interval=10s
-    #       --health-timeout=5s
-    #       --health-retries=5
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5433:5432  # Use a different port to avoid conflicts
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: docker
+          POSTGRES_DB: hub-postgres-db
+        options: >-
+          --health-cmd="pg_isready -U postgres -d hub-postgres-db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
-
-    #  - name: Start Docker Service
-    #     run: sudo systemctl start docker
-
-      # - name: Limpar cache npm
-      #   run: npm cache clean --force
-
-      # - name: Limpar cache do Docker
-      #   run: docker system prune -af
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,17 +52,23 @@ jobs:
           node-version: 18
           cache: 'npm'
 
-      - name: Limpar cache npm
+      - name: Clean NPM cache
         run: npm cache clean --force
-
+      
       - name: Install dependencies
         run: npm install --verbose
-      
-      # - name: Generate Prisma Client
-      #   run: npx prisma generate
 
-      # - name: Run Unit tests
-      #   run: npm run test
+      - name: Clean Docker cache
+        run: docker system prune -af
+      
+      - name: Start Docker Service
+        run: sudo systemctl start docker
+      
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Run Unit tests
+        run: npm run test
 
       # - name: Clean up Docker containers
       #   run: docker-compose down -v || true
