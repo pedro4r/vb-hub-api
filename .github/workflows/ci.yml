@@ -70,11 +70,11 @@ jobs:
       - name: Run Unit tests
         run: npm run test
 
-      # - name: Clean up Docker containers
-      #   run: docker-compose down -v || true
+      - name: Clean up Docker containers
+        run: docker-compose down -v || true
 
-      # - name: Build Docker images
-      #   run: docker-compose build
+      - name: Build Docker images
+        run: docker-compose build
 
       # - name: Start Docker Compose services
       #   run: docker-compose up -d
