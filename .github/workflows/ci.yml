@@ -14,206 +14,194 @@ permissions:
 jobs:
   build:
     name: 'Build and Push'
-    runs-on: [self-hosted, Linux, X64]
-    # env:
-    #   DATABASE_URL: ${{ secrets.DATABASE_URL }}
-    #   JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
-    #   JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
-    #   CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
-    #   CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-    #   TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
-    #   CLOUDFLARE_BUCKET_NAME: ${{ secrets.CLOUDFLARE_BUCKET_NAME }}
-    #   CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
-    #   CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
+      JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
+      CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
+      CLOUDFLARE_BUCKET_NAME: ${{ secrets.CLOUDFLARE_BUCKET_NAME }}
+      CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
+      CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
 
-    # services:
-    #   postgres:
-    #     image: postgres:latest
-    #     ports:
-    #       - 5433:5432  # Use a different port to avoid conflicts
-    #     env:
-    #       POSTGRES_USER: postgres
-    #       POSTGRES_PASSWORD: docker
-    #       POSTGRES_DB: hub-postgres-db
-    #     options: >-
-    #       --health-cmd="pg_isready -U postgres -d hub-postgres-db"
-    #       --health-interval=10s
-    #       --health-timeout=5s
-    #       --health-retries=5
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5433:5432  # Use a different port to avoid conflicts
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: docker
+          POSTGRES_DB: hub-postgres-db
+        options: >-
+          --health-cmd="pg_isready -U postgres -d hub-postgres-db"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
-      - name: Restart DNS Resolver
-        run: sudo systemctl restart systemd-resolved
 
       - name: Checkout
         uses: actions/checkout@v4
-      
-      # - name: Reconfigure NPM and increase timeout
-      #   run: |
-      #     npm config set fetch-retries 5
-      #     npm config set fetch-retry-mintimeout 20000
-      #     npm config set fetch-retry-maxtimeout 120000
-      #     npm config set registry https://registry.npmjs.org/
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18.20.4'
+          node-version: 18
           cache: 'npm'
-
-      # - name: Clean NPM cache
-      #   run: npm cache clean --force
       
       - name: Install dependencies
         run: npm install --verbose
 
-      # - name: Clean Docker cache
-      #   run: docker system prune -af
+      - name: Clean Docker cache
+        run: docker system prune -af
       
-      # - name: Start Docker Service
-      #   run: sudo systemctl start docker
+      - name: Start Docker Service
+        run: sudo systemctl start docker
       
-      # - name: Generate Prisma Client
-      #   run: npx prisma generate
+      - name: Generate Prisma Client
+        run: npx prisma generate
 
-      # - name: Run Unit tests
-      #   run: npm run test
+      - name: Run Unit tests
+        run: npm run test
 
-      # - name: Clean up Docker containers
-      #   run: docker-compose down -v || true
+      - name: Clean up Docker containers
+        run: docker-compose down -v || true
 
-      # - name: Build Docker images
-      #   run: docker-compose build
+      - name: Build Docker images
+        run: docker-compose build
 
-      # - name: Start Docker Compose services
-      #   run: docker-compose up -d
-      #   env:
-      #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+      - name: Start Docker Compose services
+        run: docker-compose up -d
+        env:
+          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
-      # - name: Wait for Postgres to be ready
-      #   run: |
-      #     until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
-      #       echo "Waiting for postgres..."
-      #       sleep 1
-      #     done
+      - name: Wait for Postgres to be ready
+        run: |
+          until docker-compose exec -T postgres pg_isready -U postgres -d hub-postgres-db; do
+            echo "Waiting for postgres..."
+            sleep 1
+          done
 
-      # - name: Run Prisma migrations
-      #   run: npx prisma migrate deploy
-      #   env:
-      #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+      - name: Run Prisma migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
 
-      # - name: Change permissions
-      #   run: sudo chmod -R 777 ./data/pg
+      - name: Change permissions
+        run: sudo chmod -R 777 ./data/pg
 
-      # - name: Run tests
-      #   run: npm run test:e2e
+      - name: Run tests
+        run: npm run test:e2e
       
-      # - name: Configure AWS Credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
-      #     aws-region: us-east-1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
+          aws-region: us-east-1
 
-      # - name: Remove test files from production build
-      #   run: |
-      #     find . -type f -name "*.e2e-spec.ts" -delete
-      #     find . -type f -name "*.test.ts" -delete
+      - name: Remove test files from production build
+        run: |
+          find . -type f -name "*.e2e-spec.ts" -delete
+          find . -type f -name "*.test.ts" -delete
 
-      # - name: Build Nest.js app
-      #   run: npm run build
+      - name: Build Nest.js app
+        run: npm run build
 
-      # - name: Run Prisma migrations on AWS RDS
-      #   run: npx prisma migrate deploy
-      #   env:
-      #     DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
+      - name: Run Prisma migrations on AWS RDS
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
 
-      # - name: Update Lambda Handler
-      #   run: aws lambda update-function-configuration --function-name=lambda-gh-action --handler dist/src/infra/lambda.handler
+      - name: Update Lambda Handler
+        run: aws lambda update-function-configuration --function-name=lambda-gh-action --handler dist/src/infra/lambda.handler
 
-      # - name: Reinstall production dependencies
-      #   run: |
-      #     rm -rf node_modules
-      #     npm install --only=production
+      - name: Reinstall production dependencies
+        run: |
+          rm -rf node_modules
+          npm install --only=production
 
-      # - name: Create Lambda Layer ZIP
-      #   run: |
-      #     mkdir -p layer/nodejs
-      #     cp -r node_modules layer/nodejs/
-      #     cd layer
-      #     zip -r layer.zip nodejs
+      - name: Create Lambda Layer ZIP
+        run: |
+          mkdir -p layer/nodejs
+          cp -r node_modules layer/nodejs/
+          cd layer
+          zip -r layer.zip nodejs
 
-      # - name: Check Layer ZIP and Node.js folder size
-      #   run: |
-      #     ls -lh layer/layer.zip
-      #     ls -lh layer/nodejs
+      - name: Check Layer ZIP and Node.js folder size
+        run: |
+          ls -lh layer/layer.zip
+          ls -lh layer/nodejs
 
-      # - name: Upload Layer ZIP to S3
-      #   run: aws s3 cp layer/layer.zip s3://lambda-layer-hub-api/layer.zip
+      - name: Upload Layer ZIP to S3
+        run: aws s3 cp layer/layer.zip s3://lambda-layer-hub-api/layer.zip
 
-      # - name: Upload Lambda Layer and Update Function Configuration with Retry Logic
-      #   run: |
-      #     publish_output=$(aws lambda publish-layer-version \
-      #       --layer-name nodejs-dependencies \
-      #       --description "Nova versão com dependências atualizadas" \
-      #       --content S3Bucket=lambda-layer-hub-api,S3Key=layer.zip \
-      #       --compatible-runtimes nodejs18.x \
-      #       --query 'LayerVersionArn' --output text)
-      #     echo "Nova versão da layer publicada: $publish_output"
+      - name: Upload Lambda Layer and Update Function Configuration with Retry Logic
+        run: |
+          publish_output=$(aws lambda publish-layer-version \
+            --layer-name nodejs-dependencies \
+            --description "Nova versão com dependências atualizadas" \
+            --content S3Bucket=lambda-layer-hub-api,S3Key=layer.zip \
+            --compatible-runtimes nodejs18.x \
+            --query 'LayerVersionArn' --output text)
+          echo "Nova versão da layer publicada: $publish_output"
           
-      #     max_retries=5
-      #     retry_wait=10
-      #     for attempt in $(seq 1 $max_retries); do
-      #       echo "Attempt $attempt of $max_retries to update function configuration"
-      #       if aws lambda update-function-configuration --function-name lambda-gh-action --layers $publish_output; then
-      #         echo "Layer update succeeded"
-      #         break
-      #       else
-      #         echo "Layer update failed, retrying in $retry_wait seconds..."
-      #         sleep $retry_wait
-      #         retry_wait=$((retry_wait * 2))
-      #       fi
-      #     done
+          max_retries=5
+          retry_wait=10
+          for attempt in $(seq 1 $max_retries); do
+            echo "Attempt $attempt of $max_retries to update function configuration"
+            if aws lambda update-function-configuration --function-name lambda-gh-action --layers $publish_output; then
+              echo "Layer update succeeded"
+              break
+            else
+              echo "Layer update failed, retrying in $retry_wait seconds..."
+              sleep $retry_wait
+              retry_wait=$((retry_wait * 2))
+            fi
+          done
 
-      # - name: Prepare deployment package
-      #   run: |
-      #     cp package.json dist/
-      #     cp package-lock.json dist/
-      #     zip -r deploy.zip ./dist
+      - name: Prepare deployment package
+        run: |
+          cp package.json dist/
+          cp package-lock.json dist/
+          zip -r deploy.zip ./dist
 
-      # - name: Deploy to Lambda
-      #   run: |
-      #     max_retries=5
-      #     retry_wait=15
-      #     for attempt in $(seq 1 $max_retries); do
-      #       echo "Attempt $attempt of $max_retries"
-      #       if aws lambda update-function-code --function-name lambda-gh-action --zip-file fileb://deploy.zip;
-      #         then
-      #         echo "Code deployment succeeded"
-      #         break
-      #       else
-      #         echo "Code deployment failed, retrying in $retry_wait seconds..."
-      #         sleep $retry_wait
-      #         retry_wait=$((retry_wait * 2))
-      #       fi
-      #     done
+      - name: Deploy to Lambda
+        run: |
+          max_retries=5
+          retry_wait=15
+          for attempt in $(seq 1 $max_retries); do
+            echo "Attempt $attempt of $max_retries"
+            if aws lambda update-function-code --function-name lambda-gh-action --zip-file fileb://deploy.zip;
+              then
+              echo "Code deployment succeeded"
+              break
+            else
+              echo "Code deployment failed, retrying in $retry_wait seconds..."
+              sleep $retry_wait
+              retry_wait=$((retry_wait * 2))
+            fi
+          done
 
-      # - name: Update Lambda Environment Variables
-      #   run: |
-      #     max_retries=5
-      #     retry_wait=10
-      #     for attempt in $(seq 1 $max_retries); do
-      #       echo "Attempt $attempt of $max_retries"
-      #       if aws lambda update-function-configuration --function-name lambda-gh-action \
-      #         --environment "Variables={DATABASE_URL=${{ secrets.RDS_DATABASE_URL }},JWT_PRIVATE_KEY=${{ secrets.JWT_PRIVATE_KEY }},JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }},CLOUDFLARE_DEV_URL=${{ secrets.CLOUDFLARE_DEV_URL }},CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }},TOKEN_VALUE=${{ secrets.TOKEN_VALUE }},CLOUDFLARE_BUCKET_NAME=${{ secrets.CLOUDFLARE_BUCKET_NAME }},CLOUDFLARE_ACCESS_KEY_ID=${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }},CLOUDFLARE_SECRET_ACCESS_KEY=${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}}"; 
-      #         then
-      #         echo "Environment variable update succeeded"
-      #         break
-      #       else
-      #         echo "Environment variable update failed, retrying in $retry_wait seconds..."
-      #         sleep $retry_wait
-      #         retry_wait=$((retry_wait * 2))
-      #       fi
-      #     done
+      - name: Update Lambda Environment Variables
+        run: |
+          max_retries=5
+          retry_wait=10
+          for attempt in $(seq 1 $max_retries); do
+            echo "Attempt $attempt of $max_retries"
+            if aws lambda update-function-configuration --function-name lambda-gh-action \
+              --environment "Variables={DATABASE_URL=${{ secrets.RDS_DATABASE_URL }},JWT_PRIVATE_KEY=${{ secrets.JWT_PRIVATE_KEY }},JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }},CLOUDFLARE_DEV_URL=${{ secrets.CLOUDFLARE_DEV_URL }},CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }},TOKEN_VALUE=${{ secrets.TOKEN_VALUE }},CLOUDFLARE_BUCKET_NAME=${{ secrets.CLOUDFLARE_BUCKET_NAME }},CLOUDFLARE_ACCESS_KEY_ID=${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }},CLOUDFLARE_SECRET_ACCESS_KEY=${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}}"; 
+              then
+              echo "Environment variable update succeeded"
+              break
+            else
+              echo "Environment variable update failed, retrying in $retry_wait seconds..."
+              sleep $retry_wait
+              retry_wait=$((retry_wait * 2))
+            fi
+          done
 
 
     
