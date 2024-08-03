@@ -57,25 +57,18 @@ jobs:
 
       - name: Clean NPM cache
         run: npm cache clean --force
-
-      - name: Set NPM config
-        run: | 
-          npm config set fetch-timeout 120000
-          npm config set fetch-retries 5
-          npm config set fetch-retry-mintimeout 20000
-          npm config set fetch-retry-maxtimeout 120000
       
       - name: Install dependencies
         run: npm install --verbose
 
-      # - name: Clean Docker cache
-      #   run: docker system prune -af
+      - name: Clean Docker cache
+        run: docker system prune -af
       
-      # - name: Start Docker Service
-      #   run: sudo systemctl start docker
+      - name: Start Docker Service
+        run: sudo systemctl start docker
       
-      # - name: Generate Prisma Client
-      #   run: npx prisma generate
+      - name: Generate Prisma Client
+        run: npx prisma generate
 
       # - name: Run Unit tests
       #   run: npm run test
