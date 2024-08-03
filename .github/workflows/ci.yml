@@ -60,9 +60,9 @@ jobs:
           npm config set registry https://registry.npmjs.org/
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '18.20.4'
           cache: 'npm'
 
       - name: Clean NPM cache
