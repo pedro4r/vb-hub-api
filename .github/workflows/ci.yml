@@ -58,8 +58,8 @@ jobs:
       - name: Clean NPM cache
         run: npm cache clean --force
       
-      # - name: Install dependencies
-      #   run: npm install --verbose
+      - name: Install dependencies
+        run: npm install --verbose
 
       # - name: Clean Docker cache
       #   run: docker system prune -af
