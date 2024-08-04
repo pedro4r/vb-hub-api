@@ -99,19 +99,19 @@ jobs:
   deploy:
     name: 'Deploy to AWS'
     runs-on: ['self-hosted', 'linux', 'x64']
-    needs: test  # O job 'deploy' só começa após a conclusão do job 'test'
+    needs: test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: '18.16.0'
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm install --verbose
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
