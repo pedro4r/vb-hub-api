@@ -85,8 +85,13 @@ jobs:
             sleep 1
           done
 
+      # - name: Run Prisma migrations
+      #   run: npx prisma migrate deploy
+      #   env:
+      #     DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db
+
       - name: Run Prisma migrations
-        run: npx prisma migrate deploy
+        run: npx prisma migrate dev --name "apply-migrations"
         env:
           DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db
 
