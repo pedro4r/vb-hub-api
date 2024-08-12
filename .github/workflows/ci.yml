@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/split-pipeline-deploy/pedro
 
 permissions:
   id-token: write
@@ -12,8 +13,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  build:
-    name: 'Build and Push'
+  test:
+    name: 'Test and Build'
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -30,7 +31,7 @@ jobs:
       postgres:
         image: postgres:latest
         ports:
-          - 5433:5432  # Use a different port to avoid conflicts
+          - 5433:5432
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: docker
@@ -75,7 +76,7 @@ jobs:
       - name: Start Docker Compose services
         run: docker-compose up -d
         env:
-          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db
 
       - name: Wait for Postgres to be ready
         run: |
@@ -85,16 +86,33 @@ jobs:
           done
 
       - name: Run Prisma migrations
-        run: npx prisma migrate deploy
+        run: npx prisma migrate dev --name "apply-migrations"
         env:
-          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db  # Match the port mapping
+          DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db
 
       - name: Change permissions
         run: sudo chmod -R 777 ./data/pg
 
       - name: Run tests
         run: npm run test:e2e
-      
+
+  deploy:
+    name: 'Deploy to AWS'
+    runs-on: ['self-hosted', 'linux', 'x64']
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install --verbose
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -146,7 +164,7 @@ jobs:
             --compatible-runtimes nodejs18.x \
             --query 'LayerVersionArn' --output text)
           echo "Nova versão da layer publicada: $publish_output"
-          
+
           max_retries=5
           retry_wait=10
           for attempt in $(seq 1 $max_retries); do

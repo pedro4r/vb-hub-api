@@ -182,3 +182,9 @@ model CustomDeclarationItem {
 
   @@map("custom_declaration_items")
 }
+
+model Test {
+  id String @id @default(uuid())
+
+  @@map("test")
+}
