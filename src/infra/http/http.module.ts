@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { CryptographyModule } from '../cryptograph/cryptograph.module'
 import { DatabaseModule } from '../database/database.module'
 import { StorageModule } from '../storage/storage.module'
@@ -14,8 +14,4 @@ import { ParcelForwardingModule } from './controller/parcel-forwarding.module'
     ParcelForwardingModule,
   ],
 })
-export class HttpModule implements OnModuleInit {
-  onModuleInit() {
-    console.log('HttpModule has been initialized')
-  }
-}
+export class HttpModule {}
