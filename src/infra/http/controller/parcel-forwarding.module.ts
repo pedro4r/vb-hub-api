@@ -33,9 +33,17 @@ import { FetchCustomersByNameController } from './parcel-forwarding/fetch-custom
 import { FetchCustomersByNameUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-customers-by-name'
 import { CheckInDetailsPresenter } from '../presenters/check-in-details-presenter'
 import { EnvModule } from '@/infra/env/env.module'
+import { VerifyTokenController } from './parcel-forwarding/token-verify.controller'
+import { AuthModule } from '@/infra/auth/auth.module'
 
 @Module({
-  imports: [DatabaseModule, CryptographyModule, StorageModule, EnvModule],
+  imports: [
+    DatabaseModule,
+    CryptographyModule,
+    StorageModule,
+    EnvModule,
+    AuthModule,
+  ],
   controllers: [
     RegisterParcelForwardingController,
     AuthenticateController,
@@ -52,6 +60,7 @@ import { EnvModule } from '@/infra/env/env.module'
     TestController,
     GetCustomerByHubIdController,
     FetchCustomersByNameController,
+    VerifyTokenController,
   ],
   providers: [
     CheckInUseCase,
@@ -69,6 +78,7 @@ import { EnvModule } from '@/infra/env/env.module'
     GetCustomerByHubIdUseCase,
     FetchCustomersByNameUseCase,
     CheckInDetailsPresenter,
+    // VerifyTokenUseCase,
   ],
 })
 export class ParcelForwardingModule {}

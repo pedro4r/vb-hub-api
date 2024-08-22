@@ -6,7 +6,6 @@ import {
   Param,
   Query,
 } from '@nestjs/common'
-import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
@@ -14,6 +13,7 @@ import { FetchCustomersByNameUseCase } from '@/domain/parcel-forwarding/applicat
 import { ZodValidationPipe } from '../../pipe/zod-validation-pipe'
 import { z } from 'zod'
 import { CustomersPreviewPresenter } from '../../presenters/customers-preview-presenter'
+import { CurrentUser } from '@/infra/auth/current-user-decorator'
 
 const routeParamsSchema = z.object({
   name: z.string(),

@@ -4,6 +4,7 @@ import serverlessExpress from '@vendia/serverless-express'
 import { Callback, Context, Handler } from 'aws-lambda'
 
 import { AppModule } from './app.module'
+import cookieParser from 'cookie-parser'
 
 let server: Handler
 
@@ -16,13 +17,16 @@ async function bootstrap() {
     origin: [
       'https://d12fe01ihzmtgw.cloudfront.net',
       'http://localhost:5173',
+      'http://localhost',
       'http://192.168.1.237:5173',
+      'http://192.168.1.237',
       'http://192.168.1.209',
     ],
     methods: '*',
     allowedHeaders: 'Content-Type, Authorization, x-requested-with, accept',
     credentials: true,
   })
+  app.use(cookieParser())
 
   await app.init()
 

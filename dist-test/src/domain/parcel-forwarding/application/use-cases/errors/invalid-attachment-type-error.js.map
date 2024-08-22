@@ -1,0 +1,1 @@
+{"version":3,"file":"invalid-attachment-type-error.js","sourceRoot":"","sources":["../../../../../../../src/domain/parcel-forwarding/application/use-cases/errors/invalid-attachment-type-error.ts"],"names":[],"mappings":";;;AAEA,MAAa,0BAA2B,SAAQ,KAAK;IACnD,YAAY,IAAY;QACtB,KAAK,CAAC,cAAc,IAAI,iBAAiB,CAAC,CAAA;IAC5C,CAAC;CACF;AAJD,gEAIC"}

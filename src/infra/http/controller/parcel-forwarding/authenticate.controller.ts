@@ -1,16 +1,18 @@
-import { AuthenticateUseCase } from '@/domain/parcel-forwarding/application/use-cases/authenticate-parcel-forwarding'
 import {
   BadRequestException,
   Body,
   Controller,
   Post,
+  Res,
   UnauthorizedException,
   UsePipes,
 } from '@nestjs/common'
 import { z } from 'zod'
-import { ZodValidationPipe } from '../../pipe/zod-validation-pipe'
 import { WrongCredentialsError } from '@/domain/parcel-forwarding/application/use-cases/errors/wrong-credentials-error'
 import { Public } from '@/infra/auth/public'
+import { Response } from 'express'
+import { AuthenticateUseCase } from '@/domain/parcel-forwarding/application/use-cases/authenticate-parcel-forwarding'
+import { ZodValidationPipe } from '../../pipe/zod-validation-pipe'
 
 const authenticateBodySchema = z.object({
   email: z.string().email(),
@@ -26,7 +28,7 @@ export class AuthenticateController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(authenticateBodySchema))
-  async handle(@Body() body: AuthenticateBodySchema) {
+  async handle(@Body() body: AuthenticateBodySchema, @Res() res: Response) {
     const { email, password } = body
 
     const result = await this.authenticate.execute({
@@ -47,8 +49,13 @@ export class AuthenticateController {
 
     const { accessToken } = result.value
 
-    return {
-      access_token: accessToken,
-    }
+    res.cookie('authToken', accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 604800000,
+    })
+
+    return res.status(200).send()
   }
 }
