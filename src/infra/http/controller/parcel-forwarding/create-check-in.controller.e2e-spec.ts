@@ -52,11 +52,16 @@ describe('Create Check-in (E2E)', () => {
     const attachment1 = await attachmentFactory.makePrismaAttachment()
     const attachment2 = await attachmentFactory.makePrismaAttachment()
 
-    const accessToken = jwt.sign({ sub: parcelForwarding.id })
+    const accessToken = jwt.sign(
+      { sub: parcelForwarding.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .post('/check-in')
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
       .send({
         customerId: customer.id,
         details: 'New Check-in',

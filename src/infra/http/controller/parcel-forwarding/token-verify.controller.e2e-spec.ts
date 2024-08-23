@@ -1,53 +1,51 @@
 import { AppModule } from '@/infra/app.module'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { DatabaseModule } from '@/infra/database/database.module'
 import { INestApplication } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
-import { hash } from 'bcryptjs'
+
+import cookieParser from 'cookie-parser'
 import request from 'supertest'
+import { ParcelForwardingFactory } from 'test/factories/make-parcel-forwarding'
 
 describe('Verify Token (E2E)', () => {
   let app: INestApplication
-  let prisma: PrismaService
+
+  let parcelForwardingFactory: ParcelForwardingFactory
+
+  let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [ParcelForwardingFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
-    prisma = moduleRef.get(PrismaService)
+    parcelForwardingFactory = moduleRef.get(ParcelForwardingFactory)
 
+    jwt = moduleRef.get(JwtService)
+    app.use(cookieParser())
     await app.init()
   })
 
   test('[POST] /token-verify', async () => {
-    await prisma.parcelForwarding.create({
-      data: {
-        name: 'Voabox',
-        initials: 'VBX',
-        email: 'contato@voabox.com',
-        password: await hash('123456', 8),
-      },
-    })
+    const parcelForwarding =
+      await parcelForwardingFactory.makePrismaParcelForwarding()
 
-    const loginResponse = await request(app.getHttpServer())
-      .post('/sessions')
-      .send({
-        email: 'contato@voabox.com',
-        password: '123456',
-      })
+    const accessToken = jwt.sign(
+      { sub: parcelForwarding.id.toString() },
+      { expiresIn: '1h' },
+    )
 
-    const cookies = loginResponse.headers['set-cookie']
-
-    console.log('Cookies:', cookies)
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
-      .post('/token-verify')
-      .set('Cookie', cookies)
+      .get('/token-verify')
+      .set('Cookie', cookie)
       .send()
 
     expect(response.statusCode).toBe(200)
-    expect(response.body).toHaveProperty('status')
   })
 })

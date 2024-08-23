@@ -98,11 +98,16 @@ describe('Get Check-in (E2E)', () => {
 
     expect(attachmentOnDatabase).toHaveLength(2)
 
-    const accessToken = jwt.sign({ sub: parcelForwarding.id.toString() })
+    const accessToken = jwt.sign(
+      { sub: parcelForwarding.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .get(`/check-in/${checkIn.id.toString()}`)
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
       .send()
 
     expect(response.statusCode).toBe(200)

@@ -78,7 +78,6 @@ import { AuthModule } from '@/infra/auth/auth.module'
     GetCustomerByHubIdUseCase,
     FetchCustomersByNameUseCase,
     CheckInDetailsPresenter,
-    // VerifyTokenUseCase,
   ],
 })
 export class ParcelForwardingModule {}
