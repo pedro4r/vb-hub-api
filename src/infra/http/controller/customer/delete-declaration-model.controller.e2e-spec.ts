@@ -73,11 +73,17 @@ describe('Delete Declaration Model (E2E)', () => {
 
     expect(declarationModelItemsOnDataBase).not.toBeNull()
 
-    const accessToken = jwt.sign({ sub: customer.id.toString() })
+    const accessToken = jwt.sign(
+      { sub: customer.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .delete(`/declaration-model/${declarationModel.id.toString()}`)
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
+      .send()
 
     expect(response.statusCode).toBe(204)
 

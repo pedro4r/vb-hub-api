@@ -54,17 +54,23 @@ describe('Delete Shipping Address (E2E)', () => {
         customerId: customer.id,
       })
 
-    // Have to create another shipping address to avoid the NotAllowedError
+    // Must create another shipping address to avoid the NotAllowedError
     // Cannot delete shipping address when you have only one.
     await shippingAddressFactory.makePrismaShippingAddress({
       customerId: customer.id,
     })
 
-    const accessToken = jwt.sign({ sub: customer.id.toString() })
+    const accessToken = jwt.sign(
+      { sub: customer.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .delete(`/shipping-address/${shippingAddress.id.toString()}`)
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
+      .send()
 
     expect(response.statusCode).toBe(204)
 

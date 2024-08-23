@@ -54,11 +54,16 @@ describe('Edit Shipping Address (E2E)', () => {
         customerId: customer.id,
       })
 
-    const accessToken = jwt.sign({ sub: customer.id.toString() })
+    const accessToken = jwt.sign(
+      { sub: customer.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .put(`/shipping-address/${shippingAddress.id.toString()}`)
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
       .send({
         recipientName: 'Pedro Alonso',
         taxId: '123456',
