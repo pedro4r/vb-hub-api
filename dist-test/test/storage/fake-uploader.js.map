@@ -1,1 +1,0 @@
-{"version":3,"file":"fake-uploader.js","sourceRoot":"","sources":["../../../test/storage/fake-uploader.ts"],"names":[],"mappings":";;;AACA,mCAAmC;AAMnC,MAAa,YAAY;IAChB,OAAO,GAAa,EAAE,CAAA;IAE7B,KAAK,CAAC,MAAM;QACV,MAAM,GAAG,GAAG,IAAA,mBAAU,GAAE,CAAA;QAExB,IAAI,CAAC,OAAO,CAAC,IAAI,CAAC;YAChB,GAAG;SACJ,CAAC,CAAA;QAEF,OAAO,EAAE,GAAG,EAAE,CAAA;IAChB,CAAC;CACF;AAZD,oCAYC"}
