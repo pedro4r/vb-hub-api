@@ -51,11 +51,17 @@ describe('Get Shipping Address (E2E)', () => {
         recipientName: 'John Doe',
       })
 
-    const accessToken = jwt.sign({ sub: customer.id.toString() })
+    const accessToken = jwt.sign(
+      { sub: customer.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .get(`/shipping-address/${shippingAddress.id.toString()}`)
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
+      .send()
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({

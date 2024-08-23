@@ -44,11 +44,16 @@ describe('Create Declaration Model (E2E)', () => {
       },
     })
 
-    const accessToken = jwt.sign({ sub: customer.id })
+    const accessToken = jwt.sign(
+      { sub: customer.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .post('/declaration-model')
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
       .send({
         title: 'My Declaration Model',
         declarationModelItems: [

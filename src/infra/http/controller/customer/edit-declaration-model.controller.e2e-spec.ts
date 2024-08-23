@@ -57,8 +57,6 @@ describe('Edit Declaration Model (E2E)', () => {
         customerId: customer.id,
       })
 
-    const accessToken = jwt.sign({ sub: customer.id.toString() })
-
     const itemsWithoutFirstOnePlusNewOne = [
       ...declarationModelWithItems.items.currentItems
         .map((item) => ({
@@ -78,9 +76,16 @@ describe('Edit Declaration Model (E2E)', () => {
       },
     ]
 
+    const accessToken = jwt.sign(
+      { sub: customer.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
+
     const response = await request(app.getHttpServer())
       .put(`/declaration-model/${declarationModelWithItems.id.toString()}`)
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
       .send({
         title: 'New title',
         declarationModelItems: itemsWithoutFirstOnePlusNewOne,

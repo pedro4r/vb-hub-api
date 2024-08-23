@@ -75,11 +75,17 @@ describe('Fetch Declaration Model (E2E)', () => {
 
     expect(declarationModelItemsOnDataBase).not.toBeNull()
 
-    const accessToken = jwt.sign({ sub: customer.id.toString() })
+    const accessToken = jwt.sign(
+      { sub: customer.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .get('/declaration-model')
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
+      .send()
 
     expect(response.statusCode).toBe(200)
     expect(response.body).toEqual({
