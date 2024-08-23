@@ -36,9 +36,15 @@ describe('Authenticate (E2E)', () => {
       password: '123456',
     })
 
-    expect(response.statusCode).toBe(201)
-    expect(response.body).toEqual({
-      access_token: expect.any(String),
-    })
+    expect(response.statusCode).toBe(200)
+
+    const response2 = await request(app.getHttpServer())
+      .post('/sessions')
+      .send({
+        email: 'contato@voabox.com',
+        password: '1234567',
+      })
+
+    expect(response2.statusCode).toBe(401)
   })
 })

@@ -1,43 +1,49 @@
 import { AppModule } from '@/infra/app.module'
-import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { DatabaseModule } from '@/infra/database/database.module'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
-import request from 'supertest'
 
-describe('Upload attachment (E2E)', () => {
+import cookieParser from 'cookie-parser'
+import request from 'supertest'
+import { ParcelForwardingFactory } from 'test/factories/make-parcel-forwarding'
+
+describe('Upload Attachments (E2E)', () => {
   let app: INestApplication
-  let prisma: PrismaService
+
+  let parcelForwardingFactory: ParcelForwardingFactory
+
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule, DatabaseModule],
+      providers: [ParcelForwardingFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
 
-    prisma = moduleRef.get(PrismaService)
-    jwt = moduleRef.get(JwtService)
+    parcelForwardingFactory = moduleRef.get(ParcelForwardingFactory)
 
+    jwt = moduleRef.get(JwtService)
+    app.use(cookieParser())
     await app.init()
   })
 
   test('[POST] /attachments', async () => {
-    const parcelForwarding = await prisma.parcelForwarding.create({
-      data: {
-        name: 'Voabox',
-        initials: 'VBX',
-        email: 'contato@voabox.com',
-        password: '123456',
-      },
-    })
+    const parcelForwarding =
+      await parcelForwardingFactory.makePrismaParcelForwarding()
 
-    const accessToken = jwt.sign({ sub: parcelForwarding.id })
+    const accessToken = jwt.sign(
+      { sub: parcelForwarding.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .post('/attachments')
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
       .attach('file', './test/sample-upload.jpg')
 
     expect(response.statusCode).toBe(201)

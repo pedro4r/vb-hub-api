@@ -3,6 +3,7 @@ import { DatabaseModule } from '@/infra/database/database.module'
 import { INestApplication } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Test } from '@nestjs/testing'
+import cookieParser from 'cookie-parser'
 
 import request from 'supertest'
 import { CustomerFactory } from 'test/factories/make-customer'
@@ -28,7 +29,7 @@ describe('Fetch Customers by Name (E2E)', () => {
     customerFactory = moduleRef.get(CustomerFactory)
 
     jwt = moduleRef.get(JwtService)
-
+    app.use(cookieParser())
     await app.init()
   })
 
@@ -48,11 +49,16 @@ describe('Fetch Customers by Name (E2E)', () => {
       lastName: 'Doe',
     })
 
-    const accessToken = jwt.sign({ sub: parcelForwarding.id.toString() })
+    const accessToken = jwt.sign(
+      { sub: parcelForwarding.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .get('/customers/doe?page=1')
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
       .send()
 
     expect(response.status).toBe(200)

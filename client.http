@@ -1,6 +1,11 @@
 # @baseUrl = https://c9rd6ln3mk.execute-api.us-east-1.amazonaws.com/default
-@baseUrl = http://192.168.1.237:3333
-@authToken = {{authenticate.response.body.access_token}}
+# @baseUrl = http://192.168.1.237:3333
+@baseUrl = http://localhost:3333
+
+# @baseUrl = http://172.20.10.2:3333
+# @baseUrl = http://localhost:3000/dev
+
+# @authToken = {{authenticate.response.body.access_token}}
 
 # @name test_route
 GET {{baseUrl}}/test
@@ -32,11 +37,22 @@ Content-Type: application/json
 
 ###
 
+# @name verify_token
+POST {{baseUrl}}/token-verify
+Content-Type: application/json
+
+###
+
+# @name verify_token2
+GET {{baseUrl}}/protected
+Content-Type: application/json
+Cookie:
+
+###
+
 # @name create_check_in
 POST {{baseUrl}}/check-in
 Content-Type: application/json
-Authorization: Bearer {{authToken}}
-
 {
   "customerId": "2017bf2b-0b61-4d9f-b016-e43b9ca40123",
   "details": "Everything is ok with the items",
@@ -49,21 +65,18 @@ Authorization: Bearer {{authToken}}
 # @name fetch_recent_check_ins
 GET {{baseUrl}}/check-ins?page=1
 Content-Type: application/json
-Authorization: Bearer {{authToken}}
 
 ###
 
 # @name get_customer_by_hub_id
 GET {{baseUrl}}/customer/3
 Content-Type: application/json
-Authorization: Bearer {{authToken}}
 
 ###
 
 # @name upload_file
 POST {{baseUrl}}/attachments
 Content-Type: multipart/form-data; boundary=myBoundary
-Authorization: Bearer {{authToken}}
 
 --myBoundary
 Content-Disposition: form-data; name="file"; filename="image.jpg"

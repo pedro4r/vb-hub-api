@@ -39,11 +39,16 @@ describe('Get Customer by Hub ID (E2E)', () => {
       parcelForwardingId: parcelForwarding.id,
     })
 
-    const accessToken = jwt.sign({ sub: parcelForwarding.id.toString() })
+    const accessToken = jwt.sign(
+      { sub: parcelForwarding.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .get(`/customer/${customer.hubId.toString()}`)
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
       .send()
 
     expect(response.status).toBe(200)

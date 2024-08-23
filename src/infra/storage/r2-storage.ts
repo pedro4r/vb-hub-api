@@ -13,7 +13,6 @@ export class R2Storage implements Uploader {
 
   constructor(private envService: EnvService) {
     const accountId = envService.get('CLOUDFLARE_ACCOUNT_ID')
-    console.log('Initializing S3Client with accountId:', accountId)
 
     this.client = new S3Client({
       endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
@@ -23,8 +22,6 @@ export class R2Storage implements Uploader {
         secretAccessKey: envService.get('CLOUDFLARE_SECRET_ACCESS_KEY'),
       },
     })
-
-    console.log('S3Client initialized successfully.')
   }
 
   async upload({ fileType, body }: UploadParams): Promise<{ url: string }> {
@@ -32,11 +29,6 @@ export class R2Storage implements Uploader {
     const extension = fileType.split('/')[1]
     const uniqueFileName = `${uploadId}.${extension}`
 
-    console.log(
-      `Uploading file with name: ${uniqueFileName} and type: ${fileType}`,
-    )
-
-    // Função para criar uma Promise que rejeita após 30 segundos
     const timeoutPromise = new Promise((_resolve, reject) => {
       setTimeout(
         () => reject(new Error('Upload timeout after 30 seconds')),

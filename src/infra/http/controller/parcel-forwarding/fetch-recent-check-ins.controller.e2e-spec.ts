@@ -53,11 +53,16 @@ describe('Fetch Recent Check-ins (E2E)', () => {
       }),
     ])
 
-    const accessToken = jwt.sign({ sub: parcelForwarding.id.toString() })
+    const accessToken = jwt.sign(
+      { sub: parcelForwarding.id.toString() },
+      { expiresIn: '1h' },
+    )
+
+    const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
       .get('/check-ins')
-      .set('Authorization', `Bearer ${accessToken}`)
+      .set('Cookie', cookie)
       .send()
 
     expect(response.statusCode).toBe(200)

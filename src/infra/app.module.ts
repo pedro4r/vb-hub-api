@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common'
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-
+import cookieParser from 'cookie-parser' // Importação corrigida
 import { AuthModule } from './auth/auth.module'
 import { HttpModule } from './http/http.module'
 import { envSchema } from './env/env'
@@ -17,4 +17,8 @@ import { EnvModule } from './env/env.module'
     EnvModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(cookieParser()).forRoutes('*')
+  }
+}
