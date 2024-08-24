@@ -35,6 +35,8 @@ import { CheckInDetailsPresenter } from '../presenters/check-in-details-presente
 import { EnvModule } from '@/infra/env/env.module'
 import { VerifyTokenController } from './parcel-forwarding/token-verify.controller'
 import { AuthModule } from '@/infra/auth/auth.module'
+import { CreatePasswordResetUrlUseCase } from '@/domain/parcel-forwarding/application/use-cases/create-password-reset-url'
+import { ResetPasswordController } from './parcel-forwarding/reset-password.controller'
 
 @Module({
   imports: [
@@ -61,6 +63,7 @@ import { AuthModule } from '@/infra/auth/auth.module'
     GetCustomerByHubIdController,
     FetchCustomersByNameController,
     VerifyTokenController,
+    ResetPasswordController,
   ],
   providers: [
     CheckInUseCase,
@@ -78,6 +81,7 @@ import { AuthModule } from '@/infra/auth/auth.module'
     GetCustomerByHubIdUseCase,
     FetchCustomersByNameUseCase,
     CheckInDetailsPresenter,
+    CreatePasswordResetUrlUseCase,
   ],
 })
 export class ParcelForwardingModule {}
