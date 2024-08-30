@@ -10,6 +10,12 @@ export const envSchema = z.object({
   CLOUDFLARE_SECRET_ACCESS_KEY: z.string(),
   CLOUDFLARE_DEV_URL: z.string(),
   PORT: z.coerce.number().optional().default(3333),
+  SMTP_HOST: z.string(),
+  SMTP_PORT: z.coerce.number(),
+  SMTP_SECURE: z.coerce.boolean(),
+  SMTP_USER: z.string(),
+  SMTP_PASS: z.string(),
+  DOMAIN_NAME: z.string(),
 })
 
 export type Env = z.infer<typeof envSchema>
