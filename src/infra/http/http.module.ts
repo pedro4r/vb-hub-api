@@ -5,6 +5,7 @@ import { StorageModule } from '../storage/storage.module'
 import { CustomerModule } from './controller/customer.module'
 import { ParcelForwardingModule } from './controller/parcel-forwarding.module'
 import { AuthModule } from '../auth/auth.module'
+import { MailModule } from '../mail/mail.module'
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthModule } from '../auth/auth.module'
     CustomerModule,
     ParcelForwardingModule,
     AuthModule,
+    MailModule,
   ],
 })
 export class HttpModule {}

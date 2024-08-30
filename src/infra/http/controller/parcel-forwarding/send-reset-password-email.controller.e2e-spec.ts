@@ -5,7 +5,7 @@ import { Test } from '@nestjs/testing'
 import { hash } from 'bcryptjs'
 import request from 'supertest'
 
-describe('Reset Password (E2E)', () => {
+describe('Send Reset Password Email (E2E)', () => {
   let app: INestApplication
   let prisma: PrismaService
 
@@ -21,7 +21,7 @@ describe('Reset Password (E2E)', () => {
     await app.init()
   })
 
-  test('[POST] /parcel-forwarding/register', async () => {
+  test('[POST] /send-reset-password-email', async () => {
     await prisma.parcelForwarding.create({
       data: {
         name: 'Voabox',
@@ -32,7 +32,7 @@ describe('Reset Password (E2E)', () => {
     })
 
     const response = await request(app.getHttpServer())
-      .post('/reset-password')
+      .post('/send-reset-password-email')
       .send({
         email: 'contato@voabox.com',
       })

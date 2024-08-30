@@ -6,6 +6,7 @@ import { Token } from '@/core/cryptography/token'
 
 interface CreatePasswordResetUrlUseCaseRequest {
   email: string
+  domainName: string
 }
 
 type CreatePasswordResetUrlUseCaseResponse = Either<
@@ -23,6 +24,7 @@ export class CreatePasswordResetUrlUseCase {
 
   async execute({
     email,
+    domainName,
   }: CreatePasswordResetUrlUseCaseRequest): Promise<CreatePasswordResetUrlUseCaseResponse> {
     const parcelforwardingWithSameEmail =
       await this.parcelforwardingsRepository.findByEmail(email)
@@ -31,7 +33,10 @@ export class CreatePasswordResetUrlUseCase {
       return left(new InvalidEmailError(email))
     }
 
-    const resetPasswordTokenUrl = await this.token.resetPasswordTokenUrl(email)
+    const resetPasswordTokenUrl = await this.token.resetPasswordTokenUrl({
+      email,
+      domainName,
+    })
 
     return right({
       resetPasswordTokenUrl,

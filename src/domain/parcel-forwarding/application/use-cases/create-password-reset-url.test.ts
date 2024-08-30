@@ -31,6 +31,7 @@ describe('Create Password Reset URL', () => {
 
     const result = await sut.execute({
       email: 'johndoe@example.com',
+      domainName: 'http://localhost:3000',
     })
 
     expect(result.isRight()).toBe(true)

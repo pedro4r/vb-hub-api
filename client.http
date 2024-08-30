@@ -85,3 +85,13 @@ Content-Type: image/jpg
 < ./image.png
 --myBoundary--
 
+###
+
+# @name reset-password
+POST {{baseUrl}}/send-reset-password-email
+Content-Type: application/json
+
+{
+  "email": "alonsofts@gmail.com"
+}
+

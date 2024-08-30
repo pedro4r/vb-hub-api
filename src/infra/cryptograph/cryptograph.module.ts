@@ -7,8 +7,10 @@ import { HashComparer } from '@/core/cryptography/hash-compare'
 import { HashGenerator } from '@/core/cryptography/hash-generator'
 import { Token } from '@/core/cryptography/token'
 import { ResetPasswordTokenUrlGenerator } from './token-generator'
+import { EnvModule } from '../env/env.module'
 
 @Module({
+  imports: [EnvModule],
   providers: [
     { provide: Encrypter, useClass: JwtEncrypter },
     { provide: HashComparer, useClass: BcryptHasher },
