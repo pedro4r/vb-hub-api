@@ -15,7 +15,7 @@ export const envSchema = z.object({
   SMTP_SECURE: z.coerce.boolean(),
   SMTP_USER: z.string(),
   SMTP_PASS: z.string(),
-  DOMAIN_NAME: z.string(),
+  DOMAIN_NAME: z.string() ?? 'http://localhost:3000',
 })
 
 export type Env = z.infer<typeof envSchema>
