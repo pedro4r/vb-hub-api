@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { ParcelForwarding } from '@/domain/parcel-forwarding/enterprise/entities/parcel-forwarding'
 import { PrismaParcelForwardingMapper } from '../mappers/prisma-parcel-forwarding-mapper'
-import { ParcelForwardingsRepository } from '@/domain/parcel-forwarding/application/repositories/parcel-forwardings-repository'
+import {
+  ParcelForwardingsRepository,
+  UpdatePasswordParams,
+} from '@/domain/parcel-forwarding/application/repositories/parcel-forwardings-repository'
 
 @Injectable()
 export class PrismaParcelForwardingRepository
@@ -42,6 +45,17 @@ export class PrismaParcelForwardingRepository
 
     await this.prisma.parcelForwarding.create({
       data,
+    })
+  }
+
+  async updatePassword(data: UpdatePasswordParams): Promise<void> {
+    await this.prisma.parcelForwarding.update({
+      where: {
+        email: data.email,
+      },
+      data: {
+        password: data.newPassword,
+      },
     })
   }
 }

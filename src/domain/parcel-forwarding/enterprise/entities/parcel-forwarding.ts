@@ -25,6 +25,10 @@ export class ParcelForwarding extends Entity<ParcelForwardingProps> {
     return this.props.password
   }
 
+  set password(value: string) {
+    this.props.password = value
+  }
+
   static create(props: ParcelForwardingProps, id?: UniqueEntityID) {
     const parcelForwarding = new ParcelForwarding(props, id)
 

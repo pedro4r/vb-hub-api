@@ -2,8 +2,8 @@ import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { Controller, Get, UseGuards, Res } from '@nestjs/common'
 import { Response } from 'express'
 
-@Controller('/token-verify')
-export class VerifyTokenController {
+@Controller('/protected')
+export class VerifyUserAuthController {
   @Get()
   @UseGuards(JwtAuthGuard)
   getProtectedResource(@Res() res: Response) {

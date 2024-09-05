@@ -1,4 +1,7 @@
-import { ParcelForwardingsRepository } from '@/domain/parcel-forwarding/application/repositories/parcel-forwardings-repository'
+import {
+  ParcelForwardingsRepository,
+  UpdatePasswordParams,
+} from '@/domain/parcel-forwarding/application/repositories/parcel-forwardings-repository'
 import { ParcelForwarding } from '@/domain/parcel-forwarding/enterprise/entities/parcel-forwarding'
 
 export class InMemoryParcelForwardingsRepository
@@ -7,26 +10,37 @@ export class InMemoryParcelForwardingsRepository
   public items: ParcelForwarding[] = []
 
   async findById(id: string) {
-    const student = this.items.find((item) => item.id.toString() === id)
+    const company = this.items.find((item) => item.id.toString() === id)
 
-    if (!student) {
+    if (!company) {
       return null
     }
 
-    return student
+    return company
   }
 
   async findByEmail(email: string) {
-    const student = this.items.find((item) => item.email === email)
+    const company = this.items.find((item) => item.email === email)
 
-    if (!student) {
+    if (!company) {
       return null
     }
 
-    return student
+    return company
   }
 
   async create(parcelForwarding: ParcelForwarding) {
     this.items.push(parcelForwarding)
+  }
+
+  async updatePassword(data: UpdatePasswordParams): Promise<void> {
+    const { email, newPassword } = data
+    const company = this.items.find((item) => item.email === email)
+
+    if (company) {
+      company.password = newPassword
+    } else {
+      throw new Error('Company not found')
+    }
   }
 }

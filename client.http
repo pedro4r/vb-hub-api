@@ -87,11 +87,17 @@ Content-Type: image/jpg
 
 ###
 
-# @name reset-password
+# @name send-reset-password-email
 POST {{baseUrl}}/send-reset-password-email
 Content-Type: application/json
 
 {
-  "email": "alonsofts@gmail.com"
+  "email": "oskaddas@gmail.com"
 }
+
+###
+
+# @name verify-reset-password-token
+GET {{baseUrl}}/reset-password?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFsb25zb2Z0c0BnbWFpbC5jb20iLCJpYXQiOjE3MjU1NjkxMzYsImV4cCI6MTcyNTU3MjczNn0.bgfYFf0fG8YvtaDNlH1RzIP9thsnyPHJBEfdd44rqwE
+Content-Type: application/json
 
