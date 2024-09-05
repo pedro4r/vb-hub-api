@@ -7,4 +7,6 @@ export abstract class Token {
   abstract resetPasswordTokenUrl(
     data: ResetPasswordTokenUrlParams,
   ): Promise<string>
+
+  abstract decodeToken(token: string): Promise<string>
 }

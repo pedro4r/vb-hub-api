@@ -30,7 +30,7 @@ describe('Verify Token (E2E)', () => {
     await app.init()
   })
 
-  test('[POST] /token-verify', async () => {
+  test('[POST] /protected', async () => {
     const parcelForwarding =
       await parcelForwardingFactory.makePrismaParcelForwarding()
 
@@ -42,10 +42,16 @@ describe('Verify Token (E2E)', () => {
     const cookie = `authToken=${accessToken}`
 
     const response = await request(app.getHttpServer())
-      .get('/token-verify')
+      .get('/protected')
       .set('Cookie', cookie)
       .send()
 
     expect(response.statusCode).toBe(200)
+
+    const response2 = await request(app.getHttpServer())
+      .get('/protected')
+      .send()
+
+    expect(response2.statusCode).toBe(401)
   })
 })

@@ -33,12 +33,14 @@ import { FetchCustomersByNameController } from './parcel-forwarding/fetch-custom
 import { FetchCustomersByNameUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-customers-by-name'
 import { CheckInDetailsPresenter } from '../presenters/check-in-details-presenter'
 import { EnvModule } from '@/infra/env/env.module'
-import { VerifyTokenController } from './parcel-forwarding/token-verify.controller'
 import { AuthModule } from '@/infra/auth/auth.module'
 import { CreatePasswordResetUrlUseCase } from '@/domain/parcel-forwarding/application/use-cases/create-password-reset-url'
 import { SendResetPasswordEmailUseCase } from '@/domain/parcel-forwarding/application/use-cases/send-reset-password-email'
 import { MailModule } from '@/infra/mail/mail.module'
 import { SendResetPasswordEmailController } from './parcel-forwarding/send-reset-password-email.controller'
+import { VerifyUserAuthController } from './parcel-forwarding/verify-user-auth.controller'
+import { VerifyResetPasswordTokenUseCase } from '@/domain/parcel-forwarding/application/use-cases/verify-reset-password-token'
+import { VerifyResetPasswordTokenController } from './parcel-forwarding/verify-reset-password-token.controller'
 
 @Module({
   imports: [
@@ -65,8 +67,9 @@ import { SendResetPasswordEmailController } from './parcel-forwarding/send-reset
     TestController,
     GetCustomerByHubIdController,
     FetchCustomersByNameController,
-    VerifyTokenController,
+    VerifyUserAuthController,
     SendResetPasswordEmailController,
+    VerifyResetPasswordTokenController,
   ],
   providers: [
     CheckInUseCase,
@@ -86,6 +89,7 @@ import { SendResetPasswordEmailController } from './parcel-forwarding/send-reset
     CheckInDetailsPresenter,
     CreatePasswordResetUrlUseCase,
     SendResetPasswordEmailUseCase,
+    VerifyResetPasswordTokenUseCase,
   ],
 })
 export class ParcelForwardingModule {}

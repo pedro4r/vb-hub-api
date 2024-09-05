@@ -24,4 +24,13 @@ export class ResetPasswordTokenUrlGenerator extends Token {
     const tokenUrl = `${domainName}/reset-password?token=${token}`
     return tokenUrl
   }
+
+  async decodeToken(token: string): Promise<string> {
+    try {
+      const decoded = jwt.verify(token, this.jwtSecret) as jwt.JwtPayload
+      return decoded.email
+    } catch (error) {
+      throw new Error('Invalid or expired token')
+    }
+  }
 }

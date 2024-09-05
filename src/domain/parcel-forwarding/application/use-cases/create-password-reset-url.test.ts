@@ -1,10 +1,10 @@
 import { InMemoryParcelForwardingsRepository } from 'test/repositories/in-memory-parcel-forwarding-repository'
 import { makeParcelForwarding } from 'test/factories/make-parcel-forwarding'
 import { CreatePasswordResetUrlUseCase } from './create-password-reset-url'
-import { FakeResetPasswordTokenUrlGenerator } from 'test/cryptography/fake-reset-password-token-url-generator'
+import { FakeResetPasswordToken } from 'test/cryptography/fake-reset-password-token-url-generator'
 
 let inMemoryParcelForwardingsRepository: InMemoryParcelForwardingsRepository
-let resetPasswordTokenUrlGenerator: FakeResetPasswordTokenUrlGenerator
+let resetPasswordTokenUrlGenerator: FakeResetPasswordToken
 
 let sut: CreatePasswordResetUrlUseCase
 
@@ -13,7 +13,7 @@ describe('Create Password Reset URL', () => {
     inMemoryParcelForwardingsRepository =
       new InMemoryParcelForwardingsRepository()
 
-    resetPasswordTokenUrlGenerator = new FakeResetPasswordTokenUrlGenerator()
+    resetPasswordTokenUrlGenerator = new FakeResetPasswordToken()
 
     sut = new CreatePasswordResetUrlUseCase(
       inMemoryParcelForwardingsRepository,
