@@ -1,8 +1,8 @@
 # @baseUrl = https://c9rd6ln3mk.execute-api.us-east-1.amazonaws.com/default
 # @baseUrl = http://192.168.1.237:3333
-@baseUrl = http://localhost:3333
+# @baseUrl = http://localhost:3333
 
-# @baseUrl = http://172.20.10.2:3333
+@baseUrl = http://172.20.10.2:3333
 # @baseUrl = http://localhost:3000/dev
 
 # @authToken = {{authenticate.response.body.access_token}}
@@ -20,44 +20,46 @@ Content-Type: application/json
 {
   "name": "Voabox",
   "initials": "Vbs",
-  "email": "alonsofts@gmail.com",
+  "email": "example@example.com",
   "password": "123456"
 }
 
 ###
 
 # @name authenticate
-POST {{baseUrl}}/sessions
+POST {{baseUrl}}/sessions/login
 Content-Type: application/json
 
 {
-  "email": "alonsofts@gmail.com",
+  "email": "example@example.com",
   "password": "123456"
 }
 
 ###
 
-# @name verify_token
-POST {{baseUrl}}/token-verify
+# @name logout
+POST {{baseUrl}}/sessions/logout
 Content-Type: application/json
+
+
 
 ###
 
 # @name verify_token2
 GET {{baseUrl}}/protected
 Content-Type: application/json
-Cookie:
 
 ###
 
 # @name create_check_in
 POST {{baseUrl}}/check-in
 Content-Type: application/json
+
 {
-  "customerId": "2017bf2b-0b61-4d9f-b016-e43b9ca40123",
+  "customerId": "00822b6c-ff53-4702-b21e-d8bfe59a3c46",
   "details": "Everything is ok with the items",
-  "weight": "6",
-  "atattachmentsIds": ["2017bf2b-0b61-4d9f-b016-e43b9ca40123"]
+  "weight": 6,
+  "attachmentsIds": ["03ec45d5-834d-442f-a7e1-5679b1d80e17"]
 }
 
 ###
@@ -92,12 +94,27 @@ POST {{baseUrl}}/send-reset-password-email
 Content-Type: application/json
 
 {
-  "email": "oskaddas@gmail.com"
+  "email": "alonsofts@gmail.com"
 }
 
 ###
 
 # @name verify-reset-password-token
-GET {{baseUrl}}/reset-password?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFsb25zb2Z0c0BnbWFpbC5jb20iLCJpYXQiOjE3MjU1NjkxMzYsImV4cCI6MTcyNTU3MjczNn0.bgfYFf0fG8YvtaDNlH1RzIP9thsnyPHJBEfdd44rqwE
+POST {{baseUrl}}/verify-reset-password-token
 Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFsb25zb2Z0c0BnbWFpbC5jb20iLCJpYXQiOjE3MjYzNDc0NzcsImV4cCI6MTcyNjM1MTA3N30.pD9FuvzzHroGsWck3Nu8iwSiS15IcTTS6ahOPwuYpMU"
+}
+
+###
+
+# @name reset-password
+POST {{baseUrl}}/reset-password
+Content-Type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFsb25zb2Z0c0BnbWFpbC5jb20iLCJpYXQiOjE3MjY0MzQ1NTksImV4cCI6MTcyNjQzODE1OX0.XlubTD-BpCdgyN_kUDNohVnD3IuNsalJ7YhAjrPbTbM",
+  "newPassword": "Abc123456@"
+}
 

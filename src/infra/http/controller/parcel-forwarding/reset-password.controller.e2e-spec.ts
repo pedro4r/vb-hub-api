@@ -7,7 +7,7 @@ import { ParcelForwardingFactory } from 'test/factories/make-parcel-forwarding'
 import { EnvService } from '@/infra/env/env.service'
 import * as jwt from 'jsonwebtoken'
 
-describe('Verify Reset Password Token (E2E)', () => {
+describe('Reset Password (E2E)', () => {
   let app: INestApplication
   let parcelForwardingFactory: ParcelForwardingFactory
   let envService: EnvService
@@ -34,11 +34,11 @@ describe('Verify Reset Password Token (E2E)', () => {
     })
 
     const response = await request(app.getHttpServer())
-      .post('/verify-reset-password-token')
-      .send({ token })
+      .post('/reset-password')
+      .send({ token, newPassword: 'Abc123456@' })
 
     expect(response.statusCode).toBe(200)
-    expect(response.body.email).toBe(parcelForwarding.email)
+    expect(response.body).toEqual({ success: true })
 
     token = jwt.sign({ email: parcelForwarding.email }, jwtSecret, {
       expiresIn: '1s',

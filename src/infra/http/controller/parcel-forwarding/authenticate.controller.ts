@@ -26,7 +26,7 @@ type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>
 export class AuthenticateController {
   constructor(private authenticate: AuthenticateUseCase) {}
 
-  @Post()
+  @Post('/login')
   @UsePipes(new ZodValidationPipe(authenticateBodySchema))
   async handle(@Body() body: AuthenticateBodySchema, @Res() res: Response) {
     const { email, password } = body
@@ -57,5 +57,17 @@ export class AuthenticateController {
     })
 
     return res.status(200).send()
+  }
+
+  @Post('/logout')
+  async logout(@Res() res: Response) {
+    // Limpa o cookie authToken
+    res.clearCookie('authToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    })
+
+    return res.status(200).send({ message: 'Logout successful' })
   }
 }

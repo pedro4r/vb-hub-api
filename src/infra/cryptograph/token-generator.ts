@@ -30,7 +30,7 @@ export class ResetPasswordTokenUrlGenerator extends Token {
       const decoded = jwt.verify(token, this.jwtSecret) as jwt.JwtPayload
       return decoded.email
     } catch (error) {
-      throw new Error('Invalid or expired token')
+      throw new Error('Erro 410 - Link de redefinição de senha expirou')
     }
   }
 }
