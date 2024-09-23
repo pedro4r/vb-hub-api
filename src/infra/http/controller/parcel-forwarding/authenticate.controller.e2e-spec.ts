@@ -31,20 +31,31 @@ describe('Authenticate (E2E)', () => {
       },
     })
 
-    const response = await request(app.getHttpServer()).post('/sessions').send({
-      email: 'contato@voabox.com',
-      password: '123456',
-    })
+    const responseLogin = await request(app.getHttpServer())
+      .post('/sessions/login')
+      .send({
+        email: 'contato@voabox.com',
+        password: '123456',
+      })
 
-    expect(response.statusCode).toBe(200)
+    expect(responseLogin.statusCode).toBe(200)
 
-    const response2 = await request(app.getHttpServer())
-      .post('/sessions')
+    const responseLogin2 = await request(app.getHttpServer())
+      .post('/sessions/login')
       .send({
         email: 'contato@voabox.com',
         password: '1234567',
       })
 
-    expect(response2.statusCode).toBe(401)
+    expect(responseLogin2.statusCode).toBe(401)
+
+    const cookie = responseLogin.headers['set-cookie'][0]
+
+    const responseLogout = await request(app.getHttpServer())
+      .post('/sessions/logout')
+      .set('Cookie', cookie) // Envia o cookie recebido no login
+      .send()
+
+    expect(responseLogout.statusCode).toBe(200)
   })
 })

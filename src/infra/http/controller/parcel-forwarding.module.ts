@@ -41,6 +41,8 @@ import { SendResetPasswordEmailController } from './parcel-forwarding/send-reset
 import { VerifyUserAuthController } from './parcel-forwarding/verify-user-auth.controller'
 import { VerifyResetPasswordTokenUseCase } from '@/domain/parcel-forwarding/application/use-cases/verify-reset-password-token'
 import { VerifyResetPasswordTokenController } from './parcel-forwarding/verify-reset-password-token.controller'
+import { ResetParcelForwardingPasswordController } from './parcel-forwarding/reset-password.controller'
+import { ResetParcelForwardingPasswordUseCase } from '@/domain/parcel-forwarding/application/use-cases/reset-password'
 
 @Module({
   imports: [
@@ -70,6 +72,7 @@ import { VerifyResetPasswordTokenController } from './parcel-forwarding/verify-r
     VerifyUserAuthController,
     SendResetPasswordEmailController,
     VerifyResetPasswordTokenController,
+    ResetParcelForwardingPasswordController,
   ],
   providers: [
     CheckInUseCase,
@@ -90,6 +93,7 @@ import { VerifyResetPasswordTokenController } from './parcel-forwarding/verify-r
     CreatePasswordResetUrlUseCase,
     SendResetPasswordEmailUseCase,
     VerifyResetPasswordTokenUseCase,
+    ResetParcelForwardingPasswordUseCase,
   ],
 })
 export class ParcelForwardingModule {}
