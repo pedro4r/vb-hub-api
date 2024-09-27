@@ -4,6 +4,8 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ZodValidationPipe } from '@/infra/http/pipe/zod-validation-pipe'
 import { z } from 'zod'
 import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/check-in'
+import { SendNewCheckInEmailUseCase } from '@/domain/parcel-forwarding/application/use-cases/send-new-check-in-email'
+import { EnvService } from '@/infra/env/env.service'
 
 const createCheckInBodySchema = z.object({
   customerId: z.string().uuid(),
@@ -18,7 +20,11 @@ type CreateCheckInBodySchema = z.infer<typeof createCheckInBodySchema>
 
 @Controller('/check-in')
 export class CreateCheckInController {
-  constructor(private checkInUseCase: CheckInUseCase) {}
+  constructor(
+    private checkInUseCase: CheckInUseCase,
+    private sendNewCheckInEmailUseCase: SendNewCheckInEmailUseCase,
+    private envService: EnvService,
+  ) {}
 
   @Post()
   async handle(
@@ -27,18 +33,35 @@ export class CreateCheckInController {
   ) {
     const { customerId, details, weight, attachmentsIds } = body
 
-    const userId = user.sub
+    const parcelForwardingId = user.sub
 
     const result = await this.checkInUseCase.execute({
       customerId,
       details,
       weight,
       status: 1,
-      parcelForwardingId: userId,
+      parcelForwardingId,
       attachmentsIds,
     })
 
     if (result.isLeft()) {
+      throw new BadRequestException()
+    }
+
+    const senderEmail = this.envService.get('SMTP_USER')
+    const r2DevURL = this.envService.get('CLOUDFLARE_DEV_URL')
+
+    const response = await this.sendNewCheckInEmailUseCase.execute({
+      parcelForwardingId,
+      sender: senderEmail,
+      customerId,
+      checkInDetails: details,
+      weight,
+      attachmentsIds,
+      storageURL: r2DevURL,
+    })
+
+    if (response.isLeft()) {
       throw new BadRequestException()
     }
   }

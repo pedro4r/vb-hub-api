@@ -11,11 +11,17 @@ export class NestMailerEmailService extends EmailService {
 
   async sendEmail(email: EmailContent): Promise<boolean> {
     try {
+      const attachments = email.attachments?.map((attachmentUrl) => ({
+        filename: attachmentUrl.split('/').pop(),
+        path: attachmentUrl,
+      }))
+
       await this.mailerService.sendMail({
         to: email.recipient,
         from: email.sender,
         subject: email.subject,
         html: email.body,
+        attachments,
       })
       return true
     } catch (error) {

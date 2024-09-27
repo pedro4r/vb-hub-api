@@ -4,6 +4,7 @@ import { InMemoryCheckInsAttachmentsRepository } from 'test/repositories/in-memo
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
 import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
+import { makeCustomer } from 'test/factories/make-customer'
 
 let inMemoryCustomerRepository: InMemoryCustomerRepository
 let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
@@ -27,16 +28,24 @@ describe('Check-in', () => {
     sut = new CheckInUseCase(inMemoryCheckInsRepository)
   })
 
-  it('should be able to check in', async () => {
+  it('should be able to create a check in', async () => {
+    const customer = makeCustomer(
+      {
+        parcelForwardingId: new UniqueEntityID('company-1'),
+      },
+      new UniqueEntityID('customer-1'),
+    )
+
     const result = await sut.execute({
-      parcelForwardingId: 'A1',
-      customerId: 'A2',
+      parcelForwardingId: customer.parcelForwardingId.toString(),
+      customerId: customer.id.toString(),
       status: 1,
       details: 'Package details',
       attachmentsIds: ['1', '2'],
     })
 
     expect(result.isRight()).toBe(true)
+    expect(inMemoryCheckInsRepository.items).toHaveLength(1)
     expect(inMemoryCheckInsRepository.items[0]).toEqual(result.value?.checkin)
     expect(
       inMemoryCheckInsRepository.items[0].attachments.currentItems,
@@ -48,6 +57,7 @@ describe('Check-in', () => {
       expect.objectContaining({ attachmentId: new UniqueEntityID('2') }),
     ])
   })
+
   it('should persist attachments when check in', async () => {
     const result = await sut.execute({
       parcelForwardingId: 'A1',
