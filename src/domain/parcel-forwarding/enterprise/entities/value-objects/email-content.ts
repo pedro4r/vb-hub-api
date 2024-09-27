@@ -5,6 +5,7 @@ export interface EmailContentProps {
   recipient: string
   subject: string
   body: string
+  attachments?: string[]
 }
 
 export class EmailContent extends ValueObject<EmailContentProps> {
@@ -22,6 +23,10 @@ export class EmailContent extends ValueObject<EmailContentProps> {
 
   get body() {
     return this.props.body
+  }
+
+  get attachments() {
+    return this.props.attachments
   }
 
   static create(props: EmailContentProps) {

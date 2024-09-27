@@ -43,6 +43,7 @@ import { VerifyResetPasswordTokenUseCase } from '@/domain/parcel-forwarding/appl
 import { VerifyResetPasswordTokenController } from './parcel-forwarding/verify-reset-password-token.controller'
 import { ResetParcelForwardingPasswordController } from './parcel-forwarding/reset-password.controller'
 import { ResetParcelForwardingPasswordUseCase } from '@/domain/parcel-forwarding/application/use-cases/reset-password'
+import { SendNewCheckInEmailUseCase } from '@/domain/parcel-forwarding/application/use-cases/send-new-check-in-email'
 
 @Module({
   imports: [
@@ -94,6 +95,7 @@ import { ResetParcelForwardingPasswordUseCase } from '@/domain/parcel-forwarding
     SendResetPasswordEmailUseCase,
     VerifyResetPasswordTokenUseCase,
     ResetParcelForwardingPasswordUseCase,
+    SendNewCheckInEmailUseCase,
   ],
 })
 export class ParcelForwardingModule {}
