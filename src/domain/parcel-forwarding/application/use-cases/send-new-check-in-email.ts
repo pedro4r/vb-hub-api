@@ -8,6 +8,8 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
 import { AttachmentsRepository } from '../repositories/attachments-repository'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
+import { CheckInEmailBodyTemplates } from '@/core/email/templates/check-in'
+import { ParcelForwardingsRepository } from '../repositories/parcel-forwardings-repository'
 
 interface SendNewCheckInEmailRequest {
   parcelForwardingId: string
@@ -30,7 +32,9 @@ export class SendNewCheckInEmailUseCase {
   constructor(
     private readonly emailService: EmailService,
     private customerRepository: CustomerRepository,
+    private parcelForwardingsRepository: ParcelForwardingsRepository,
     private attachmentsRepository: AttachmentsRepository,
+    private checkInEmailBodyTemplates: CheckInEmailBodyTemplates,
   ) {}
 
   async execute({
@@ -59,38 +63,29 @@ export class SendNewCheckInEmailUseCase {
       return left(new ResourceNotFoundError('Attachments not found'))
     }
 
-    const attachmentsUrl = attachments.map((attachment) => {
+    const attachmentsUrls = attachments.map((attachment) => {
       return `${storageURL}/${attachment.url}`
     })
+
+    const parcelForwarding =
+      await this.parcelForwardingsRepository.findById(parcelForwardingId)
+
+    if (!parcelForwarding) {
+      return left(new ResourceNotFoundError('Parcel Forwarding not found'))
+    }
 
     const email = EmailContent.create({
       sender,
       recipient: customer.email,
       subject: 'Novo Check-In de Caixa Recebido',
-      body: `
-        <p>Prezado(a) ${customer.firstName},</p>
-
-        <p>Estamos informando que uma nova caixa foi recebida em nosso hub.</p>
-
-        <p><strong>Detalhes do Check-In:</strong></p>
-        <ul>
-          <li><strong>Cliente:</strong> ${customer.firstName} ${customer.lastName}</li>
-          <li><strong>Descrição:</strong> ${checkInDetails || 'Sem descrição fornecida'}</li>
-          <li><strong>Peso:</strong> ${(weight / 1000).toFixed(2)} kg</li>
-        </ul>
-
-        <p>As imagens anexadas da caixa recebida estão abaixo:</p>
-        
-        ${attachmentsUrl
-          .map(
-            (url) =>
-              `<div><img src="${url}" alt="Imagem da caixa" style="max-width: 100%; height: auto;" /></div>`,
-          )
-          .join('')}
-        
-        <p>Atenciosamente,</p>
-        <p>Sua equipe de logística</p>
-      `,
+      body: this.checkInEmailBodyTemplates.newCheckInBody({
+        companyName: parcelForwarding.name,
+        customerFirstName: customer.firstName,
+        checkInDetails,
+        weight,
+        storageURL,
+        attachmentsUrls,
+      }),
     })
 
     const response = await this.emailService.sendEmail(email)

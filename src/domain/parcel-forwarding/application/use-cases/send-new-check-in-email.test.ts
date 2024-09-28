@@ -6,23 +6,35 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { makeCustomer } from 'test/factories/make-customer'
 import { makeAttachment } from 'test/factories/make-attachment'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
+import { CheckInEmailBodyTemplates } from '@/core/email/templates/check-in'
+import { InMemoryParcelForwardingsRepository } from 'test/repositories/in-memory-parcel-forwarding-repository'
+import { makeParcelForwarding } from 'test/factories/make-parcel-forwarding'
 
+let inMemoryParcelForwardingRepository: InMemoryParcelForwardingsRepository
 let inMemoryCustomerRepository: InMemoryCustomerRepository
 let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
+
+let checkInEmailBodyTemplates: CheckInEmailBodyTemplates
 let emailSender: FakeEmailSender
 
 let sut: SendNewCheckInEmailUseCase
 
-describe('Send Reset Password Url Email', () => {
+describe('Send New Check-in Email', () => {
   beforeEach(() => {
+    inMemoryParcelForwardingRepository =
+      new InMemoryParcelForwardingsRepository()
     inMemoryCustomerRepository = new InMemoryCustomerRepository()
     inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository()
     emailSender = new FakeEmailSender()
 
+    checkInEmailBodyTemplates = new CheckInEmailBodyTemplates()
+
     sut = new SendNewCheckInEmailUseCase(
       emailSender,
       inMemoryCustomerRepository,
+      inMemoryParcelForwardingRepository,
       inMemoryAttachmentsRepository,
+      checkInEmailBodyTemplates,
     )
   })
 
@@ -33,8 +45,14 @@ describe('Send Reset Password Url Email', () => {
       },
       new UniqueEntityID('customer-1'),
     )
-
     await inMemoryCustomerRepository.create(customer)
+
+    const parcelForwarding = makeParcelForwarding(
+      {},
+      new UniqueEntityID('company-1'),
+    )
+
+    await inMemoryParcelForwardingRepository.create(parcelForwarding)
 
     const attachment1 = makeAttachment({}, new UniqueEntityID('attachment-1'))
     await inMemoryAttachmentsRepository.create(attachment1)
