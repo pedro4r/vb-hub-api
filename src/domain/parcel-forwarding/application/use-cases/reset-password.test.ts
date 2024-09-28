@@ -8,7 +8,7 @@ let fakeHasher: FakeHasher
 
 let sut: ResetParcelForwardingPasswordUseCase
 
-describe('Authenticate Parcel Forwarding', () => {
+describe('Reset ParcelForwarding Password', () => {
   beforeEach(() => {
     inMemoryParcelForwardingsRepository =
       new InMemoryParcelForwardingsRepository()
@@ -23,14 +23,14 @@ describe('Authenticate Parcel Forwarding', () => {
   it('should be able to reset parcelforwarding password', async () => {
     const parcelforwarding = makeParcelForwarding({
       email: 'johndoe@example.com',
-      password: await fakeHasher.hash('1234567'),
+      password: await fakeHasher.hash('Acb123456@'),
     })
 
     inMemoryParcelForwardingsRepository.items.push(parcelforwarding)
 
     const result = await sut.execute({
       email: 'johndoe@example.com',
-      newPassword: '654321',
+      newPassword: 'Acb654321@',
     })
 
     expect(result.isRight()).toBe(true)
