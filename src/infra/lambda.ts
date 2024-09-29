@@ -22,8 +22,7 @@ async function bootstrap() {
       'http://192.168.1.237',
       'http://192.168.1.209',
     ],
-    methods: '*',
-    allowedHeaders: 'Content-Type, Authorization, x-requested-with, accept',
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     credentials: true,
   })
   app.use(cookieParser())
