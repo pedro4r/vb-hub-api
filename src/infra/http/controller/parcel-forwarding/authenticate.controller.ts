@@ -52,7 +52,7 @@ export class AuthenticateController {
     res.cookie('authToken', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'none',
       maxAge: 604800000,
     })
 
@@ -65,7 +65,7 @@ export class AuthenticateController {
     res.clearCookie('authToken', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'none',
     })
 
     return res.status(200).send({ message: 'Logout successful' })
