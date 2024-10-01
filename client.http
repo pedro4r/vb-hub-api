@@ -1,9 +1,9 @@
-@baseUrl = https://c9rd6ln3mk.execute-api.us-east-1.amazonaws.com/default
+# @baseUrl = https://c9rd6ln3mk.execute-api.us-east-1.amazonaws.com/default
 # @baseUrl = http://192.168.1.237:3333
 # @baseUrl = http://localhost:3333
 
 # @baseUrl = http://172.20.10.2:3333
-# @baseUrl = http://localhost:3000/dev
+@baseUrl = http://localhost:3000/dev
 
 # @authToken = {{authenticate.response.body.access_token}}
 
