@@ -17,10 +17,8 @@ async function bootstrap() {
     origin: [
       'https://d12fe01ihzmtgw.cloudfront.net',
       'http://localhost:5173',
-      'http://localhost',
       'http://192.168.1.237:5173',
-      'http://192.168.1.237',
-      'http://192.168.1.209',
+      'http://172.20.10.2:5173',
     ],
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
     credentials: true,
