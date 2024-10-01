@@ -53,6 +53,8 @@ export class AuthenticateController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
+      domain: 'https://d12fe01ihzmtgw.cloudfront.net',
+      path: '/',
       maxAge: 604800000,
     })
 
@@ -65,6 +67,7 @@ export class AuthenticateController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
+      path: '/',
     })
 
     return res.status(200).send({ message: 'Logout successful' })
