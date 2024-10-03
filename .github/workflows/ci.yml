@@ -17,6 +17,7 @@ jobs:
     name: 'Test and Build'
     runs-on: ubuntu-latest
     env:
+      NODE_ENV: ${{ secrets.NODE_ENV }}
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
       JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
