@@ -51,10 +51,8 @@ export class AuthenticateController {
 
     res.cookie('authToken', accessToken, {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'none',
-      domain: 'https://d12fe01ihzmtgw.cloudfront.net',
-      path: '/',
       maxAge: 604800000,
     })
 
@@ -65,9 +63,8 @@ export class AuthenticateController {
   async logout(@Res() res: Response) {
     res.clearCookie('authToken', {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
       sameSite: 'none',
-      path: '/',
     })
 
     return res.status(200).send({ message: 'Logout successful' })

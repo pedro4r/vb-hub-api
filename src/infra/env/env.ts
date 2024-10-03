@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 export const envSchema = z.object({
+  NODE_ENV: z.string().default('development'),
   DATABASE_URL: z.string().url(),
   JWT_PRIVATE_KEY: z.string(),
   JWT_PUBLIC_KEY: z.string(),
