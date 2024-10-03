@@ -51,7 +51,7 @@ export class AuthenticateController {
 
     res.cookie('authToken', accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.ENV_STAGE === 'production',
       sameSite: 'none',
       maxAge: 604800000,
     })
@@ -63,7 +63,7 @@ export class AuthenticateController {
   async logout(@Res() res: Response) {
     res.clearCookie('authToken', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.ENV_STAGE === 'production',
       sameSite: 'none',
     })
 
