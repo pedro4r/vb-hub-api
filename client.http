@@ -31,8 +31,8 @@ POST {{baseUrl}}/sessions/login
 Content-Type: application/json
 
 {
-  "email": "voabox@voabox.com",
-  "password": "Abc123456@"
+  "email": "alonsofts@gmail.com",
+  "password": "123456"
 }
 
 ###
@@ -71,7 +71,7 @@ Content-Type: application/json
 ###
 
 # @name get_customer_by_hub_id
-GET {{baseUrl}}/customer/3
+GET {{baseUrl}}/customer/1
 Content-Type: application/json
 
 ###
