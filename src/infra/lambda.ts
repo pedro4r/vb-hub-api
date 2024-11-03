@@ -15,6 +15,7 @@ async function bootstrap() {
   // Configuração do CORS
   app.enableCors({
     origin: [
+      'https://hubdash.space',
       'https://www.hubdash.space',
       'http://localhost:5173',
       'http://192.168.1.237:5173',
