@@ -1,5 +1,5 @@
 import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-check-in'
-import { CheckIn } from '../../enterprise/entities/check-in'
+import { CheckIn, CheckInStatus } from '../../enterprise/entities/check-in'
 import { CheckInDetails } from '../../enterprise/entities/value-objects/check-in-details'
 import { CheckInPreview } from '../../enterprise/entities/value-objects/check-in-preview'
 
@@ -15,6 +15,16 @@ export abstract class CheckInsRepository {
     parcelForwardingId: string,
     page: number,
   ): Promise<CheckInDetails[]>
+
+  abstract findManyCheckInsByFilter(
+    parcelForwardingId: string,
+    customersId?: string[], // pode ser uma lista para filtrar múltiplos hubs
+    checkInStatus?: CheckInStatus,
+    startDate?: Date,
+    endDate?: Date,
+    page?: number,
+    itemsPerPage?: number,
+  ): Promise<CheckInPreview[]>
 
   abstract findDetailsById(checkInId: string): Promise<CheckInDetails | null>
 
