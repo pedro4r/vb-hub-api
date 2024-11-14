@@ -18,12 +18,11 @@ export abstract class CheckInsRepository {
 
   abstract findManyCheckInsByFilter(
     parcelForwardingId: string,
-    customersId?: string[], // pode ser uma lista para filtrar múltiplos hubs
+    page: number,
+    customersId?: string[],
     checkInStatus?: CheckInStatus,
     startDate?: Date,
     endDate?: Date,
-    page?: number,
-    itemsPerPage?: number,
   ): Promise<CheckInPreview[]>
 
   abstract findDetailsById(checkInId: string): Promise<CheckInDetails | null>
