@@ -14,6 +14,8 @@ export class InMemoryCustomerRepository implements CustomerRepository {
         (item.firstName.toLowerCase().includes(lowerCaseName) ||
           item.lastName.toLowerCase().includes(lowerCaseName)),
     )
+    console.log(this.items)
+    console.log(totalCustomers)
 
     const customers = totalCustomers.slice((page - 1) * 5, page * 5)
 

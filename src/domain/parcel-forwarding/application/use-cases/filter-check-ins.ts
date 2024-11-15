@@ -41,10 +41,15 @@ export class FilterCheckInsUseCase {
     page,
   }: FilterCheckInsUseCaseRequest): Promise<FilterCheckInsUseCaseResponse> {
     const customersId: UniqueEntityID[] = []
-
     if (hubId) {
       const customerData = await this.customerRepository.findByHubId(hubId)
-      if (customerData) {
+      // Check if the customer is associated with the parcel forwarding
+      if (
+        customerData &&
+        customerData.parcelForwardingId.equals(
+          new UniqueEntityID(parcelForwardingId),
+        )
+      ) {
         customersId.push(customerData.customerId)
       }
     } else if (customerName) {
@@ -54,6 +59,16 @@ export class FilterCheckInsUseCase {
         page,
       )
 
+      // Check if the customer is associated with the parcel forwarding
+      if (
+        customersData &&
+        !customersData.customers[0].parcelForwardingId.equals(
+          new UniqueEntityID(parcelForwardingId),
+        )
+      ) {
+        return left(new ResourceNotFoundError('Check-ins not found.'))
+      }
+
       customersData.customers.forEach((customer) => {
         customersId.push(customer.customerId)
       })
@@ -62,11 +77,11 @@ export class FilterCheckInsUseCase {
     const checkInsPreview =
       await this.checkInsRepository.findManyCheckInsByFilter(
         parcelForwardingId,
+        page,
         customersId.map((id) => id.toString()),
         checkInStatus,
         startDate,
         endDate,
-        page,
       )
 
     if (checkInsPreview.length === 0) {
