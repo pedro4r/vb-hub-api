@@ -3,7 +3,7 @@ import {
   Body,
   ConflictException,
   Controller,
-  Get,
+  Post,
   Query,
 } from '@nestjs/common'
 import { ZodValidationPipe } from '@/infra/http/pipe/zod-validation-pipe'
@@ -30,8 +30,14 @@ const filterCheckInBodySchema = z.object({
   customerName: z.string().optional(),
   hubId: z.number().optional(),
   checkInStatus: z.number().optional(),
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
+  startDate: z
+    .string()
+    .optional()
+    .transform((str) => (str ? new Date(str) : undefined)),
+  endDate: z
+    .string()
+    .optional()
+    .transform((str) => (str ? new Date(str) : undefined)),
 })
 
 const bodyValidationPipe = new ZodValidationPipe(filterCheckInBodySchema)
@@ -42,7 +48,7 @@ type FilterCheckInBodySchema = z.infer<typeof filterCheckInBodySchema>
 export class FilterCheckInsController {
   constructor(private FilterCheckIns: FilterCheckInsUseCase) {}
 
-  @Get()
+  @Post()
   async handle(
     @CurrentUser() user: UserPayload,
     @Query('page', queryValidationPipe) page: PageQueryParamSchema,
@@ -50,7 +56,7 @@ export class FilterCheckInsController {
   ) {
     const userId = user.sub
 
-    console.log(userId)
+    console.log(body)
     const result = await this.FilterCheckIns.execute({
       parcelForwardingId: userId,
       customerName: body.customerName,
