@@ -10,6 +10,16 @@
 
 # @authToken = {{authenticate.response.body.access_token}}
 
+# @name filter-check-in
+GET {{baseUrl}}/filter-check-ins?page=1
+Content-Type: application/json
+
+{
+  "hubId": 12
+}
+
+###
+
 # @name test_route
 GET {{baseUrl}}/test
 Content-Type: application/json

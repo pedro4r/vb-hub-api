@@ -45,6 +45,8 @@ import { ResetParcelForwardingPasswordController } from './parcel-forwarding/res
 import { ResetParcelForwardingPasswordUseCase } from '@/domain/parcel-forwarding/application/use-cases/reset-password'
 import { SendNewCheckInEmailUseCase } from '@/domain/parcel-forwarding/application/use-cases/send-new-check-in-email'
 import { CheckInEmailBodyTemplates } from '@/core/email/templates/check-in'
+import { FilterCheckInsController } from './parcel-forwarding/filter-check-ins.controller'
+import { FilterCheckInsUseCase } from '@/domain/parcel-forwarding/application/use-cases/filter-check-ins'
 
 @Module({
   imports: [
@@ -75,6 +77,7 @@ import { CheckInEmailBodyTemplates } from '@/core/email/templates/check-in'
     SendResetPasswordEmailController,
     VerifyResetPasswordTokenController,
     ResetParcelForwardingPasswordController,
+    FilterCheckInsController,
   ],
   providers: [
     CheckInUseCase,
@@ -98,6 +101,7 @@ import { CheckInEmailBodyTemplates } from '@/core/email/templates/check-in'
     ResetParcelForwardingPasswordUseCase,
     SendNewCheckInEmailUseCase,
     CheckInEmailBodyTemplates,
+    FilterCheckInsUseCase,
   ],
 })
 export class ParcelForwardingModule {}

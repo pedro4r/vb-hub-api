@@ -45,13 +45,14 @@ export class FilterCheckInsUseCase {
       const customerData = await this.customerRepository.findByHubId(hubId)
       // Check if the customer is associated with the parcel forwarding
       if (
-        customerData &&
-        customerData.parcelForwardingId.equals(
+        !customerData ||
+        !customerData.parcelForwardingId.equals(
           new UniqueEntityID(parcelForwardingId),
         )
       ) {
-        customersId.push(customerData.customerId)
+        return left(new ResourceNotFoundError('Check-ins not found.'))
       }
+      customersId.push(customerData.customerId)
     } else if (customerName) {
       const customersData = await this.customerRepository.findManyByName(
         customerName,
