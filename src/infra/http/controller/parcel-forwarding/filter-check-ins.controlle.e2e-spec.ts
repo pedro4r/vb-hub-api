@@ -62,7 +62,7 @@ describe('Filter Check-ins (E2E)', () => {
     const checkIn2 = await checkInFactory.makePrismaCheckIn({
       parcelForwardingId: parcelForwarding.id,
       customerId: customer2.id,
-      status: 1,
+      status: 2,
       createdAt: new Date('2021-02-01'),
     })
 
