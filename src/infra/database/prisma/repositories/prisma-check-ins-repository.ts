@@ -1,5 +1,8 @@
 import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repositories/check-ins-repository'
-import { CheckIn } from '@/domain/parcel-forwarding/enterprise/entities/check-in'
+import {
+  CheckIn,
+  CheckInStatus,
+} from '@/domain/parcel-forwarding/enterprise/entities/check-in'
 import { Injectable } from '@nestjs/common'
 import { PrismaCheckInMapper } from '../mappers/prisma-check-in-mapper'
 import { PrismaService } from '../prisma.service'
@@ -17,6 +20,74 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     private prisma: PrismaService,
     private checkInAttachmentsRepository: CheckInAttachmentsRepository,
   ) {}
+
+  async findManyCheckInsByFilter(
+    parcelForwardingId: string,
+    page: number,
+    customersId?: string[],
+    checkInStatus?: CheckInStatus,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<CheckInPreview[]> {
+    const checkIns = await this.prisma.checkIn.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        parcelForwardingId,
+        customerId: customersId?.length
+          ? {
+              in: customersId,
+            }
+          : undefined,
+        status: checkInStatus ?? undefined, // Inclui apenas se definido
+        createdAt:
+          startDate || endDate
+            ? {
+                ...(startDate ? { gte: startDate } : {}),
+                ...(endDate ? { lte: endDate } : {}),
+              }
+            : undefined,
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+    })
+
+    // transform checkIns to CheckInPreview
+    const checkInsPreview = await Promise.all(
+      checkIns.map(async (checkIn) => {
+        const customer = await this.prisma.customer.findUnique({
+          where: {
+            id: checkIn.customerId.toString(),
+          },
+        })
+
+        if (!customer) {
+          throw new ResourceNotFoundError(
+            `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
+          )
+        }
+
+        const checkInDomain = PrismaCheckInMapper.toDomain(checkIn)
+
+        return CheckInPreview.create({
+          checkInId: checkInDomain.id,
+          parcelForwardingId: checkInDomain.parcelForwardingId,
+          customerId: checkInDomain.customerId,
+          hubId: customer.hubId,
+          customerFirstName: customer.firstName,
+          customerLastName: customer.lastName,
+          packageId: checkInDomain.packageId,
+          status: checkInDomain.status,
+          weight: checkInDomain.weight,
+          createdAt: checkInDomain.createdAt,
+          updatedAt: checkInDomain.updatedAt,
+        })
+      }),
+    )
+
+    return checkInsPreview
+  }
 
   async findManyWithDetailsByPackageId(
     packadeId: string,
@@ -152,7 +223,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       skip: (page - 1) * 20,
     })
 
-    const checkInDetails = await Promise.all(
+    const checkInsPreview = await Promise.all(
       checkIns.map(async (checkIn) => {
         const customer = await this.prisma.customer.findUnique({
           where: {
@@ -184,7 +255,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       }),
     )
 
-    return checkInDetails
+    return checkInsPreview
   }
 
   async create(checkIn: CheckIn) {

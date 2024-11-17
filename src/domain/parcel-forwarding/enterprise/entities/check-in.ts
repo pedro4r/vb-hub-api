@@ -102,6 +102,10 @@ export class CheckIn extends AggregateRoot<CheckInProps> {
     this.props.updatedAt = new Date()
   }
 
+  isStatus(status: CheckInStatus): boolean {
+    return this.props.status === status
+  }
+
   static create(
     props: Optional<CheckInProps, 'createdAt' | 'attachments'>,
     id?: UniqueEntityID,

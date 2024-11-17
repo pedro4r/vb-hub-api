@@ -1,5 +1,8 @@
 import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repositories/check-ins-repository'
-import { CheckIn } from '@/domain/parcel-forwarding/enterprise/entities/check-in'
+import {
+  CheckIn,
+  CheckInStatus,
+} from '@/domain/parcel-forwarding/enterprise/entities/check-in'
 import { InMemoryCheckInsAttachmentsRepository } from './in-memory-check-ins-attachments-repository'
 import { DomainEvents } from '@/core/events/domain-events'
 import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-check-in'
@@ -16,6 +19,76 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     private attachmentsRepository: InMemoryAttachmentsRepository,
     private customerRepository: InMemoryCustomerRepository,
   ) {}
+
+  async findManyCheckInsByFilter(
+    parcelForwardingId: string,
+    page: number,
+    customersId: string[],
+    checkInStatus?: CheckInStatus,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<CheckInPreview[]> {
+    let filteredCheckIns = this.items.filter(
+      (item) => item.parcelForwardingId.toString() === parcelForwardingId,
+    )
+
+    if (customersId.length > 0) {
+      filteredCheckIns = filteredCheckIns.filter((checkIn) =>
+        customersId.includes(checkIn.customerId.toString()),
+      )
+    }
+
+    if (checkInStatus) {
+      filteredCheckIns = filteredCheckIns.filter((checkIn) =>
+        checkIn.isStatus(checkInStatus),
+      )
+    }
+
+    if (startDate) {
+      filteredCheckIns = filteredCheckIns.filter(
+        (checkIn) => checkIn.createdAt >= startDate,
+      )
+    }
+    if (endDate) {
+      filteredCheckIns = filteredCheckIns.filter(
+        (checkIn) => checkIn.createdAt <= endDate,
+      )
+    }
+
+    const paginatedCheckIns = filteredCheckIns
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice((page - 1) * 20, page * 20)
+
+    const checkInsPreview = await Promise.all(
+      paginatedCheckIns.map(async (checkIn) => {
+        const customer = await this.customerRepository.findById(
+          checkIn.customerId.toString(),
+        )
+
+        if (!customer) {
+          throw new Error(
+            `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
+          )
+        }
+
+        return CheckInPreview.create({
+          checkInId: checkIn.id,
+          parcelForwardingId: checkIn.parcelForwardingId,
+          customerId: checkIn.customerId,
+          hubId: customer.hubId,
+          customerFirstName: customer.firstName,
+          customerLastName: customer.lastName,
+          packageId: checkIn.packageId,
+          status: checkIn.status,
+          weight: checkIn.weight,
+          createdAt: checkIn.createdAt,
+          updatedAt: checkIn.updatedAt,
+        })
+      }),
+    )
+
+    return checkInsPreview
+  }
 
   async findManyByPackageId(packadeId: string) {
     const checkIns = this.items.filter(
