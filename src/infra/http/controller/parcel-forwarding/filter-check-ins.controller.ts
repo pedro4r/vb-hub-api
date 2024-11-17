@@ -29,7 +29,7 @@ type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 const filterCheckInBodySchema = z.object({
   customerName: z.string().optional(),
   hubId: z.number().optional(),
-  checkInStatus: z.number().optional(),
+  status: z.number().optional(),
   startDate: z
     .string()
     .optional()
@@ -56,12 +56,11 @@ export class FilterCheckInsController {
   ) {
     const userId = user.sub
 
-    console.log(body)
     const result = await this.FilterCheckIns.execute({
       parcelForwardingId: userId,
       customerName: body.customerName,
       hubId: body.hubId,
-      checkInStatus: body.checkInStatus,
+      checkInStatus: body.status,
       startDate: body.startDate,
       endDate: body.endDate,
       page,

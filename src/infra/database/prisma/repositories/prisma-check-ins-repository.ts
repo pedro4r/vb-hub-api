@@ -35,16 +35,19 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       },
       where: {
         parcelForwardingId,
-        customerId: customersId
+        customerId: customersId?.length
           ? {
               in: customersId,
             }
           : undefined,
-        status: checkInStatus,
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
+        status: checkInStatus ?? undefined, // Inclui apenas se definido
+        createdAt:
+          startDate || endDate
+            ? {
+                ...(startDate ? { gte: startDate } : {}),
+                ...(endDate ? { lte: endDate } : {}),
+              }
+            : undefined,
       },
       take: 20,
       skip: (page - 1) * 20,
