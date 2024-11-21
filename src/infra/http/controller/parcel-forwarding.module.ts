@@ -5,7 +5,6 @@ import { Module } from '@nestjs/common'
 import { RegisterParcelForwardingController } from './parcel-forwarding/register-parcel-forwarding.controller'
 import { AuthenticateController } from './parcel-forwarding/authenticate.controller'
 import { CreateCheckInController } from './parcel-forwarding/create-check-in.controller'
-import { FetchRecentCheckInsController } from './parcel-forwarding/fetch-recent-check-ins.controller'
 import { UploadAttachmentController } from './parcel-forwarding/upload-attachment.controller'
 import { DeleteCheckInController } from './parcel-forwarding/delete-check-in.controller'
 import { GetCheckInController } from './parcel-forwarding/get-check-in.controller'
@@ -17,7 +16,6 @@ import { GetPackageCheckInsDetailsController } from './parcel-forwarding/get-pac
 import { CheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/check-in'
 import { AuthenticateUseCase } from '@/domain/parcel-forwarding/application/use-cases/authenticate-parcel-forwarding'
 import { RegisterParcelForwardingUseCase } from '@/domain/parcel-forwarding/application/use-cases/register-parcel-forwarding'
-import { FetchRecentCheckInsUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-check-ins'
 import { UploadAndCreateAttachmentUseCase } from '@/domain/parcel-forwarding/application/use-cases/upload-and-create-attachment'
 import { DeleteCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/delete-check-in'
 import { GetCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-check-in'
@@ -61,7 +59,6 @@ import { FilterCheckInsUseCase } from '@/domain/parcel-forwarding/application/us
     RegisterParcelForwardingController,
     AuthenticateController,
     CreateCheckInController,
-    FetchRecentCheckInsController,
     UploadAttachmentController,
     DeleteCheckInController,
     GetCheckInController,
@@ -83,7 +80,6 @@ import { FilterCheckInsUseCase } from '@/domain/parcel-forwarding/application/us
     CheckInUseCase,
     AuthenticateUseCase,
     RegisterParcelForwardingUseCase,
-    FetchRecentCheckInsUseCase,
     UploadAndCreateAttachmentUseCase,
     DeleteCheckInUseCase,
     GetCheckInUseCase,

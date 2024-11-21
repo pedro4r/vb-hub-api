@@ -3,10 +3,10 @@ import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { CheckInsRepository } from '../repositories/check-ins-repository'
 import { Injectable } from '@nestjs/common'
-import { CheckInPreview } from '../../enterprise/entities/value-objects/check-in-preview'
 import { CheckInStatus } from '../../enterprise/entities/check-in'
 import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { FilteredCheckInsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-ins'
 
 interface FilterCheckInsUseCaseRequest {
   parcelForwardingId: string
@@ -21,7 +21,7 @@ interface FilterCheckInsUseCaseRequest {
 type FilterCheckInsUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {
-    checkInsPreview: CheckInPreview[]
+    checkInsData: FilteredCheckInsData
   }
 >
 @Injectable()
@@ -57,8 +57,9 @@ export class FilterCheckInsUseCase {
       const customersData = await this.customerRepository.findManyByName(
         customerName,
         parcelForwardingId,
-        page,
       )
+
+      console.log('customersData', customersData.customers)
 
       // Check if the customer is associated with the parcel forwarding
       if (
@@ -75,20 +76,19 @@ export class FilterCheckInsUseCase {
       })
     }
 
-    const checkInsPreview =
-      await this.checkInsRepository.findManyCheckInsByFilter(
-        parcelForwardingId,
-        page,
-        customersId.map((id) => id.toString()),
-        checkInStatus,
-        startDate,
-        endDate,
-      )
+    const checkInsData = await this.checkInsRepository.findManyCheckInsByFilter(
+      parcelForwardingId,
+      page,
+      customersId.map((id) => id.toString()),
+      checkInStatus,
+      startDate,
+      endDate,
+    )
 
-    if (checkInsPreview.length === 0) {
+    if (checkInsData.checkIns.length === 0) {
       return left(new ResourceNotFoundError('Check-ins not found.'))
     }
 
-    return right({ checkInsPreview })
+    return right({ checkInsData })
   }
 }

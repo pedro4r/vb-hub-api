@@ -96,15 +96,27 @@ describe('Filter Check-ins (E2E)', () => {
       })
 
     expect(response.statusCode).toBe(201)
-    expect(response.body).toEqual({
-      checkInsPreview: expect.arrayContaining([
-        expect.objectContaining({
-          checkInId: checkIn1.id.toString(),
-          customerId: customer1.id.toString(),
-          parcelForwardingId: parcelForwarding.id.toString(),
+
+    console.log(response.body)
+
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        checkInsPreview: expect.objectContaining({
+          checkIns: expect.arrayContaining([
+            expect.objectContaining({
+              checkInId: checkIn1.id.toString(),
+              customerId: customer1.id.toString(),
+              parcelForwardingId: parcelForwarding.id.toString(),
+            }),
+          ]),
+          meta: expect.objectContaining({
+            pageIndex: expect.any(Number),
+            perPage: expect.any(Number),
+            totalCount: expect.any(Number),
+          }),
         }),
-      ]),
-    })
+      }),
+    )
 
     const response2 = await request(app.getHttpServer())
       .post('/filter-check-ins?page=1')
@@ -117,14 +129,24 @@ describe('Filter Check-ins (E2E)', () => {
       })
 
     expect(response2.statusCode).toBe(201)
-    expect(response2.body).toEqual({
-      checkInsPreview: expect.arrayContaining([
-        expect.objectContaining({
-          checkInId: checkIn2.id.toString(),
-          customerId: customer2.id.toString(),
-          parcelForwardingId: parcelForwarding.id.toString(),
+
+    expect(response2.body).toEqual(
+      expect.objectContaining({
+        checkInsPreview: expect.objectContaining({
+          checkIns: expect.arrayContaining([
+            expect.objectContaining({
+              checkInId: checkIn2.id.toString(),
+              customerId: customer2.id.toString(),
+              parcelForwardingId: parcelForwarding.id.toString(),
+            }),
+          ]),
+          meta: expect.objectContaining({
+            pageIndex: expect.any(Number),
+            perPage: expect.any(Number),
+            totalCount: expect.any(Number),
+          }),
         }),
-      ]),
-    })
+      }),
+    )
   })
 })

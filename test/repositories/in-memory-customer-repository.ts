@@ -6,7 +6,11 @@ import { FetchCustomerByNameData } from '@/domain/customer/enterprise/entities/v
 export class InMemoryCustomerRepository implements CustomerRepository {
   public items: Customer[] = []
 
-  async findManyByName(name: string, parcelForwardingId: string, page: number) {
+  async findManyByName(
+    name: string,
+    parcelForwardingId: string,
+    page?: number,
+  ) {
     const lowerCaseName = name.toLowerCase()
     const totalCustomers = this.items.filter(
       (item) =>
@@ -14,10 +18,13 @@ export class InMemoryCustomerRepository implements CustomerRepository {
         (item.firstName.toLowerCase().includes(lowerCaseName) ||
           item.lastName.toLowerCase().includes(lowerCaseName)),
     )
-    console.log(this.items)
-    console.log(totalCustomers)
 
-    const customers = totalCustomers.slice((page - 1) * 5, page * 5)
+    const customers = totalCustomers.slice(
+      ((page ?? 1) - 1) * 5,
+      (page ?? 1) * 5,
+    )
+
+    console.log(customers)
 
     return FetchCustomerByNameData.create({
       customers: customers.map((customer) =>
@@ -31,7 +38,7 @@ export class InMemoryCustomerRepository implements CustomerRepository {
         }),
       ),
       meta: {
-        pageIndex: page,
+        pageIndex: page ?? 1,
         perPage: 5,
         totalCount: totalCustomers.length,
       },

@@ -10,6 +10,7 @@ import { InMemoryCustomerRepository } from './in-memory-customer-repository'
 import { InMemoryAttachmentsRepository } from './in-memory-attachments-repository'
 import { CheckInDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-details'
 import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
+import { FilteredCheckInsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-ins'
 
 export class InMemoryCheckInsRepository implements CheckInsRepository {
   public items: CheckIn[] = []
@@ -27,7 +28,7 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     checkInStatus?: CheckInStatus,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<CheckInPreview[]> {
+  ): Promise<FilteredCheckInsData> {
     let filteredCheckIns = this.items.filter(
       (item) => item.parcelForwardingId.toString() === parcelForwardingId,
     )
@@ -87,7 +88,14 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
       }),
     )
 
-    return checkInsPreview
+    return FilteredCheckInsData.create({
+      checkIns: checkInsPreview,
+      meta: {
+        pageIndex: page,
+        perPage: 20,
+        totalCount: filteredCheckIns.length,
+      },
+    })
   }
 
   async findManyByPackageId(packadeId: string) {
