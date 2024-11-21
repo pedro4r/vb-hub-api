@@ -13,6 +13,7 @@ import { PrismaAttachmentMapper } from '../mappers/prisma-attachment-mapper'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
 import { DomainEvents } from '@/core/events/domain-events'
+import { FilteredCheckInsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-ins'
 
 @Injectable()
 export class PrismaCheckInsRepository implements CheckInsRepository {
@@ -28,7 +29,26 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     checkInStatus?: CheckInStatus,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<CheckInPreview[]> {
+  ): Promise<FilteredCheckInsData> {
+    const totalCheckIns = await this.prisma.checkIn.count({
+      where: {
+        parcelForwardingId,
+        customerId: customersId?.length
+          ? {
+              in: customersId,
+            }
+          : undefined,
+        status: checkInStatus ?? undefined, // Inclui apenas se definido
+        createdAt:
+          startDate || endDate
+            ? {
+                ...(startDate ? { gte: startDate } : {}),
+                ...(endDate ? { lte: endDate } : {}),
+              }
+            : undefined,
+      },
+    })
+
     const checkIns = await this.prisma.checkIn.findMany({
       orderBy: {
         createdAt: 'desc',
@@ -49,8 +69,8 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
               }
             : undefined,
       },
-      take: 20,
-      skip: (page - 1) * 20,
+      take: 8,
+      skip: (page - 1) * 8,
     })
 
     // transform checkIns to CheckInPreview
@@ -86,7 +106,14 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       }),
     )
 
-    return checkInsPreview
+    return FilteredCheckInsData.create({
+      checkIns: checkInsPreview,
+      meta: {
+        pageIndex: page,
+        perPage: 8,
+        totalCount: totalCheckIns,
+      },
+    })
   }
 
   async findManyWithDetailsByPackageId(

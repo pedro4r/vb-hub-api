@@ -140,20 +140,24 @@ describe('Filter Check-ins', () => {
 
     expect(result.isRight()).toBeTruthy()
 
-    expect(result.value).toEqual({
-      checkInsPreview: expect.arrayContaining([
-        expect.objectContaining({
-          checkInId: checkIn1.id,
-          customerId: customer1.id,
-          parcelForwardingId: checkIn1.parcelForwardingId,
+    expect(result.value).toEqual(
+      expect.objectContaining({
+        checkInsData: expect.objectContaining({
+          checkIns: expect.arrayContaining([
+            expect.objectContaining({
+              checkInId: checkIn1.id,
+              customerId: customer1.id,
+              parcelForwardingId: checkIn1.parcelForwardingId,
+            }),
+            expect.objectContaining({
+              checkInId: checkIn2.id,
+              customerId: customer2.id,
+              parcelForwardingId: checkIn2.parcelForwardingId,
+            }),
+          ]),
         }),
-        expect.objectContaining({
-          checkInId: checkIn2.id,
-          customerId: customer2.id,
-          parcelForwardingId: checkIn2.parcelForwardingId,
-        }),
-      ]),
-    })
+      }),
+    )
 
     const result2 = await sut.execute({
       hubId: 123,
@@ -163,15 +167,19 @@ describe('Filter Check-ins', () => {
       page: 1,
     })
 
-    expect(result2.value).toEqual({
-      checkInsPreview: expect.arrayContaining([
-        expect.objectContaining({
-          checkInId: checkIn0.id,
-          customerId: customer1.id,
-          parcelForwardingId: checkIn1.parcelForwardingId,
+    expect(result2.value).toEqual(
+      expect.objectContaining({
+        checkInsData: expect.objectContaining({
+          checkIns: expect.arrayContaining([
+            expect.objectContaining({
+              checkInId: checkIn0.id,
+              customerId: customer1.id,
+              parcelForwardingId: checkIn1.parcelForwardingId,
+            }),
+          ]),
         }),
-      ]),
-    })
+      }),
+    )
   })
 
   it('should not be able to fetch recent check-ins', async () => {

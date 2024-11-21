@@ -7,7 +7,7 @@ export abstract class CustomerRepository {
   abstract findManyByName(
     name: string,
     parcelForwardingId: string,
-    page: number,
+    page?: number,
   ): Promise<FetchCustomerByNameData>
 
   abstract findById(id: string): Promise<Customer | null>

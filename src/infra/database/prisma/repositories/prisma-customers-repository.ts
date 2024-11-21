@@ -13,7 +13,7 @@ export class PrismaCustomerRepository implements CustomerRepository {
   async findManyByName(
     name: string,
     parcelForwardingId: string,
-    page: number,
+    page?: number,
   ): Promise<FetchCustomerByNameData> {
     const totalCustomers = await this.prisma.customer.count({
       where: {
@@ -53,8 +53,8 @@ export class PrismaCustomerRepository implements CustomerRepository {
           },
         ],
       },
-      take: 5,
-      skip: (page - 1) * 5,
+      take: page ? 5 : undefined,
+      skip: page ? (page - 1) * 5 : undefined,
     })
 
     const customersToDomain = customers.map((customer) =>
@@ -73,7 +73,7 @@ export class PrismaCustomerRepository implements CustomerRepository {
         }),
       ),
       meta: {
-        pageIndex: page,
+        pageIndex: page ?? 1,
         perPage: 5,
         totalCount: totalCustomers,
       },

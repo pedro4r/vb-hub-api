@@ -79,9 +79,7 @@ export class FilterCheckInsController {
       }
     }
 
-    const checkInsPreview = result.value.checkInsPreview.map(
-      CheckInPresenter.toHTTP,
-    )
+    const checkInsPreview = CheckInPresenter.toHTTP(result.value.checkInsData)
 
     return {
       checkInsPreview,

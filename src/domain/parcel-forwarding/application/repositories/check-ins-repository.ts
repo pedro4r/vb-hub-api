@@ -2,6 +2,7 @@ import { PackageCheckIn } from '@/domain/customer/enterprise/entities/package-ch
 import { CheckIn, CheckInStatus } from '../../enterprise/entities/check-in'
 import { CheckInDetails } from '../../enterprise/entities/value-objects/check-in-details'
 import { CheckInPreview } from '../../enterprise/entities/value-objects/check-in-preview'
+import { FilteredCheckInsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-ins'
 
 export abstract class CheckInsRepository {
   abstract create(checkIn: CheckIn): Promise<void>
@@ -23,7 +24,7 @@ export abstract class CheckInsRepository {
     checkInStatus?: CheckInStatus,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<CheckInPreview[]>
+  ): Promise<FilteredCheckInsData>
 
   abstract findDetailsById(checkInId: string): Promise<CheckInDetails | null>
 
