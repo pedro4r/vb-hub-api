@@ -103,6 +103,12 @@ jobs:
       - name: Run tests
         run: npm run test:e2e
 
+      - name: Generate tag
+        id: generate_tag
+        run: |
+          SHA=$(echo $GITHUB_SHA | head -c7)
+          echo "sha=${SHA}" >> $GITHUB_OUTPUT
+
   deploy:
     name: 'Deploy to AWS'
     runs-on: ['self-hosted', 'linux', 'x64']
@@ -126,10 +132,21 @@ jobs:
           role-to-assume: arn:aws:iam::629500205300:role/vb-hub-api-aws-rds-ci
           aws-region: us-east-1
 
+      - name: Login to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
       - name: Remove test files from production build
         run: |
           find . -type f -name "*.e2e-spec.ts" -delete
           find . -type f -name "*.test.ts" -delete
+
+      - name: Install Docker in Amazon Linux
+        run: |
+          sudo amazon-linux-extras install docker
+          sudo service docker start
+          sudo usermod -a -G docker ec2-user
+          sudo docker info
 
       - name: Build Nest.js app
         run: npm run build
