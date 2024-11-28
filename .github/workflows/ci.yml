@@ -60,7 +60,7 @@ jobs:
           echo $SHA > sha.txt
 
       - name: Upload tag artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: sha
           path: sha.txt
@@ -124,7 +124,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download tag artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: sha
           path: ./sha
