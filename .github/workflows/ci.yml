@@ -53,6 +53,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Generate tag
+        id: generate_tag
+        run: |
+          SHA=$(echo $GITHUB_SHA | head -c7)
+          echo $SHA > sha.txt
+        - name: Upload tag artifact
+          uses: actions/upload-artifact@v2
+          with:
+            name: sha
+            path: sha.txt
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -103,12 +114,6 @@ jobs:
       - name: Run tests
         run: npm run test:e2e
 
-      - name: Generate tag
-        id: generate_tag
-        run: |
-          SHA=$(echo $GITHUB_SHA | head -c7)
-          echo "sha=${SHA}" >> $GITHUB_OUTPUT
-
   deploy:
     name: 'Deploy to AWS'
     runs-on: ['self-hosted', 'linux', 'x64']
@@ -116,6 +121,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Download tag artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: sha
+          path: ./sha
+
+      - name: Read tag
+        id: read_tag
+        run: |
+          SHA=$(cat ./sha/sha.txt)
+          echo "sha=${SHA}" >> $GITHUB_ENV
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -135,6 +152,15 @@ jobs:
       - name: Login to AWS ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker Image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: hubdash-ci
+          IMAGE_TAG: ${{ env.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Remove test files from production build
         run: |
