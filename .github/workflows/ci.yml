@@ -58,11 +58,12 @@ jobs:
         run: |
           SHA=$(echo $GITHUB_SHA | head -c7)
           echo $SHA > sha.txt
-        - name: Upload tag artifact
-          uses: actions/upload-artifact@v2
-          with:
-            name: sha
-            path: sha.txt
+
+      - name: Upload tag artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: sha
+          path: sha.txt
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
