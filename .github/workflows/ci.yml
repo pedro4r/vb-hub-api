@@ -126,6 +126,13 @@ jobs:
       - name: Install dependencies
         run: npm install --verbose
 
+      - name: Install Docker on Amazon Linux (self-hosted runner)
+        run: |
+          sudo amazon-linux-extras install docker
+          sudo service docker start
+          sudo usermod -a -G docker ec2-user
+          sudo docker info
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -141,12 +148,7 @@ jobs:
           find . -type f -name "*.e2e-spec.ts" -delete
           find . -type f -name "*.test.ts" -delete
 
-      - name: Install Docker in Amazon Linux
-        run: |
-          sudo amazon-linux-extras install docker
-          sudo service docker start
-          sudo usermod -a -G docker ec2-user
-          sudo docker info
+      
 
       - name: Build Nest.js app
         run: npm run build
