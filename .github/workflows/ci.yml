@@ -155,6 +155,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build Docker Image
+        id: build-docker-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: hubdash-ci
@@ -162,6 +163,19 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          IMAGE=$(echo $REGISTRY/hubdash-ci:$TAG)
+          echo "image=$IMAGE" > $GITHUB_ENV
+
+      - name: Deploy to App Runner
+        uses: awslabs/amazon-app-runner-deploy@main
+        with:
+          service: vb-hub-api
+          image: ${{ steps.build-docker-image.outputs.IMAGE }}
+          access-role-arn: arn:aws:iam::629500205300:role/hubdash-app-runner-role
+          region: us-east-1
+          cpu: 2
+          memory: 4G
+          port: 3333
 
       - name: Remove test files from production build
         run: |
