@@ -172,6 +172,7 @@ jobs:
         with:
           service: vb-hub-api
           image: ${{ steps.build-docker-image.outputs.IMAGE }}
+          access-role-arn: arn:aws:iam::629500205300:role/hubdash-app-runner-role
           region: us-east-1
           cpu: 2
           memory: 4G
