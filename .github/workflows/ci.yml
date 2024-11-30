@@ -177,7 +177,7 @@ jobs:
           cpu: 2
           memory: 4G
           port: 3333
-          environment-variables: |
+          environment-secrets: |
             DOMAIN_NAME=${{ secrets.DOMAIN_NAME }}
             DATABASE_URL=${{ secrets.RDS_DATABASE_URL }}
             JWT_PRIVATE_KEY=${{ secrets.JWT_PRIVATE_KEY }}
@@ -193,8 +193,6 @@ jobs:
             SMTP_SECURE=${{ secrets.SMTP_SECURE }}
             SMTP_USER=${{ secrets.SMTP_USER }}
             SMTP_PASS=${{ secrets.SMTP_PASS }}
-          
-
 
       - name: Remove test files from production build
         run: |
