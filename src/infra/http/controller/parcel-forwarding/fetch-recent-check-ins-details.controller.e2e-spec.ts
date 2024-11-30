@@ -119,7 +119,6 @@ describe('Fetch Recent Check-ins Details (E2E)', () => {
 
     expect(response.statusCode).toBe(200)
 
-    console.log(response.body)
     expect(response.body).toEqual({
       checkInsDetails: expect.arrayContaining([
         expect.objectContaining({

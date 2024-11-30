@@ -59,8 +59,6 @@ export class FilterCheckInsUseCase {
         parcelForwardingId,
       )
 
-      console.log('customersData', customersData.customers)
-
       // Check if the customer is associated with the parcel forwarding
       if (
         customersData &&
