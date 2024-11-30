@@ -97,8 +97,6 @@ describe('Filter Check-ins (E2E)', () => {
 
     expect(response.statusCode).toBe(201)
 
-    console.log(response.body)
-
     expect(response.body).toEqual(
       expect.objectContaining({
         checkInsPreview: expect.objectContaining({

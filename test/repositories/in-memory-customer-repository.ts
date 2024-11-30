@@ -24,8 +24,6 @@ export class InMemoryCustomerRepository implements CustomerRepository {
       (page ?? 1) * 5,
     )
 
-    console.log(customers)
-
     return FetchCustomerByNameData.create({
       customers: customers.map((customer) =>
         CustomerPreview.create({
