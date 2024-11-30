@@ -167,7 +167,7 @@ jobs:
           echo "image=$IMAGE" >> $GITHUB_ENV
           echo "::set-output name=IMAGE::$IMAGE"
 
-      - name: Deploy to App Runner
+      - name: Deploy to App Runner Service
         uses: awslabs/amazon-app-runner-deploy@main
         with:
           service: vb-hub-api
