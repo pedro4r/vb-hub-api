@@ -53,8 +53,8 @@ services:
       - prisma
     networks:
       - hubdash-network
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
 
 networks:
   hubdash-network:
