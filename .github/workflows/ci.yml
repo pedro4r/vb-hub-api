@@ -177,16 +177,6 @@ jobs:
           cpu: 2
           memory: 4G
           port: 3333
-          - name: Deploy to App Runner
-        uses: awslabs/amazon-app-runner-deploy@main
-        with:
-          service: vb-hub-api
-          image: ${{ steps.build-docker-image.outputs.IMAGE }}
-          access-role-arn: arn:aws:iam::629500205300:role/hubdash-app-runner-role
-          region: us-east-1
-          cpu: 2
-          memory: 4G
-          port: 3333
           environment:
             - name: DOMAIN_NAME
               value: ${{ secrets.DOMAIN_NAME }}
@@ -218,6 +208,7 @@ jobs:
               value: ${{ secrets.SMTP_USER }}
             - name: SMTP_PASS
               value: ${{ secrets.SMTP_PASS }}
+          
 
 
       - name: Remove test files from production build
