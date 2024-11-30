@@ -19,8 +19,8 @@ async function main() {
       id: '3009842e-0800-4590-8be9-6378c941e8db',
       name: 'Parcel Forwarding 1',
       initials: faker.string.fromCharacters('ABCDEF', 3),
-      email: faker.internet.email(),
-      password: hashedPassword,
+      email: 'contato@voabox.com',
+      password: 'contato@voabox.com',
     },
   })
 
