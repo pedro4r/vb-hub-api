@@ -91,43 +91,11 @@ jobs:
 
       - name: Build Docker images
         run: docker-compose build
-        env:
-          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
-          JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
-          CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
-          CLOUDFLARE_BUCKET_NAME: ${{ secrets.CLOUDFLARE_BUCKET_NAME }}
-          CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
-          CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASS: ${{ secrets.SMTP_PASS }}
-          ENV_STAGE: ${{ secrets.ENV_STAGE }}
 
       - name: Start Docker Compose services
         run: docker-compose up -d
         env:
-          DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
           DATABASE_URL: postgresql://postgres:docker@localhost:5433/hub-postgres-db
-          JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
-          JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
-          CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
-          CLOUDFLARE_BUCKET_NAME: ${{ secrets.CLOUDFLARE_BUCKET_NAME }}
-          CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
-          CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASS: ${{ secrets.SMTP_PASS }}
-          ENV_STAGE: ${{ secrets.ENV_STAGE }}
 
       - name: Wait for Postgres to be ready
         run: |
@@ -209,22 +177,48 @@ jobs:
           cpu: 2
           memory: 4G
           port: 3333
+          - name: Deploy to App Runner
+        uses: awslabs/amazon-app-runner-deploy@main
+        with:
+          service: vb-hub-api
+          image: ${{ steps.build-docker-image.outputs.IMAGE }}
+          access-role-arn: arn:aws:iam::629500205300:role/hubdash-app-runner-role
+          region: us-east-1
+          cpu: 2
+          memory: 4G
+          port: 3333
           environment:
-            DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
-            DATABASE_URL: ${{ secrets.RDS_DATABASE_URL }}
-            JWT_PRIVATE_KEY: ${{ secrets.JWT_PRIVATE_KEY }}
-            JWT_PUBLIC_KEY: ${{ secrets.JWT_PUBLIC_KEY }}
-            CLOUDFLARE_DEV_URL: ${{ secrets.CLOUDFLARE_DEV_URL }}
-            CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-            TOKEN_VALUE: ${{ secrets.TOKEN_VALUE }}
-            CLOUDFLARE_BUCKET_NAME: ${{ secrets.CLOUDFLARE_BUCKET_NAME }}
-            CLOUDFLARE_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
-            CLOUDFLARE_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
-            SMTP_HOST: ${{ secrets.SMTP_HOST }}
-            SMTP_PORT: ${{ secrets.SMTP_PORT }}
-            SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
-            SMTP_USER: ${{ secrets.SMTP_USER }}
-            SMTP_PASS: ${{ secrets.SMTP_PASS }}
+            - name: DOMAIN_NAME
+              value: ${{ secrets.DOMAIN_NAME }}
+            - name: DATABASE_URL
+              value: ${{ secrets.RDS_DATABASE_URL }}
+            - name: JWT_PRIVATE_KEY
+              value: ${{ secrets.JWT_PRIVATE_KEY }}
+            - name: JWT_PUBLIC_KEY
+              value: ${{ secrets.JWT_PUBLIC_KEY }}
+            - name: CLOUDFLARE_DEV_URL
+              value: ${{ secrets.CLOUDFLARE_DEV_URL }}
+            - name: CLOUDFLARE_ACCOUNT_ID
+              value: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+            - name: TOKEN_VALUE
+              value: ${{ secrets.TOKEN_VALUE }}
+            - name: CLOUDFLARE_BUCKET_NAME
+              value: ${{ secrets.CLOUDFLARE_BUCKET_NAME }}
+            - name: CLOUDFLARE_ACCESS_KEY_ID
+              value: ${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
+            - name: CLOUDFLARE_SECRET_ACCESS_KEY
+              value: ${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
+            - name: SMTP_HOST
+              value: ${{ secrets.SMTP_HOST }}
+            - name: SMTP_PORT
+              value: ${{ secrets.SMTP_PORT }}
+            - name: SMTP_SECURE
+              value: ${{ secrets.SMTP_SECURE }}
+            - name: SMTP_USER
+              value: ${{ secrets.SMTP_USER }}
+            - name: SMTP_PASS
+              value: ${{ secrets.SMTP_PASS }}
+
 
       - name: Remove test files from production build
         run: |
