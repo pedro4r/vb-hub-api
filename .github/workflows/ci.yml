@@ -213,6 +213,8 @@ jobs:
           cpu: 2
           memory: 4G
           port: 3333
+          env-vars: |
+            SECRET_NAME=hubdash-secrets
 
       - name: Remove test files from production build
         run: |
