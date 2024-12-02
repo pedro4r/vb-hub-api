@@ -167,32 +167,52 @@ jobs:
           echo "image=$IMAGE" >> $GITHUB_ENV
           echo "::set-output name=IMAGE::$IMAGE"
 
-      - name: Deploy to App Runner Service
-        uses: awslabs/amazon-app-runner-deploy@main
-        with:
-          service: vb-hub-api
-          image: ${{ steps.build-docker-image.outputs.IMAGE }}
-          access-role-arn: arn:aws:iam::629500205300:role/hubdash-app-runner-role
-          region: us-east-1
-          cpu: 2
-          memory: 4G
-          port: 3333
-          environment-secrets: |
-            DOMAIN_NAME=${{ secrets.DOMAIN_NAME }}
-            DATABASE_URL=${{ secrets.RDS_DATABASE_URL }}
-            JWT_PRIVATE_KEY=${{ secrets.JWT_PRIVATE_KEY }}
-            JWT_PUBLIC_KEY=${{ secrets.JWT_PUBLIC_KEY }}
-            CLOUDFLARE_DEV_URL=${{ secrets.CLOUDFLARE_DEV_URL }}
-            CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-            TOKEN_VALUE=${{ secrets.TOKEN_VALUE }}
-            CLOUDFLARE_BUCKET_NAME=${{ secrets.CLOUDFLARE_BUCKET_NAME }}
-            CLOUDFLARE_ACCESS_KEY_ID=${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}
-            CLOUDFLARE_SECRET_ACCESS_KEY=${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}
-            SMTP_HOST=${{ secrets.SMTP_HOST }}
-            SMTP_PORT=${{ secrets.SMTP_PORT }}
-            SMTP_SECURE=${{ secrets.SMTP_SECURE }}
-            SMTP_USER=${{ secrets.SMTP_USER }}
-            SMTP_PASS=${{ secrets.SMTP_PASS }}
+      - name: Create or Update Secret
+        run: |
+          # Define o nome do secret
+          SECRET_NAME="hubdash-secrets"
+
+          # Define os valores do secret com as variáveis do GitHub Actions
+          SECRET_VALUES=$(cat <<EOF
+          {
+            "DOMAIN_NAME": "${{ secrets.DOMAIN_NAME }}",
+            "DATABASE_URL": "${{ secrets.RDS_DATABASE_URL }}",
+            "JWT_PRIVATE_KEY": "${{ secrets.JWT_PRIVATE_KEY }}",
+            "JWT_PUBLIC_KEY": "${{ secrets.JWT_PUBLIC_KEY }}",
+            "CLOUDFLARE_DEV_URL": "${{ secrets.CLOUDFLARE_DEV_URL }}",
+            "CLOUDFLARE_ACCOUNT_ID": "${{ secrets.CLOUDFLARE_ACCOUNT_ID }}",
+            "TOKEN_VALUE": "${{ secrets.TOKEN_VALUE }}",
+            "CLOUDFLARE_BUCKET_NAME": "${{ secrets.CLOUDFLARE_BUCKET_NAME }}",
+            "CLOUDFLARE_ACCESS_KEY_ID": "${{ secrets.CLOUDFLARE_ACCESS_KEY_ID }}",
+            "CLOUDFLARE_SECRET_ACCESS_KEY": "${{ secrets.CLOUDFLARE_SECRET_ACCESS_KEY }}",
+            "SMTP_HOST": "${{ secrets.SMTP_HOST }}",
+            "SMTP_PORT": "${{ secrets.SMTP_PORT }}",
+            "SMTP_SECURE": "${{ secrets.SMTP_SECURE }}",
+            "SMTP_USER": "${{ secrets.SMTP_USER }}",
+            "SMTP_PASS": "${{ secrets.SMTP_PASS }}"
+          }
+          EOF
+          )
+
+          # Verifica se o secret já existe
+          if aws secretsmanager describe-secret --secret-id $SECRET_NAME >/dev/null 2>&1; then
+            echo "Secret já existe. Atualizando..."
+            aws secretsmanager update-secret --secret-id $SECRET_NAME --secret-string "$SECRET_VALUES"
+          else
+            echo "Secret não encontrado. Criando..."
+            aws secretsmanager create-secret --name $SECRET_NAME --secret-string "$SECRET_VALUES"
+          fi
+
+      # - name: Deploy to App Runner Service
+      #   uses: awslabs/amazon-app-runner-deploy@main
+      #   with:
+      #     service: vb-hub-api
+      #     image: ${{ steps.build-docker-image.outputs.IMAGE }}
+      #     access-role-arn: arn:aws:iam::629500205300:role/hubdash-app-runner-role
+      #     region: us-east-1
+      #     cpu: 2
+      #     memory: 4G
+      #     port: 3333
 
       - name: Remove test files from production build
         run: |
