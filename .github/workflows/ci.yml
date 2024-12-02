@@ -60,7 +60,7 @@ jobs:
           echo $SHA > sha.txt
 
       - name: Upload tag artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: sha
           path: sha.txt
@@ -203,16 +203,16 @@ jobs:
             aws secretsmanager create-secret --name $SECRET_NAME --secret-string "$SECRET_VALUES"
           fi
 
-      # - name: Deploy to App Runner Service
-      #   uses: awslabs/amazon-app-runner-deploy@main
-      #   with:
-      #     service: vb-hub-api
-      #     image: ${{ steps.build-docker-image.outputs.IMAGE }}
-      #     access-role-arn: arn:aws:iam::629500205300:role/hubdash-app-runner-role
-      #     region: us-east-1
-      #     cpu: 2
-      #     memory: 4G
-      #     port: 3333
+      - name: Deploy to App Runner Service
+        uses: awslabs/amazon-app-runner-deploy@main
+        with:
+          service: vb-hub-api
+          image: ${{ steps.build-docker-image.outputs.IMAGE }}
+          access-role-arn: arn:aws:iam::629500205300:role/hubdash-app-runner-role
+          region: us-east-1
+          cpu: 2
+          memory: 4G
+          port: 3333
 
       - name: Remove test files from production build
         run: |
