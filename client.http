@@ -1,6 +1,8 @@
 # @baseUrl = https://c9rd6ln3mk.execute-api.us-east-1.amazonaws.com/default
 # @baseUrl = http://192.168.1.237:3333
-@baseUrl = http://localhost:3333
+# @baseUrl = http://localhost:3333
+@baseUrl = https://pzq7fxh8dt.us-east-1.awsapprunner.com
+
 
 # @baseUrl = http://172.20.10.2:3333
 # @baseUrl = http://localhost:3000/dev
@@ -33,8 +35,8 @@ Content-Type: application/json
 {
   "name": "Voabox",
   "initials": "Vbs",
-  "email": "voabox@voabox.com",
-  "password": "Abc123456@"
+  "email": "voabox1@voabox.com",
+  "password": "A1bc123456@"
 }
 
 ###
