@@ -167,7 +167,7 @@ jobs:
           echo "image=$IMAGE" >> $GITHUB_ENV
           echo "::set-output name=IMAGE::$IMAGE"
 
-      - name: Create or Update Secret
+      - name: Create or Update Secret in AWS Secrets Manager
         run: |
           # Define o nome do secret
           SECRET_NAME="hubdash-secrets"
