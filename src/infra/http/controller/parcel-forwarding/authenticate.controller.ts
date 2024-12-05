@@ -67,6 +67,6 @@ export class AuthenticateController {
       sameSite: process.env.ENV_STAGE === 'production' ? 'none' : 'lax',
     })
 
-    return res.status(200).send({ message: 'Logout successful' })
+    return res.status(200).send({ message: 'Logout successful!' })
   }
 }
