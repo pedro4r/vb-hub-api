@@ -15,7 +15,7 @@ export class TestController {
 
       // Se a requisição for bem-sucedida, retornar o status da resposta
       return {
-        message: 'Internet connectivity test successful',
+        message: 'Internet connectivity test successful!!!',
         status: response.status,
       }
     } catch (error) {
@@ -25,11 +25,11 @@ export class TestController {
         errorMessage = error.message
       } else {
         // If it's not an Error, we can't be sure `message` exists, so provide a default
-        errorMessage = 'An unknown error occurred'
+        errorMessage = 'An unknown error occurred!!!'
       }
 
       return {
-        message: 'Internet connectivity test failed',
+        message: 'Internet connectivity test failed!!!',
         error: errorMessage,
       }
     }
