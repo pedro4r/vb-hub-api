@@ -205,7 +205,7 @@ jobs:
             aws secretsmanager create-secret --name $SECRET_NAME --secret-string "$SECRET_VALUES"
           fi
 
-      - name: Deploy to App Runner Service
+      - name: Deploy to App Runner Service on AWS
         id: deploy-to-app-runner
         uses: awslabs/amazon-app-runner-deploy@main
         with:
