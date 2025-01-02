@@ -11,6 +11,10 @@ import { InMemoryAttachmentsRepository } from './in-memory-attachments-repositor
 import { CheckInDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-details'
 import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
 import { FilteredCheckInsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-ins'
+import {
+  CheckInStatusMetrics,
+  StatusMetrics,
+} from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-ins-status-metrics'
 
 export class InMemoryCheckInsRepository implements CheckInsRepository {
   public items: CheckIn[] = []
@@ -20,6 +24,42 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     private attachmentsRepository: InMemoryAttachmentsRepository,
     private customerRepository: InMemoryCustomerRepository,
   ) {}
+
+  async getMetricStatus(
+    parcelForwardingId: string,
+  ): Promise<CheckInStatusMetrics> {
+    const checkIns = this.items.filter(
+      (itens) => itens.parcelForwardingId.toString() === parcelForwardingId,
+    )
+
+    /* This metrics type means that the key is the CheckInStatus enum 
+    and the value is the number of check-ins with that status. Partial 
+    means that the object can have any number of keys, but the keys
+    must be of the CheckInStatus type. */
+    /* Example of the metrics object:
+    {
+      RECEIVED: 3303,
+      PENDING: 2,
+      SHIPPED: 2948,
+      DELIVERED: 2485,
+      WITHDRAWN: 29,
+      ABANDONED: 100,
+      RETURNED: 7
+    }
+    */
+    const metrics: StatusMetrics = {}
+
+    for (const status in CheckInStatus) {
+      if (isNaN(Number(status))) {
+        metrics[status] = checkIns.filter((checkIn) =>
+          checkIn.isStatus(Number(CheckInStatus[status])),
+        ).length
+      }
+    }
+
+    const newCheckInStatusMetrics = CheckInStatusMetrics.create(metrics)
+    return newCheckInStatusMetrics
+  }
 
   async findManyCheckInsByFilter(
     parcelForwardingId: string,

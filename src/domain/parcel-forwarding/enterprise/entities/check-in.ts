@@ -6,12 +6,12 @@ import { CheckInCreatedEvent } from '../events/check-in-created-event'
 
 export enum CheckInStatus {
   RECEIVED = 1,
-  PENDING = 2,
-  SHIPPED = 3,
-  DELIVERED = 4,
-  WITHDRAWN = 5,
-  ABANDONED = 6,
-  RETURNED = 7,
+  PENDING,
+  SHIPPED,
+  DELIVERED,
+  WITHDRAWN,
+  ABANDONED,
+  RETURNED,
 }
 
 export interface CheckInProps {
