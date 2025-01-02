@@ -14,6 +14,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
 import { DomainEvents } from '@/core/events/domain-events'
 import { FilteredCheckInsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-ins'
+import { CheckInStatusMetrics } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-ins-status-metrics'
 
 @Injectable()
 export class PrismaCheckInsRepository implements CheckInsRepository {
@@ -21,6 +22,10 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     private prisma: PrismaService,
     private checkInAttachmentsRepository: CheckInAttachmentsRepository,
   ) {}
+
+  getMetricStatus(parcelForwardingId: string): Promise<CheckInStatusMetrics> {
+    throw new Error('Method not implemented.')
+  }
 
   async findManyCheckInsByFilter(
     parcelForwardingId: string,

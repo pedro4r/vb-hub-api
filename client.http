@@ -41,6 +41,26 @@ Content-Type: application/json
 
 ###
 
+# @name goodbye_query
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "{ goodbye { text, timestamp } }"
+}
+
+###
+
+# @name hello_query
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "{ hello }"
+}
+
+###
+
 # @name authenticate
 POST {{baseUrl}}/sessions/login
 Content-Type: application/json

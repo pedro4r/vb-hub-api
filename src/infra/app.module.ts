@@ -5,10 +5,7 @@ import { AuthModule } from './auth/auth.module'
 import { HttpModule } from './http/http.module'
 import { envSchema } from './env/env'
 import { EnvModule } from './env/env.module'
-import { GraphQLModule } from '@nestjs/graphql'
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
-import { join } from 'path'
-import { AppResolver } from './graphql/app.resolver'
+import { ResolverModule } from './graphql/graphql.module'
 
 @Module({
   imports: [
@@ -19,13 +16,8 @@ import { AppResolver } from './graphql/app.resolver'
     AuthModule,
     HttpModule,
     EnvModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      sortSchema: true,
-    }),
+    ResolverModule,
   ],
-  providers: [AppResolver],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
