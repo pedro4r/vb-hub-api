@@ -5,6 +5,7 @@ import { CheckInStatusMetrics } from '../../enterprise/entities/value-objects/ch
 
 interface CheckInsStatusMetricsUseCaseRequest {
   parcelForwardingId: string
+  metrics?: string[]
 }
 
 type CheckInsStatusMetricsUseCaseResponse = Either<
@@ -13,15 +14,19 @@ type CheckInsStatusMetricsUseCaseResponse = Either<
     checkInStatusMetrics: CheckInStatusMetrics
   }
 >
+
 @Injectable()
 export class CheckInsStatusMetricsUseCase {
   constructor(private checkInsRepository: CheckInsRepository) {}
 
   async execute({
     parcelForwardingId,
+    metrics,
   }: CheckInsStatusMetricsUseCaseRequest): Promise<CheckInsStatusMetricsUseCaseResponse> {
-    const checkInStatusMetrics =
-      await this.checkInsRepository.getMetricStatus(parcelForwardingId)
+    const checkInStatusMetrics = await this.checkInsRepository.getMetricStatus(
+      parcelForwardingId,
+      metrics,
+    )
 
     return right({
       checkInStatusMetrics,

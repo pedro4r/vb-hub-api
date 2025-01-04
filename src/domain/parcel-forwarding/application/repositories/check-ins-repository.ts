@@ -8,6 +8,7 @@ import { CheckInStatusMetrics } from '../../enterprise/entities/value-objects/ch
 export abstract class CheckInsRepository {
   abstract getMetricStatus(
     parcelForwardingId: string,
+    metrics?: string[],
   ): Promise<CheckInStatusMetrics>
 
   abstract create(checkIn: CheckIn): Promise<void>

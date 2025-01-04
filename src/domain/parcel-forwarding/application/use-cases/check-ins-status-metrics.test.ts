@@ -135,39 +135,37 @@ describe('Filter Check-ins', () => {
       expect.objectContaining({
         checkInStatusMetrics: expect.objectContaining({
           metrics: expect.objectContaining({
-            RECEIVED: 4,
-            PENDING: 0,
-            SHIPPED: 0,
-            DELIVERED: 1,
-            WITHDRAWN: 0,
-            ABANDONED: 0,
-            RETURNED: 1,
+            received: 4,
+            pending: 0,
+            shipped: 0,
+            delivered: 1,
+            withdrawn: 0,
+            abandoned: 0,
+            returned: 1,
           }),
           totalCount: 6,
         }),
       }),
     )
+
+    const result2 = await sut.execute({
+      parcelForwardingId: 'parcel-forwarding-1',
+      metrics: ['received', 'pending', 'returned', 'shipped'],
+    })
+
+    expect(result2.isRight()).toBeTruthy()
+    expect(result2.value).toEqual(
+      expect.objectContaining({
+        checkInStatusMetrics: expect.objectContaining({
+          metrics: expect.objectContaining({
+            received: 4,
+            returned: 1,
+            shipped: 0,
+            pending: 0,
+          }),
+          totalCount: 5,
+        }),
+      }),
+    )
   })
-
-  // it('should not be able to fetch recent check-ins', async () => {
-  //   const checkIn1 = makeCheckIn({
-  //     parcelForwardingId: new UniqueEntityID('parcel-forwarding-1'),
-  //     createdAt: new Date('2021-01-01'),
-  //   })
-  //   const checkIn2 = makeCheckIn({
-  //     parcelForwardingId: new UniqueEntityID('parcel-forwarding-1'),
-  //     createdAt: new Date('2021-01-02'),
-  //   })
-
-  //   await inMemoryCheckInsRepository.create(checkIn1)
-  //   await inMemoryCheckInsRepository.create(checkIn2)
-
-  //   const result = await sut.execute({
-  //     parcelForwardingId: 'parcel-forwarding-2',
-  //     page: 1,
-  //   })
-
-  //   expect(inMemoryCheckInsRepository.items.length).toEqual(2)
-  //   expect(result.isLeft()).toBeTruthy()
-  // })
 })

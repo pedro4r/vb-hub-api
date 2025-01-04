@@ -5,7 +5,7 @@ import { AuthModule } from './auth/auth.module'
 import { HttpModule } from './http/http.module'
 import { envSchema } from './env/env'
 import { EnvModule } from './env/env.module'
-import { ResolverModule } from './graphql/graphql.module'
+import { GraphQlResolverModule } from './graphql/graphql.resolver.module'
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { ResolverModule } from './graphql/graphql.module'
     AuthModule,
     HttpModule,
     EnvModule,
-    ResolverModule,
+    GraphQlResolverModule,
   ],
 })
 export class AppModule implements NestModule {

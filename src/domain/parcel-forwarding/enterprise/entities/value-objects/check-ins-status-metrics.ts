@@ -18,10 +18,18 @@ export class CheckInStatusMetrics extends ValueObject<CheckInStatusMetricsProps>
   }
 
   static create(props: StatusMetrics) {
-    const totalCount = Object.values(props).reduce(
+    const keyToLowerCase = Object.keys(props).reduce((acc, key) => {
+      return {
+        ...acc,
+        [key.toLocaleLowerCase()]: props[key],
+      }
+    }, {} as StatusMetrics)
+
+    const totalCount = Object.values(keyToLowerCase).reduce(
       (total, count) => total + count,
       0,
     )
-    return new CheckInStatusMetrics({ metrics: props, totalCount })
+
+    return new CheckInStatusMetrics({ metrics: keyToLowerCase, totalCount })
   }
 }

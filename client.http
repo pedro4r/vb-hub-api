@@ -61,6 +61,19 @@ Content-Type: application/json
 
 ###
 
+# @name check_in_metrics
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query ($metrics: [String!]) { getCheckInsStatusMetrics(metrics: $metrics) { totalCount metrics } }",
+  "variables": {
+    "metrics": ["withdrawn"]
+  }
+}
+
+###
+
 # @name authenticate
 POST {{baseUrl}}/sessions/login
 Content-Type: application/json

@@ -14,7 +14,10 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
 import { DomainEvents } from '@/core/events/domain-events'
 import { FilteredCheckInsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-ins'
-import { CheckInStatusMetrics } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-ins-status-metrics'
+import {
+  CheckInStatusMetrics,
+  StatusMetrics,
+} from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-ins-status-metrics'
 
 @Injectable()
 export class PrismaCheckInsRepository implements CheckInsRepository {
@@ -23,8 +26,91 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     private checkInAttachmentsRepository: CheckInAttachmentsRepository,
   ) {}
 
-  getMetricStatus(parcelForwardingId: string): Promise<CheckInStatusMetrics> {
-    throw new Error('Method not implemented.')
+  async getMetricStatus(
+    parcelForwardingId: string,
+    metrics?: string[],
+  ): Promise<CheckInStatusMetrics> {
+    let metricsResponse: StatusMetrics = {}
+
+    if (metrics && metrics.length > 0) {
+      //
+      const metricInStatusCodeArray = metrics.reduce((acc, item) => {
+        return [...acc, CheckInStatus[item.toUpperCase()]]
+      }, [] as number[])
+
+      //
+      const statusCounts2 = await this.prisma.checkIn.groupBy({
+        where: {
+          parcelForwardingId,
+          status: {
+            in: metricInStatusCodeArray,
+          },
+        },
+        by: ['status'],
+        _count: {
+          status: true,
+        },
+      })
+
+      metricsResponse = metrics.reduce((acc, statusKey) => {
+        const foundMetrics = statusCounts2.find(
+          (item) =>
+            CheckInStatus[item.status].toString().toLocaleLowerCase() ===
+            statusKey,
+        )
+
+        // console.log(foundMetrics)
+
+        return {
+          ...acc,
+          [statusKey]: foundMetrics ? foundMetrics._count.status : 0,
+        }
+      }, {})
+    } else {
+      const statusCounts = await this.prisma.checkIn.groupBy({
+        where: {
+          parcelForwardingId,
+        },
+        by: ['status'],
+        _count: {
+          status: true,
+        },
+      })
+
+      /* Format the counts, like this:
+      [
+        { status: 3, count: 45,
+        ...
+      ]
+      */
+      const formattedCounts = statusCounts.map((item) => ({
+        status: item.status,
+        count: item._count.status,
+      }))
+
+      metricsResponse = Object.values(CheckInStatus).reduce(
+        (acc, statusCode) => {
+          if (isFinite(Number(statusCode))) {
+            /* Find the status code in the formatted counts
+          because not all status codes will have a count */
+            const checkInStatus = formattedCounts.find(
+              (item) => item.status === statusCode,
+            )
+            // Get the key for the status code
+            const statusKey = CheckInStatus[statusCode]
+
+            // If the status code was found, add it to the metrics, otherwise add 0
+            acc[statusKey] = checkInStatus ? checkInStatus.count : 0
+            return acc
+          }
+
+          return acc
+        },
+        {} as StatusMetrics,
+      )
+    }
+
+    return CheckInStatusMetrics.create(metricsResponse)
   }
 
   async findManyCheckInsByFilter(

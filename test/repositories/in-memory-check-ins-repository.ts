@@ -27,10 +27,38 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
 
   async getMetricStatus(
     parcelForwardingId: string,
+    metrics?: string[],
   ): Promise<CheckInStatusMetrics> {
     const checkIns = this.items.filter(
       (itens) => itens.parcelForwardingId.toString() === parcelForwardingId,
     )
+
+    let metricsResponse: StatusMetrics = {}
+
+    if (metrics && metrics.length > 0) {
+      metricsResponse = metrics.reduce((acc, item) => {
+        const counCheckInStatusFound = checkIns.filter(
+          (checkIn) =>
+            checkIn.status.toString().toLowerCase() ===
+            item.toString().toLowerCase(),
+        ).length
+
+        return {
+          ...acc,
+          [item]: counCheckInStatusFound,
+        }
+      }, {} as StatusMetrics)
+    } else {
+      for (const status in CheckInStatus) {
+        if (isNaN(Number(status))) {
+          metricsResponse[status] = checkIns.filter((checkIn) =>
+            checkIn.isStatus(Number(CheckInStatus[status])),
+          ).length
+        }
+      }
+    }
+
+    return CheckInStatusMetrics.create(metricsResponse)
 
     /* This metrics type means that the key is the CheckInStatus enum 
     and the value is the number of check-ins with that status. Partial 
@@ -47,18 +75,6 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
       RETURNED: 7
     }
     */
-    const metrics: StatusMetrics = {}
-
-    for (const status in CheckInStatus) {
-      if (isNaN(Number(status))) {
-        metrics[status] = checkIns.filter((checkIn) =>
-          checkIn.isStatus(Number(CheckInStatus[status])),
-        ).length
-      }
-    }
-
-    const newCheckInStatusMetrics = CheckInStatusMetrics.create(metrics)
-    return newCheckInStatusMetrics
   }
 
   async findManyCheckInsByFilter(
