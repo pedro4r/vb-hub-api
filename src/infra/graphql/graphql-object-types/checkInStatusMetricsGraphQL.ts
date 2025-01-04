@@ -1,3 +1,4 @@
+import { CheckInStatusMetrics } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-ins-status-metrics'
 import { ObjectType, Field, Int } from '@nestjs/graphql'
 import { GraphQLJSON } from 'graphql-type-json' // Importando GraphQLJSON
 
@@ -14,7 +15,9 @@ export class CheckInStatusMetricsDTO {
     this.totalCount = totalCount
   }
 
-  static fromDomain(checkInStatusMetrics: any): CheckInStatusMetricsDTO {
+  static fromDomain(
+    checkInStatusMetrics: CheckInStatusMetrics,
+  ): CheckInStatusMetricsDTO {
     return new CheckInStatusMetricsDTO(
       checkInStatusMetrics.metrics,
       checkInStatusMetrics.totalCount,
