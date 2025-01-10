@@ -4,7 +4,7 @@ import { GraphQLJSON } from 'graphql-type-json'
 
 @ObjectType()
 export class CheckInStatusMetricsDTO {
-  @Field(() => GraphQLJSON) // Usando GraphQLJSON para permitir objetos
+  @Field(() => GraphQLJSON) // Using GraphQL to allow any JSON object
   metrics: Record<string, number>
 
   @Field(() => Int)
