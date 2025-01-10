@@ -30,7 +30,6 @@ export class CheckInsStatusMetricsResolver {
 
     if (result.isRight()) {
       const checkInStatusMetrics = result.value?.checkInStatusMetrics
-      console.log(checkInStatusMetrics)
       return CheckInStatusMetricsDTO.fromDomain(checkInStatusMetrics)
     }
     throw new Error('Failed to get check-in status metrics')

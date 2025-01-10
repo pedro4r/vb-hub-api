@@ -1,6 +1,6 @@
 import { CheckInStatusMetrics } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-ins-status-metrics'
 import { ObjectType, Field, Int } from '@nestjs/graphql'
-import { GraphQLJSON } from 'graphql-type-json' // Importando GraphQLJSON
+import { GraphQLJSON } from 'graphql-type-json'
 
 @ObjectType()
 export class CheckInStatusMetricsDTO {
