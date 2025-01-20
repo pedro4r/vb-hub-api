@@ -16,7 +16,7 @@ import { CheckInDetailsPresenter } from '../../presenters/check-in-details-prese
 export class GetCheckInController {
   constructor(
     private getCheckInUseCase: GetCheckInUseCase,
-    private checkInDetailsPresenter: CheckInDetailsPresenter,
+    private CheckInDetailsPresenter: CheckInDetailsPresenter,
   ) {}
 
   @Get()
@@ -44,7 +44,7 @@ export class GetCheckInController {
       }
     }
 
-    const checkInDetails = this.checkInDetailsPresenter.toHTTP(
+    const checkInDetails = this.CheckInDetailsPresenter.toHTTP(
       result.value.checkInDetails,
     )
 

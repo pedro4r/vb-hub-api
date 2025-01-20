@@ -14,6 +14,12 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
 import { DomainEvents } from '@/core/events/domain-events'
 import { FilteredCheckInsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-ins'
+import {
+  CheckInStatusMetrics,
+  StatusMetrics,
+} from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-ins-status-metrics'
+import { FilteredCheckInAttachmentsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-in-attachments'
+import { CheckInAttachmentDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-attachment-details'
 
 @Injectable()
 export class PrismaCheckInsRepository implements CheckInsRepository {
@@ -21,6 +27,90 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     private prisma: PrismaService,
     private checkInAttachmentsRepository: CheckInAttachmentsRepository,
   ) {}
+
+  async getMetricStatus(
+    parcelForwardingId: string,
+    metrics?: string[],
+  ): Promise<CheckInStatusMetrics> {
+    let metricsResponse: StatusMetrics = {}
+
+    if (metrics && metrics.length > 0) {
+      //
+      const metricInStatusCodeArray = metrics.reduce((acc, item) => {
+        return [...acc, CheckInStatus[item.toUpperCase()]]
+      }, [] as number[])
+
+      const statusCounts2 = await this.prisma.checkIn.groupBy({
+        where: {
+          parcelForwardingId,
+          status: {
+            in: metricInStatusCodeArray,
+          },
+        },
+        by: ['status'],
+        _count: {
+          status: true,
+        },
+      })
+
+      metricsResponse = metrics.reduce((acc, statusKey) => {
+        const foundMetrics = statusCounts2.find(
+          (item) =>
+            CheckInStatus[item.status].toString().toLocaleLowerCase() ===
+            statusKey,
+        )
+
+        return {
+          ...acc,
+          [statusKey]: foundMetrics ? foundMetrics._count.status : 0,
+        }
+      }, {})
+    } else {
+      const statusCounts = await this.prisma.checkIn.groupBy({
+        where: {
+          parcelForwardingId,
+        },
+        by: ['status'],
+        _count: {
+          status: true,
+        },
+      })
+
+      /* Format the counts, like this:
+      [
+        { status: 3, count: 45,
+        ...
+      ]
+      */
+      const formattedCounts = statusCounts.map((item) => ({
+        status: item.status,
+        count: item._count.status,
+      }))
+
+      metricsResponse = Object.values(CheckInStatus).reduce(
+        (acc, statusCode) => {
+          if (isFinite(Number(statusCode))) {
+            /* Find the status code in the formatted counts
+          because not all status codes will have a count */
+            const checkInStatus = formattedCounts.find(
+              (item) => item.status === statusCode,
+            )
+            // Get the key for the status code
+            const statusKey = CheckInStatus[statusCode]
+
+            // If the status code was found, add it to the metrics, otherwise add 0
+            acc[statusKey] = checkInStatus ? checkInStatus.count : 0
+            return acc
+          }
+
+          return acc
+        },
+        {} as StatusMetrics,
+      )
+    }
+
+    return CheckInStatusMetrics.create(metricsResponse)
+  }
 
   async findManyCheckInsByFilter(
     parcelForwardingId: string,
@@ -409,65 +499,97 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     })
   }
 
-  async findManyRecentCheckInsDetailsByParcelForwardingId(
+  async findManyCheckInsAttachmentDetailsByFilter(
     parcelForwardingId: string,
     page: number,
-  ) {
-    const checkIns = await this.prisma.checkIn.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
+    customersId?: string[],
+    checkInStatus?: CheckInStatus,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<FilteredCheckInAttachmentsData> {
+    const totalCheckInAttachments = await this.prisma.checkInAttachment.count({
       where: {
-        parcelForwardingId,
+        CheckIn: {
+          parcelForwardingId,
+          customerId: customersId?.length ? { in: customersId } : undefined,
+          status: checkInStatus ?? undefined,
+          createdAt:
+            startDate || endDate
+              ? {
+                  ...(startDate ? { gte: startDate } : {}),
+                  ...(endDate ? { lte: endDate } : {}),
+                }
+              : undefined,
+        },
       },
-      take: 20,
-      skip: (page - 1) * 20,
     })
 
-    const checkInsDetails = await Promise.all(
-      checkIns.map(async (checkIn) => {
+    const checkInAttachments = await this.prisma.checkInAttachment.findMany({
+      orderBy: [
+        { createdAt: 'desc' },
+        { id: 'asc' }, // Critério secundário para desempate
+      ],
+      where: {
+        CheckIn: {
+          parcelForwardingId,
+          customerId: customersId?.length ? { in: customersId } : undefined,
+          status: checkInStatus ?? undefined,
+          createdAt:
+            startDate || endDate
+              ? {
+                  ...(startDate ? { gte: startDate } : {}),
+                  ...(endDate ? { lte: endDate } : {}),
+                }
+              : undefined,
+        },
+      },
+      take: 30,
+      skip: (page - 1) * 30, // Retorna apenas os 30 primeiros attachments
+      include: {
+        Attachment: true, // Inclui os dados da tabela `attachments`
+        CheckIn: {
+          include: {
+            customer: true,
+          },
+        },
+      },
+    })
+
+    const createdAtCounts = await this.prisma.checkInAttachment.groupBy({
+      by: ['createdAt'], // Agrupa pelos valores de createdAt
+      _count: {
+        createdAt: true, // Conta quantos registros têm o mesmo createdAt
+      },
+      orderBy: {
+        createdAt: 'desc', // Ordena os grupos por data, do mais recente para o mais antigo
+      },
+    })
+
+    console.log(createdAtCounts)
+
+    const checkInsAttachmentsDetails = await Promise.all(
+      checkInAttachments.map(async (checkInAttachment) => {
+        const attachmentDomain = PrismaAttachmentMapper.toDomain(
+          checkInAttachment.Attachment,
+        )
+
         const customer = await this.prisma.customer.findUnique({
           where: {
-            id: checkIn.customerId.toString(),
+            id: checkInAttachment.CheckIn.customerId.toString(),
           },
         })
 
         if (!customer) {
           throw new ResourceNotFoundError(
-            `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
+            `Customer with ID "${checkInAttachment.CheckIn.customerId.toString()}" does not exist.`,
           )
         }
 
-        const checkInAttachments = await this.prisma.checkInAttachment.findMany(
-          {
-            where: {
-              checkInId: checkIn.id,
-            },
-          },
+        const checkInDomain = PrismaCheckInMapper.toDomain(
+          checkInAttachment.CheckIn,
         )
 
-        const attachmentsId = checkInAttachments.map((checkInAttachment) => {
-          return checkInAttachment.attachmentId.toString()
-        })
-
-        const attachments = await this.prisma.attachment.findMany({
-          where: {
-            id: {
-              in: attachmentsId,
-            },
-          },
-        })
-
-        if (attachments.length === 0) {
-          throw new Error(`Attachments do not exist.`)
-        }
-
-        const attachmentsDomain = attachments.map(
-          PrismaAttachmentMapper.toDomain,
-        )
-        const checkInDomain = PrismaCheckInMapper.toDomain(checkIn)
-
-        return CheckInDetails.create({
+        return CheckInAttachmentDetails.create({
           checkInId: checkInDomain.id,
           parcelForwardingId: checkInDomain.parcelForwardingId,
           customerId: checkInDomain.customerId,
@@ -477,7 +599,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
           packageId: checkInDomain.packageId,
           details: checkInDomain.details,
           status: checkInDomain.status,
-          attachments: attachmentsDomain,
+          attachment: attachmentDomain,
           weight: checkInDomain.weight,
           createdAt: checkInDomain.createdAt,
           updatedAt: checkInDomain.updatedAt,
@@ -485,6 +607,13 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       }),
     )
 
-    return checkInsDetails
+    return FilteredCheckInAttachmentsData.create({
+      checkInsAttachments: checkInsAttachmentsDetails,
+      meta: {
+        pageIndex: page,
+        perPage: 30,
+        totalCount: totalCheckInAttachments,
+      },
+    })
   }
 }

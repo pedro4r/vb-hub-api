@@ -1,10 +1,11 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import cookieParser from 'cookie-parser' // Importação corrigida
+import cookieParser from 'cookie-parser'
 import { AuthModule } from './auth/auth.module'
 import { HttpModule } from './http/http.module'
 import { envSchema } from './env/env'
 import { EnvModule } from './env/env.module'
+import { ResolverModule } from './graphql/resolver.module'
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { EnvModule } from './env/env.module'
     AuthModule,
     HttpModule,
     EnvModule,
+    ResolverModule,
   ],
 })
 export class AppModule implements NestModule {

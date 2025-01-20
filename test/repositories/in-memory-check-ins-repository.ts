@@ -11,6 +11,12 @@ import { InMemoryAttachmentsRepository } from './in-memory-attachments-repositor
 import { CheckInDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-details'
 import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
 import { FilteredCheckInsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-ins'
+import {
+  CheckInStatusMetrics,
+  StatusMetrics,
+} from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-ins-status-metrics'
+import { CheckInAttachmentDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-attachment-details'
+import { FilteredCheckInAttachmentsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-in-attachments'
 
 export class InMemoryCheckInsRepository implements CheckInsRepository {
   public items: CheckIn[] = []
@@ -20,6 +26,58 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     private attachmentsRepository: InMemoryAttachmentsRepository,
     private customerRepository: InMemoryCustomerRepository,
   ) {}
+
+  async getMetricStatus(
+    parcelForwardingId: string,
+    metrics?: string[],
+  ): Promise<CheckInStatusMetrics> {
+    const checkIns = this.items.filter(
+      (itens) => itens.parcelForwardingId.toString() === parcelForwardingId,
+    )
+
+    let metricsResponse: StatusMetrics = {}
+
+    if (metrics && metrics.length > 0) {
+      metricsResponse = metrics.reduce((acc, item) => {
+        const counCheckInStatusFound = checkIns.filter(
+          (checkIn) =>
+            checkIn.status.toString().toLowerCase() ===
+            item.toString().toLowerCase(),
+        ).length
+
+        return {
+          ...acc,
+          [item]: counCheckInStatusFound,
+        }
+      }, {} as StatusMetrics)
+    } else {
+      for (const status in CheckInStatus) {
+        if (isNaN(Number(status))) {
+          metricsResponse[status] = checkIns.filter((checkIn) =>
+            checkIn.isStatus(Number(CheckInStatus[status])),
+          ).length
+        }
+      }
+    }
+
+    return CheckInStatusMetrics.create(metricsResponse)
+
+    /* This metrics type means that the key is the CheckInStatus enum 
+    and the value is the number of check-ins with that status. Partial 
+    means that the object can have any number of keys, but the keys
+    must be of the CheckInStatus type. */
+    /* Example of the metrics object:
+    {
+      RECEIVED: 3303,
+      PENDING: 2,
+      SHIPPED: 2948,
+      DELIVERED: 2485,
+      WITHDRAWN: 29,
+      ABANDONED: 100,
+      RETURNED: 7
+    }
+    */
+  }
 
   async findManyCheckInsByFilter(
     parcelForwardingId: string,
@@ -322,63 +380,103 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     })
   }
 
-  async findManyRecentCheckInsDetailsByParcelForwardingId(
+  async findManyCheckInsAttachmentDetailsByFilter(
     parcelForwardingId: string,
     page: number,
+    customersId: string[],
+    checkInStatus?: CheckInStatus,
+    startDate?: Date,
+    endDate?: Date,
   ) {
-    const checkIns = this.items
-      .filter(
-        (item) => item.parcelForwardingId.toString() === parcelForwardingId,
-      )
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice((page - 1) * 20, page * 20)
-
-    const checkInsDetails = await Promise.all(
-      checkIns.map(async (checkIn) => {
-        const customer = await this.customerRepository.findById(
-          checkIn.customerId.toString(),
-        )
-
-        if (!customer) {
-          throw new Error(
-            `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
-          )
-        }
-
-        const checkInAttachments =
-          await this.checkInsAttachmentsRepository.findManyByCheckInId(
-            checkIn.id.toString(),
-          )
-
-        const attachmentsId = checkInAttachments.map((checkInAttachment) => {
-          return checkInAttachment.attachmentId.toString()
-        })
-
-        const attachments =
-          await this.attachmentsRepository.findManyByIds(attachmentsId)
-
-        if (attachments.length === 0) {
-          throw new Error(`Attachments do not exist.`)
-        }
-
-        return CheckInDetails.create({
-          checkInId: checkIn.id,
-          parcelForwardingId: checkIn.parcelForwardingId,
-          customerId: checkIn.customerId,
-          hubId: customer.hubId,
-          customerFirstName: customer.firstName,
-          customerLastName: customer.lastName,
-          packageId: checkIn.packageId,
-          details: checkIn.details,
-          status: checkIn.status,
-          attachments,
-          weight: checkIn.weight,
-          createdAt: checkIn.createdAt,
-          updatedAt: checkIn.updatedAt,
-        })
-      }),
+    let filteredCheckIns = this.items.filter(
+      (item) => item.parcelForwardingId.toString() === parcelForwardingId,
     )
 
-    return checkInsDetails
+    if (customersId.length > 0) {
+      filteredCheckIns = filteredCheckIns.filter((checkIn) =>
+        customersId.includes(checkIn.customerId.toString()),
+      )
+    }
+
+    if (checkInStatus) {
+      filteredCheckIns = filteredCheckIns.filter((checkIn) =>
+        checkIn.isStatus(checkInStatus),
+      )
+    }
+
+    if (startDate) {
+      filteredCheckIns = filteredCheckIns.filter(
+        (checkIn) => checkIn.createdAt >= startDate,
+      )
+    }
+    if (endDate) {
+      filteredCheckIns = filteredCheckIns.filter(
+        (checkIn) => checkIn.createdAt <= endDate,
+      )
+    }
+
+    const checkInsAtt: CheckInAttachmentDetails[] = (
+      await Promise.all(
+        filteredCheckIns.map(async (checkIn) => {
+          const customer = await this.customerRepository.findById(
+            checkIn.customerId.toString(),
+          )
+
+          if (!customer) {
+            throw new Error(
+              `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
+            )
+          }
+
+          const checkInAttachments =
+            await this.checkInsAttachmentsRepository.findManyByCheckInId(
+              checkIn.id.toString(),
+            )
+
+          const attachmentsId = checkInAttachments.map((checkInAttachment) => {
+            return checkInAttachment.attachmentId.toString()
+          })
+
+          const attachments =
+            await this.attachmentsRepository.findManyByIds(attachmentsId)
+
+          if (attachments.length === 0) {
+            throw new Error(`Attachments do not exist.`)
+          }
+
+          return attachments.map((att) =>
+            CheckInAttachmentDetails.create({
+              checkInId: checkIn.id,
+              parcelForwardingId: checkIn.parcelForwardingId,
+              customerId: checkIn.customerId,
+              hubId: customer.hubId,
+              customerFirstName: customer.firstName,
+              customerLastName: customer.lastName,
+              packageId: checkIn.packageId,
+              details: checkIn.details,
+              status: checkIn.status,
+              attachment: att,
+              weight: checkIn.weight,
+              createdAt: checkIn.createdAt,
+              updatedAt: checkIn.updatedAt,
+            }),
+          )
+        }),
+      )
+    ).flat()
+
+    const paginatedCheckInAttachments = checkInsAtt.slice(
+      (page - 1) * 20,
+      page * 20,
+    )
+
+    return FilteredCheckInAttachmentsData.create({
+      checkInsAttachments: paginatedCheckInAttachments,
+      meta: {
+        pageIndex: page,
+        perPage: 20,
+        totalCount: filteredCheckIns.length,
+      },
+    })
   }
 }

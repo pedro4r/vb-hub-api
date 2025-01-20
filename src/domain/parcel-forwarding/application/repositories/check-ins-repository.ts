@@ -3,8 +3,15 @@ import { CheckIn, CheckInStatus } from '../../enterprise/entities/check-in'
 import { CheckInDetails } from '../../enterprise/entities/value-objects/check-in-details'
 import { CheckInPreview } from '../../enterprise/entities/value-objects/check-in-preview'
 import { FilteredCheckInsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-ins'
+import { CheckInStatusMetrics } from '../../enterprise/entities/value-objects/check-ins-status-metrics'
+import { FilteredCheckInAttachmentsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-in-attachments'
 
 export abstract class CheckInsRepository {
+  abstract getMetricStatus(
+    parcelForwardingId: string,
+    metrics?: string[],
+  ): Promise<CheckInStatusMetrics>
+
   abstract create(checkIn: CheckIn): Promise<void>
   abstract findById(id: string): Promise<CheckIn | null>
   abstract findManyRecentByParcelForwardingId(
@@ -12,10 +19,14 @@ export abstract class CheckInsRepository {
     page: number,
   ): Promise<CheckInPreview[]>
 
-  abstract findManyRecentCheckInsDetailsByParcelForwardingId(
+  abstract findManyCheckInsAttachmentDetailsByFilter(
     parcelForwardingId: string,
     page: number,
-  ): Promise<CheckInDetails[]>
+    customersId?: string[],
+    checkInStatus?: CheckInStatus,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<FilteredCheckInAttachmentsData>
 
   abstract findManyCheckInsByFilter(
     parcelForwardingId: string,

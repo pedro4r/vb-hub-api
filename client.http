@@ -1,7 +1,7 @@
 # @baseUrl = https://c9rd6ln3mk.execute-api.us-east-1.amazonaws.com/default
 # @baseUrl = http://192.168.1.237:3333
-# @baseUrl = http://localhost:3333
-@baseUrl = https://pzq7fxh8dt.us-east-1.awsapprunner.com
+@baseUrl = http://localhost:3333
+# @baseUrl = https://pzq7fxh8dt.us-east-1.awsapprunner.com
 
 
 # @baseUrl = http://172.20.10.2:3333
@@ -35,8 +35,41 @@ Content-Type: application/json
 {
   "name": "Voabox",
   "initials": "Vbs",
-  "email": "voabox1@voabox.com",
+  "email": "voabox2@voabox.com",
   "password": "A1bc123456@"
+}
+
+###
+
+# @name goodbye_query
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "{ goodbye { text, timestamp } }"
+}
+
+###
+
+# @name hello_query
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "{ hello }"
+}
+
+###
+
+# @name check_in_metrics
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query ($metrics: [String!]) { getCheckInsStatusMetrics(metrics: $metrics) { totalCount metrics } }",
+  "variables": {
+    "metrics": ["withdrawn"]
+  }
 }
 
 ###
