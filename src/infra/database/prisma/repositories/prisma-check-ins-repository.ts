@@ -18,6 +18,8 @@ import {
   CheckInStatusMetrics,
   StatusMetrics,
 } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-ins-status-metrics'
+import { FilteredCheckInAttachmentsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-in-attachments'
+import { CheckInAttachmentDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-attachment-details'
 
 @Injectable()
 export class PrismaCheckInsRepository implements CheckInsRepository {
@@ -38,7 +40,6 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
         return [...acc, CheckInStatus[item.toUpperCase()]]
       }, [] as number[])
 
-      //
       const statusCounts2 = await this.prisma.checkIn.groupBy({
         where: {
           parcelForwardingId,
@@ -58,8 +59,6 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
             CheckInStatus[item.status].toString().toLocaleLowerCase() ===
             statusKey,
         )
-
-        // console.log(foundMetrics)
 
         return {
           ...acc,
@@ -500,65 +499,97 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
     })
   }
 
-  async findManyRecentCheckInsDetailsByParcelForwardingId(
+  async findManyCheckInsAttachmentDetailsByFilter(
     parcelForwardingId: string,
     page: number,
-  ) {
-    const checkIns = await this.prisma.checkIn.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
+    customersId?: string[],
+    checkInStatus?: CheckInStatus,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<FilteredCheckInAttachmentsData> {
+    const totalCheckInAttachments = await this.prisma.checkInAttachment.count({
       where: {
-        parcelForwardingId,
+        CheckIn: {
+          parcelForwardingId,
+          customerId: customersId?.length ? { in: customersId } : undefined,
+          status: checkInStatus ?? undefined,
+          createdAt:
+            startDate || endDate
+              ? {
+                  ...(startDate ? { gte: startDate } : {}),
+                  ...(endDate ? { lte: endDate } : {}),
+                }
+              : undefined,
+        },
       },
-      take: 20,
-      skip: (page - 1) * 20,
     })
 
-    const checkInsDetails = await Promise.all(
-      checkIns.map(async (checkIn) => {
+    const checkInAttachments = await this.prisma.checkInAttachment.findMany({
+      orderBy: [
+        { createdAt: 'desc' },
+        { id: 'asc' }, // Critério secundário para desempate
+      ],
+      where: {
+        CheckIn: {
+          parcelForwardingId,
+          customerId: customersId?.length ? { in: customersId } : undefined,
+          status: checkInStatus ?? undefined,
+          createdAt:
+            startDate || endDate
+              ? {
+                  ...(startDate ? { gte: startDate } : {}),
+                  ...(endDate ? { lte: endDate } : {}),
+                }
+              : undefined,
+        },
+      },
+      take: 30,
+      skip: (page - 1) * 30, // Retorna apenas os 30 primeiros attachments
+      include: {
+        Attachment: true, // Inclui os dados da tabela `attachments`
+        CheckIn: {
+          include: {
+            customer: true,
+          },
+        },
+      },
+    })
+
+    const createdAtCounts = await this.prisma.checkInAttachment.groupBy({
+      by: ['createdAt'], // Agrupa pelos valores de createdAt
+      _count: {
+        createdAt: true, // Conta quantos registros têm o mesmo createdAt
+      },
+      orderBy: {
+        createdAt: 'desc', // Ordena os grupos por data, do mais recente para o mais antigo
+      },
+    })
+
+    console.log(createdAtCounts)
+
+    const checkInsAttachmentsDetails = await Promise.all(
+      checkInAttachments.map(async (checkInAttachment) => {
+        const attachmentDomain = PrismaAttachmentMapper.toDomain(
+          checkInAttachment.Attachment,
+        )
+
         const customer = await this.prisma.customer.findUnique({
           where: {
-            id: checkIn.customerId.toString(),
+            id: checkInAttachment.CheckIn.customerId.toString(),
           },
         })
 
         if (!customer) {
           throw new ResourceNotFoundError(
-            `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
+            `Customer with ID "${checkInAttachment.CheckIn.customerId.toString()}" does not exist.`,
           )
         }
 
-        const checkInAttachments = await this.prisma.checkInAttachment.findMany(
-          {
-            where: {
-              checkInId: checkIn.id,
-            },
-          },
+        const checkInDomain = PrismaCheckInMapper.toDomain(
+          checkInAttachment.CheckIn,
         )
 
-        const attachmentsId = checkInAttachments.map((checkInAttachment) => {
-          return checkInAttachment.attachmentId.toString()
-        })
-
-        const attachments = await this.prisma.attachment.findMany({
-          where: {
-            id: {
-              in: attachmentsId,
-            },
-          },
-        })
-
-        if (attachments.length === 0) {
-          throw new Error(`Attachments do not exist.`)
-        }
-
-        const attachmentsDomain = attachments.map(
-          PrismaAttachmentMapper.toDomain,
-        )
-        const checkInDomain = PrismaCheckInMapper.toDomain(checkIn)
-
-        return CheckInDetails.create({
+        return CheckInAttachmentDetails.create({
           checkInId: checkInDomain.id,
           parcelForwardingId: checkInDomain.parcelForwardingId,
           customerId: checkInDomain.customerId,
@@ -568,7 +599,7 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
           packageId: checkInDomain.packageId,
           details: checkInDomain.details,
           status: checkInDomain.status,
-          attachments: attachmentsDomain,
+          attachment: attachmentDomain,
           weight: checkInDomain.weight,
           createdAt: checkInDomain.createdAt,
           updatedAt: checkInDomain.updatedAt,
@@ -576,6 +607,13 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       }),
     )
 
-    return checkInsDetails
+    return FilteredCheckInAttachmentsData.create({
+      checkInsAttachments: checkInsAttachmentsDetails,
+      meta: {
+        pageIndex: page,
+        perPage: 30,
+        totalCount: totalCheckInAttachments,
+      },
+    })
   }
 }

@@ -1,9 +1,8 @@
 import { ValueObject } from '@/core/entities/value-object'
 import { CheckInAttachmentDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-attachment-details'
-import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
 
 export interface FilteredCheckInsDataProps {
-  checkIns: CheckInPreview[] | CheckInAttachmentDetails[]
+  checkInsAttachments: CheckInAttachmentDetails[]
   meta: {
     pageIndex: number
     perPage: number
@@ -11,9 +10,9 @@ export interface FilteredCheckInsDataProps {
   }
 }
 
-export class FilteredCheckInsData extends ValueObject<FilteredCheckInsDataProps> {
-  get checkIns() {
-    return this.props.checkIns
+export class FilteredCheckInAttachmentsData extends ValueObject<FilteredCheckInsDataProps> {
+  get checkInsAttachments() {
+    return this.props.checkInsAttachments
   }
 
   get meta() {
@@ -21,6 +20,6 @@ export class FilteredCheckInsData extends ValueObject<FilteredCheckInsDataProps>
   }
 
   static create(props: FilteredCheckInsDataProps) {
-    return new FilteredCheckInsData(props)
+    return new FilteredCheckInAttachmentsData(props)
   }
 }

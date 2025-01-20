@@ -9,7 +9,7 @@ import { UploadAttachmentController } from './parcel-forwarding/upload-attachmen
 import { DeleteCheckInController } from './parcel-forwarding/delete-check-in.controller'
 import { GetCheckInController } from './parcel-forwarding/get-check-in.controller'
 import { EditCheckInController } from './parcel-forwarding/edit-check-in.controller'
-import { FetchRecentCheckInsDetailsController } from './parcel-forwarding/fetch-recent-check-ins-details.controller'
+import { FilterCheckInsDetailsController } from './parcel-forwarding/filter-check-ins-details.controller'
 import { FetchRecentPackagesController } from './parcel-forwarding/fetch-recent-packages.controller'
 import { GetPackageController } from './parcel-forwarding/get-package.controller'
 import { GetPackageCheckInsDetailsController } from './parcel-forwarding/get-package-check-ins-details.controller'
@@ -20,7 +20,7 @@ import { UploadAndCreateAttachmentUseCase } from '@/domain/parcel-forwarding/app
 import { DeleteCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/delete-check-in'
 import { GetCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-check-in'
 import { EditCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/edit-check-in'
-import { FetchRecentCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-check-ins-details'
+import { FilterCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/filter-check-ins-details'
 import { FetchRecentPackagesUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-packages'
 import { GetPackageUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package'
 import { GetPackageCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package-check-ins-details'
@@ -45,6 +45,7 @@ import { SendNewCheckInEmailUseCase } from '@/domain/parcel-forwarding/applicati
 import { CheckInEmailBodyTemplates } from '@/core/email/templates/check-in'
 import { FilterCheckInsController } from './parcel-forwarding/filter-check-ins.controller'
 import { FilterCheckInsUseCase } from '@/domain/parcel-forwarding/application/use-cases/filter-check-ins'
+import { CheckInAttachmentDetailsPresenter } from '../presenters/check-in-attachment-presenter'
 
 @Module({
   imports: [
@@ -63,7 +64,7 @@ import { FilterCheckInsUseCase } from '@/domain/parcel-forwarding/application/us
     DeleteCheckInController,
     GetCheckInController,
     EditCheckInController,
-    FetchRecentCheckInsDetailsController,
+    FilterCheckInsDetailsController,
     FetchRecentPackagesController,
     GetPackageController,
     GetPackageCheckInsDetailsController,
@@ -84,13 +85,14 @@ import { FilterCheckInsUseCase } from '@/domain/parcel-forwarding/application/us
     DeleteCheckInUseCase,
     GetCheckInUseCase,
     EditCheckInUseCase,
-    FetchRecentCheckInsDetailsUseCase,
+    FilterCheckInsDetailsUseCase,
     FetchRecentPackagesUseCase,
     GetPackageUseCase,
     GetPackageCheckInsDetailsUseCase,
     GetCustomerByHubIdUseCase,
     FetchCustomersByNameUseCase,
     CheckInDetailsPresenter,
+    CheckInAttachmentDetailsPresenter,
     CreatePasswordResetUrlUseCase,
     SendResetPasswordEmailUseCase,
     VerifyResetPasswordTokenUseCase,

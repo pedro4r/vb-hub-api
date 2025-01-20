@@ -15,6 +15,8 @@ import {
   CheckInStatusMetrics,
   StatusMetrics,
 } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-ins-status-metrics'
+import { CheckInAttachmentDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-attachment-details'
+import { FilteredCheckInAttachmentsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-in-attachments'
 
 export class InMemoryCheckInsRepository implements CheckInsRepository {
   public items: CheckIn[] = []
@@ -378,63 +380,103 @@ export class InMemoryCheckInsRepository implements CheckInsRepository {
     })
   }
 
-  async findManyRecentCheckInsDetailsByParcelForwardingId(
+  async findManyCheckInsAttachmentDetailsByFilter(
     parcelForwardingId: string,
     page: number,
+    customersId: string[],
+    checkInStatus?: CheckInStatus,
+    startDate?: Date,
+    endDate?: Date,
   ) {
-    const checkIns = this.items
-      .filter(
-        (item) => item.parcelForwardingId.toString() === parcelForwardingId,
-      )
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .slice((page - 1) * 20, page * 20)
-
-    const checkInsDetails = await Promise.all(
-      checkIns.map(async (checkIn) => {
-        const customer = await this.customerRepository.findById(
-          checkIn.customerId.toString(),
-        )
-
-        if (!customer) {
-          throw new Error(
-            `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
-          )
-        }
-
-        const checkInAttachments =
-          await this.checkInsAttachmentsRepository.findManyByCheckInId(
-            checkIn.id.toString(),
-          )
-
-        const attachmentsId = checkInAttachments.map((checkInAttachment) => {
-          return checkInAttachment.attachmentId.toString()
-        })
-
-        const attachments =
-          await this.attachmentsRepository.findManyByIds(attachmentsId)
-
-        if (attachments.length === 0) {
-          throw new Error(`Attachments do not exist.`)
-        }
-
-        return CheckInDetails.create({
-          checkInId: checkIn.id,
-          parcelForwardingId: checkIn.parcelForwardingId,
-          customerId: checkIn.customerId,
-          hubId: customer.hubId,
-          customerFirstName: customer.firstName,
-          customerLastName: customer.lastName,
-          packageId: checkIn.packageId,
-          details: checkIn.details,
-          status: checkIn.status,
-          attachments,
-          weight: checkIn.weight,
-          createdAt: checkIn.createdAt,
-          updatedAt: checkIn.updatedAt,
-        })
-      }),
+    let filteredCheckIns = this.items.filter(
+      (item) => item.parcelForwardingId.toString() === parcelForwardingId,
     )
 
-    return checkInsDetails
+    if (customersId.length > 0) {
+      filteredCheckIns = filteredCheckIns.filter((checkIn) =>
+        customersId.includes(checkIn.customerId.toString()),
+      )
+    }
+
+    if (checkInStatus) {
+      filteredCheckIns = filteredCheckIns.filter((checkIn) =>
+        checkIn.isStatus(checkInStatus),
+      )
+    }
+
+    if (startDate) {
+      filteredCheckIns = filteredCheckIns.filter(
+        (checkIn) => checkIn.createdAt >= startDate,
+      )
+    }
+    if (endDate) {
+      filteredCheckIns = filteredCheckIns.filter(
+        (checkIn) => checkIn.createdAt <= endDate,
+      )
+    }
+
+    const checkInsAtt: CheckInAttachmentDetails[] = (
+      await Promise.all(
+        filteredCheckIns.map(async (checkIn) => {
+          const customer = await this.customerRepository.findById(
+            checkIn.customerId.toString(),
+          )
+
+          if (!customer) {
+            throw new Error(
+              `Customer with ID "${checkIn.customerId.toString()}" does not exist.`,
+            )
+          }
+
+          const checkInAttachments =
+            await this.checkInsAttachmentsRepository.findManyByCheckInId(
+              checkIn.id.toString(),
+            )
+
+          const attachmentsId = checkInAttachments.map((checkInAttachment) => {
+            return checkInAttachment.attachmentId.toString()
+          })
+
+          const attachments =
+            await this.attachmentsRepository.findManyByIds(attachmentsId)
+
+          if (attachments.length === 0) {
+            throw new Error(`Attachments do not exist.`)
+          }
+
+          return attachments.map((att) =>
+            CheckInAttachmentDetails.create({
+              checkInId: checkIn.id,
+              parcelForwardingId: checkIn.parcelForwardingId,
+              customerId: checkIn.customerId,
+              hubId: customer.hubId,
+              customerFirstName: customer.firstName,
+              customerLastName: customer.lastName,
+              packageId: checkIn.packageId,
+              details: checkIn.details,
+              status: checkIn.status,
+              attachment: att,
+              weight: checkIn.weight,
+              createdAt: checkIn.createdAt,
+              updatedAt: checkIn.updatedAt,
+            }),
+          )
+        }),
+      )
+    ).flat()
+
+    const paginatedCheckInAttachments = checkInsAtt.slice(
+      (page - 1) * 20,
+      page * 20,
+    )
+
+    return FilteredCheckInAttachmentsData.create({
+      checkInsAttachments: paginatedCheckInAttachments,
+      meta: {
+        pageIndex: page,
+        perPage: 20,
+        totalCount: filteredCheckIns.length,
+      },
+    })
   }
 }

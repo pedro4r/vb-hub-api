@@ -1,6 +1,6 @@
 import { Resolver, Query } from '@nestjs/graphql'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { UseGuards } from '@nestjs/common'
+import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 
 @Resolver()
 export class HelloResolver {

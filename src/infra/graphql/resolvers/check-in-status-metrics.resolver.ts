@@ -1,8 +1,8 @@
 import { Resolver, Query, Context, Args } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'
 import { CheckInsStatusMetricsUseCase } from '@/domain/parcel-forwarding/application/use-cases/check-ins-status-metrics'
-import { CheckInStatusMetricsDTO } from './graphql-object-types/checkInStatusMetricsGraphQL'
+import { CheckInStatusMetricsDTO } from '../schemas/checkInStatusMetricsGraphQL'
+import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 
 @Resolver()
 export class CheckInsStatusMetricsResolver {
