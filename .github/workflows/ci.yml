@@ -83,8 +83,8 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
 
-      # - name: Run Unit tests
-      #   run: npm run test
+      - name: Run Unit tests
+        run: npm run test
 
       - name: Clean up Docker containers
         run: docker-compose down -v || true
@@ -112,8 +112,8 @@ jobs:
       - name: Change permissions
         run: sudo chmod -R 777 ./data/pg
 
-      # - name: Run tests
-      #   run: npm run test:e2e
+      - name: Run tests
+        run: npm run test:e2e
 
   deploy:
     name: 'Deploy to AWS'
