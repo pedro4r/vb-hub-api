@@ -555,18 +555,6 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       },
     })
 
-    const createdAtCounts = await this.prisma.checkInAttachment.groupBy({
-      by: ['createdAt'], // Agrupa pelos valores de createdAt
-      _count: {
-        createdAt: true, // Conta quantos registros têm o mesmo createdAt
-      },
-      orderBy: {
-        createdAt: 'desc', // Ordena os grupos por data, do mais recente para o mais antigo
-      },
-    })
-
-    console.log(createdAtCounts)
-
     const checkInsAttachmentsDetails = await Promise.all(
       checkInAttachments.map(async (checkInAttachment) => {
         const attachmentDomain = PrismaAttachmentMapper.toDomain(

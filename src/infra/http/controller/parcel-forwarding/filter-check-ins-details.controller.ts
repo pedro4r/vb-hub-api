@@ -68,6 +68,8 @@ export class FilterCheckInsDetailsController {
       page,
     })
 
+    console.log(result)
+
     if (result.isLeft()) {
       const error = result.value
 
