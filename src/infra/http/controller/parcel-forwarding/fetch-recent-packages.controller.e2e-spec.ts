@@ -87,17 +87,32 @@ describe('Fetch Recent Packages (E2E)', () => {
 
     expect(response.statusCode).toBe(200)
 
+    // expect(response.body).toEqual({
+    //   packagesPreviews: expect.arrayContaining([
+    //     expect.objectContaining({
+    //       packageId: expect.any(String),
+    //       customerId: customer1.id.toString(),
+    //     }),
+    //     expect.objectContaining({
+    //       packageId: expect.any(String),
+    //       customerId: customer2.id.toString(),
+    //     }),
+    //   ]),
+    // })
+
     expect(response.body).toEqual({
-      packagesPreviews: expect.arrayContaining([
-        expect.objectContaining({
-          packageId: expect.any(String),
-          customerId: customer1.id.toString(),
-        }),
-        expect.objectContaining({
-          packageId: expect.any(String),
-          customerId: customer2.id.toString(),
-        }),
-      ]),
+      packagesPreviews: expect.objectContaining({
+        packages: expect.arrayContaining([
+          expect.objectContaining({
+            packageId: expect.any(String),
+            customerId: customer1.id.toString(),
+          }),
+          expect.objectContaining({
+            packageId: expect.any(String),
+            customerId: customer2.id.toString(),
+          }),
+        ]),
+      }),
     })
   })
 })

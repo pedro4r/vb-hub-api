@@ -9,8 +9,8 @@ import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { makeShippingAddress } from 'test/factories/make-shipping-address'
 import { InMemoryCustomerRepository } from 'test/repositories/in-memory-customer-repository'
 import { InMemoryAttachmentsRepository } from 'test/repositories/in-memory-attachments-repository'
-import { FetchRecentPackagesUseCase } from './fetch-recent-packages'
 import { makeCustomer } from 'test/factories/make-customer'
+import { FilterPackagesUseCase } from './filter-packages'
 
 let inMemoryCustomerRepository: InMemoryCustomerRepository
 let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository
@@ -20,7 +20,7 @@ let inMemoryCustomsDeclarationItemsRepository: InMemoryCustomsDeclarationItemsRe
 let inMemoryShippingAddressRepository: InMemoryShippingAddressRepository
 let inMemoryPackageShippingAddressRepository: InMemoryPackageShippingAddressRepository
 let inMemoryPackageRepository: InMemoryPackageRepository
-let sut: FetchRecentPackagesUseCase
+let sut: FilterPackagesUseCase
 
 describe('Fetch Recent Packages', () => {
   beforeEach(async () => {
@@ -53,7 +53,10 @@ describe('Fetch Recent Packages', () => {
       inMemoryCustomerRepository,
     )
 
-    sut = new FetchRecentPackagesUseCase(inMemoryPackageRepository)
+    sut = new FilterPackagesUseCase(
+      inMemoryPackageRepository,
+      inMemoryCustomerRepository,
+    )
 
     const customer1 = makeCustomer({}, new UniqueEntityID('customer-1'))
 
@@ -114,20 +117,24 @@ describe('Fetch Recent Packages', () => {
 
     expect(result.isRight()).toBeTruthy()
 
-    expect(result.value).toEqual({
-      packagePreview: expect.arrayContaining([
-        expect.objectContaining({
-          parcelForwardingId: new UniqueEntityID('parcel-forwarding-1'),
-          customerId: new UniqueEntityID('customer-1'),
-          hasBattery: expect.any(Boolean),
+    expect(result.value).toEqual(
+      expect.objectContaining({
+        packagesData: expect.objectContaining({
+          packages: expect.arrayContaining([
+            expect.objectContaining({
+              parcelForwardingId: new UniqueEntityID('parcel-forwarding-1'),
+              customerId: new UniqueEntityID('customer-1'),
+              hasBattery: expect.any(Boolean),
+            }),
+            expect.objectContaining({
+              parcelForwardingId: new UniqueEntityID('parcel-forwarding-1'),
+              customerId: new UniqueEntityID('customer-2'),
+              hasBattery: expect.any(Boolean),
+            }),
+          ]),
         }),
-        expect.objectContaining({
-          parcelForwardingId: new UniqueEntityID('parcel-forwarding-1'),
-          customerId: new UniqueEntityID('customer-2'),
-          hasBattery: expect.any(Boolean),
-        }),
-      ]),
-    })
+      }),
+    )
   })
 
   it('should not be able to fetch recent packages', async () => {

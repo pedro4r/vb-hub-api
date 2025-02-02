@@ -40,6 +40,7 @@ describe('Create Shipping Address (E2E)', () => {
         firstName: 'Pedro',
         lastName: 'Requiao',
         email: 'alonsofts@gmail.com',
+        phone: '11999999999',
         password: '123456',
       },
     })
@@ -58,7 +59,7 @@ describe('Create Shipping Address (E2E)', () => {
         recipientName: 'Pedro',
         taxId: '123456',
         email: 'johndoe@example.com',
-        phoneNumber: '123456',
+        phone: '123456',
         address: 'Millenia Blvd, 1234',
         complement: 'Apt 1',
         city: 'Orlando',

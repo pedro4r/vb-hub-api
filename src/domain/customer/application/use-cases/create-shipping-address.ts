@@ -10,7 +10,7 @@ interface CreateShippingAddressUseCaseRequest {
   recipientName: string
   taxId?: string | null
   address: string
-  phoneNumber?: string | null
+  phone?: string | null
   email?: string | null
   complement?: string | null
   city: string
@@ -39,7 +39,7 @@ export class CreateShippingAddressUseCase {
     state,
     zipcode,
     country,
-    phoneNumber,
+    phone,
     email,
     taxId,
   }: CreateShippingAddressUseCaseRequest): Promise<CreateShippingAddressUseCaseResponse> {
@@ -55,7 +55,7 @@ export class CreateShippingAddressUseCase {
     const shippingAddress = ShippingAddress.create({
       customerId: new UniqueEntityID(customerId),
       recipientName,
-      phoneNumber,
+      phone,
       email,
       taxId,
       address: addressInfo,

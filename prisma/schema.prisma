@@ -16,6 +16,7 @@ model Customer {
   firstName          String             @map("first_name")
   lastName           String             @map("last_name")
   email              String             @unique
+  phone              String             @unique
   password           String
   createdAt          DateTime           @default(now()) @map("created_at")
   CheckIn            CheckIn[]
@@ -87,6 +88,7 @@ model Package {
   parcelForwardingId       String    @map("parcel_forwarding_id")
   packageShippingAddressId String    @map("package_shipping_addresses_id")
   weight                   Int?
+  status                   Int
   hasBattery               Boolean   @map("has_battery")
   trackingNumber           String?   @map("tracking_number")
   createdAt                DateTime  @default(now()) @map("created_at")
@@ -108,7 +110,7 @@ model ShippingAddress {
   recipientName String    @map("recipient_name")
   taxId         String?   @map("tax_id")
   email         String?
-  phoneNumber   String?   @map("phone_number")
+  phone         String?
   address       String    @map("address")
   complement    String?   @map("complement")
   city          String    @map("city")
@@ -128,7 +130,7 @@ model PackageShippingAddress {
   recipientName String    @map("recipient_name")
   taxId         String?   @map("tax_id")
   email         String?
-  phoneNumber   String?   @map("phone_number")
+  phone         String?
   address       String    @map("address")
   complement    String?   @map("complement")
   city          String    @map("city")

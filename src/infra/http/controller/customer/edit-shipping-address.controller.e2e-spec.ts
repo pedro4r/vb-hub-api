@@ -68,7 +68,7 @@ describe('Edit Shipping Address (E2E)', () => {
         recipientName: 'Pedro Alonso',
         taxId: '123456',
         email: 'alonsofts@gmail.com',
-        phoneNumber: '123456',
+        phone: '123456',
         address: 'Millenia Blvd, 1234',
         complement: 'Apt 1',
         city: 'Orlando',

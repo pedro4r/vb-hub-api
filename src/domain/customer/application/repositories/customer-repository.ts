@@ -12,6 +12,7 @@ export abstract class CustomerRepository {
 
   abstract findById(id: string): Promise<Customer | null>
   abstract findByHubId(hubId: number): Promise<CustomerPreview | null>
+
   abstract create(customer: Customer): Promise<void>
   abstract countParcelForwardingCustomers(
     parcelForwardingId: string,

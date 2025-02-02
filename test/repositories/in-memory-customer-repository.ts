@@ -1,4 +1,5 @@
 import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
+
 import { Customer } from '@/domain/customer/enterprise/entities/customer'
 import { CustomerPreview } from '@/domain/customer/enterprise/entities/value-objects/customer-preview'
 import { FetchCustomerByNameData } from '@/domain/customer/enterprise/entities/value-objects/fetch-customers-by-name-data'

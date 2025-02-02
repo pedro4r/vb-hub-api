@@ -1,7 +1,8 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { Address } from '@/core/value-objects/address'
-import { PackageShippingAddress } from '@/domain/customer/enterprise/entities/package-shipping-address'
+
 import { ShippingAddress } from '@/domain/customer/enterprise/entities/shipping-address'
+import { PackageShippingAddress } from '@/domain/customer/enterprise/entities/value-objects/package-shipping-address'
 import {
   Prisma,
   PackageShippingAddress as PrismaPackageShippingAddress,
@@ -23,7 +24,7 @@ export class PrismaPackageShippingAddressMapper {
         recipientName: raw.recipientName,
         taxId: raw.taxId ?? null,
         email: raw.email ?? null,
-        phoneNumber: raw.phoneNumber ?? null,
+        phone: raw.phone ?? null,
         address,
         createdAt: raw.createdAt,
         updatedAt: raw.updatedAt,
@@ -40,7 +41,7 @@ export class PrismaPackageShippingAddressMapper {
       recipientName: shippingAddress.recipientName,
       taxId: shippingAddress.taxId ?? null,
       email: shippingAddress.email ?? null,
-      phoneNumber: shippingAddress.phoneNumber ?? null,
+      phone: shippingAddress.phone ?? null,
       address: shippingAddress.address.address,
       complement: shippingAddress.address.complement ?? null,
       city: shippingAddress.address.city,

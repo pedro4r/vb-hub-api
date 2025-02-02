@@ -12,13 +12,14 @@ export function makeCustomer(
   override: Partial<CustomerProps> = {},
   id?: UniqueEntityID,
 ) {
-  const student = Customer.create(
+  const customer = Customer.create(
     {
       parcelForwardingId: new UniqueEntityID(),
       hubId: faker.number.int({ min: 1, max: 1000 }),
       firstName: faker.person.fullName(),
       lastName: faker.person.fullName(),
       email: faker.internet.email(),
+      phone: faker.number.int({ min: 1000000000, max: 9999999999 }).toString(), // 10 digits
       password: faker.internet.password(),
       createdAt: new Date(),
       ...override,
@@ -26,7 +27,7 @@ export function makeCustomer(
     id,
   )
 
-  return student
+  return customer
 }
 
 @Injectable()

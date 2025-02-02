@@ -45,6 +45,7 @@ describe('Create Check-in (E2E)', () => {
         firstName: 'Pedro',
         lastName: 'Requiao',
         email: 'alonsofts@gmail.com',
+        phone: '11999999999',
         password: '123456',
       },
     })

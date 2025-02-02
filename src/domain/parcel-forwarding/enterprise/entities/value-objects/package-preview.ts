@@ -1,5 +1,6 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ValueObject } from '@/core/entities/value-object'
+import { PackageStatus } from '@/domain/customer/enterprise/entities/package'
 
 export interface PackagePreviewProps {
   packageId: UniqueEntityID
@@ -9,6 +10,7 @@ export interface PackagePreviewProps {
   customerFirstName: string
   customerLastName: string
   weight?: number | null
+  packageStatus: PackageStatus
   hasBattery: boolean
   trackingNumber?: string | null
   createdAt: Date
@@ -45,6 +47,10 @@ export class PackagePreview extends ValueObject<PackagePreviewProps> {
       return 0
     }
     return this.props.weight
+  }
+
+  get packageStatus() {
+    return this.props.packageStatus
   }
 
   get hasBattery() {

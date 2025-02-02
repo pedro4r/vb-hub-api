@@ -9,7 +9,7 @@ export interface ShippingAddressProps {
   recipientName: string
   taxId?: string | null
   address: Address
-  phoneNumber?: string | null
+  phone?: string | null
   email?: string | null
   createdAt: Date
   updatedAt?: Date | null
@@ -29,12 +29,12 @@ export class ShippingAddress extends AggregateRoot<ShippingAddressProps> {
     this.touch()
   }
 
-  get phoneNumber() {
-    return this.props.phoneNumber
+  get phone() {
+    return this.props.phone
   }
 
-  set phoneNumber(phoneNumber: string | null | undefined) {
-    this.props.phoneNumber = phoneNumber
+  set phone(phone: string | null | undefined) {
+    this.props.phone = phone
     this.touch()
   }
 

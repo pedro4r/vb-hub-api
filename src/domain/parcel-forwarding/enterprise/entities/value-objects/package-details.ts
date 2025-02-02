@@ -1,7 +1,6 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ValueObject } from '@/core/entities/value-object'
-
-import { PackageShippingAddress } from '@/domain/customer/enterprise/entities/package-shipping-address'
+import { PackageShippingAddress } from '@/domain/customer/enterprise/entities/value-objects/package-shipping-address'
 
 export interface PackageDetailsProps {
   packageId: UniqueEntityID

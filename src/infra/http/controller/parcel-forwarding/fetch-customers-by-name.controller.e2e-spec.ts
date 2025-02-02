@@ -41,12 +41,14 @@ describe('Fetch Customers by Name (E2E)', () => {
       parcelForwardingId: parcelForwarding.id,
       firstName: 'John',
       lastName: 'Doe',
+      phone: '11999999999',
     })
 
     const customer2 = await customerFactory.makePrismaCustomer({
       parcelForwardingId: parcelForwarding.id,
       firstName: 'Jane',
       lastName: 'Doe',
+      phone: '11888888888',
     })
 
     const accessToken = jwt.sign(

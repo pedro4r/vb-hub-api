@@ -20,7 +20,7 @@ export function makeShippingAddress(
       recipientName: faker.person.firstName(),
       taxId: faker.number.int({ min: 8, max: 10 }).toString(),
       email: faker.internet.email(),
-      phoneNumber: faker.number.int({ min: 8, max: 10 }).toString(),
+      phone: faker.number.int({ min: 8, max: 10 }).toString(),
       address: makeAddress(),
       createdAt: new Date(),
       ...override,
