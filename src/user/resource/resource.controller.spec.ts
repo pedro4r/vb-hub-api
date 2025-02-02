@@ -1,20 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ResourceController } from './resource.controller';
-import { ResourceService } from './resource.service';
+import { Test, TestingModule } from '@nestjs/testing'
+import { ResourceController } from './resource.controller'
+import { ResourceService } from './resource.service'
 
 describe('ResourceController', () => {
-  let controller: ResourceController;
+  let controller: ResourceController
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [ResourceController],
       providers: [ResourceService],
-    }).compile();
+    }).compile()
 
-    controller = module.get<ResourceController>(ResourceController);
-  });
+    controller = module.get<ResourceController>(ResourceController)
+  })
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-});
+    expect(controller).toBeDefined()
+  })
+})

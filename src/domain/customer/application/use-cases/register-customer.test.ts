@@ -37,6 +37,7 @@ describe('Register Customer', () => {
       firstName: 'Pedro',
       lastName: 'Requiao',
       email: 'pedro@example.com',
+      phone: '11987654321',
       password: '123456',
     })
 
@@ -59,6 +60,7 @@ describe('Register Customer', () => {
       firstName: 'Pedro',
       lastName: 'Requiao',
       email: 'pedro@example.com',
+      phone: '11987654321',
       password: '123456',
     })
 

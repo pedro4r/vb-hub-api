@@ -5,12 +5,24 @@ import { PackageCreatedEvent } from '../events/package-created-event'
 import { CustomsDeclarationList } from './customs-declaration-list'
 import { PackageCheckInsList } from './package-check-ins-list'
 
+export enum PackageStatus {
+  REQUESTED = 1,
+  UNPAID = 2,
+  PAID = 3,
+  SHIPPED = 4,
+  DELIVERED = 5,
+  RETURNED = 6,
+  WITHDRAWN = 7,
+  CANCELLED = 8,
+}
+
 export interface PackageProps {
   customerId: UniqueEntityID
   parcelForwardingId: UniqueEntityID
   shippingAddressId: UniqueEntityID
   checkIns: PackageCheckInsList
   customsDeclarationList: CustomsDeclarationList
+  status: PackageStatus
   weight?: number | null
   hasBattery: boolean
   trackingNumber?: string | null
@@ -54,6 +66,19 @@ export class Package extends AggregateRoot<PackageProps> {
     this.touch()
   }
 
+  get status(): string {
+    return PackageStatus[this.props.status]
+  }
+
+  getStatusAsCode(): PackageStatus {
+    return this.props.status
+  }
+
+  set status(status: PackageStatus) {
+    this.props.status = status
+    this.touch()
+  }
+
   get weight() {
     return this.props.weight
   }
@@ -93,10 +118,14 @@ export class Package extends AggregateRoot<PackageProps> {
     this.props.updatedAt = new Date()
   }
 
+  isStatus(status: PackageStatus): boolean {
+    return this.props.status === status
+  }
+
   static create(
     props: Optional<
       PackageProps,
-      'createdAt' | 'customsDeclarationList' | 'checkIns'
+      'createdAt' | 'customsDeclarationList' | 'checkIns' | 'status'
     >,
     id?: UniqueEntityID,
   ) {
@@ -107,6 +136,7 @@ export class Package extends AggregateRoot<PackageProps> {
         customsDeclarationList:
           props.customsDeclarationList ?? new CustomsDeclarationList(),
         createdAt: props.createdAt ?? new Date(),
+        status: props.status ?? PackageStatus.REQUESTED,
       },
       id,
     )
@@ -118,5 +148,9 @@ export class Package extends AggregateRoot<PackageProps> {
     }
 
     return pkg
+  }
+
+  static mapStatus(status: number): PackageStatus {
+    return PackageStatus[status as unknown as keyof typeof PackageStatus]
   }
 }

@@ -3,8 +3,12 @@ import { CustomerRepository } from '@/domain/customer/application/repositories/c
 import { CustomsDeclarationItemsRepository } from '@/domain/customer/application/repositories/customs-declaration-items-repository'
 import { PackageRepository } from '@/domain/customer/application/repositories/package-repository'
 import { PackageShippingAddressRepository } from '@/domain/customer/application/repositories/package-shipping-address-repository'
-import { Package } from '@/domain/customer/enterprise/entities/package'
+import {
+  Package,
+  PackageStatus,
+} from '@/domain/customer/enterprise/entities/package'
 import { CheckInsRepository } from '@/domain/parcel-forwarding/application/repositories/check-ins-repository'
+import { FilteredPackagesData } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/filtered-packages'
 import { PackageDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-details'
 import { PackagePreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-preview'
 
@@ -18,19 +22,47 @@ export class InMemoryPackageRepository implements PackageRepository {
     private customerRepository: CustomerRepository,
   ) {}
 
-  async findManyRecentByParcelForwardingId(
+  async findManyByFilter(
     parcelForwardingId: string,
     page: number,
+    customersId: string[],
+    packageStatus?: PackageStatus,
+    startDate?: Date,
+    endDate?: Date,
   ) {
-    const packages = this.items
-      .filter(
-        (item) => item.parcelForwardingId.toString() === parcelForwardingId,
+    let filteredPackages = this.items.filter(
+      (pkg) => pkg.parcelForwardingId.toString() === parcelForwardingId,
+    )
+
+    if (customersId.length > 0) {
+      filteredPackages = filteredPackages.filter((pkg) =>
+        customersId.includes(pkg.customerId.toString()),
       )
+    }
+
+    if (packageStatus) {
+      filteredPackages = filteredPackages.filter((checkIn) =>
+        checkIn.isStatus(packageStatus),
+      )
+    }
+
+    if (startDate) {
+      filteredPackages = filteredPackages.filter(
+        (checkIn) => checkIn.createdAt >= startDate,
+      )
+    }
+    if (endDate) {
+      filteredPackages = filteredPackages.filter(
+        (checkIn) => checkIn.createdAt <= endDate,
+      )
+    }
+
+    const paginatedPackage = filteredPackages
       .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       .slice((page - 1) * 20, page * 20)
 
-    const packagesPreviews = await Promise.all(
-      packages.map(async (pkg) => {
+    const packagesPreview = await Promise.all(
+      paginatedPackage.map(async (pkg) => {
         const customer = await this.customerRepository.findById(
           pkg.customerId.toString(),
         )
@@ -49,6 +81,7 @@ export class InMemoryPackageRepository implements PackageRepository {
           customerFirstName: customer.firstName,
           customerLastName: customer.lastName,
           weight: pkg.weight,
+          packageStatus: PackageStatus[pkg.status],
           hasBattery: pkg.hasBattery,
           trackingNumber: pkg.trackingNumber,
           createdAt: pkg.createdAt,
@@ -57,7 +90,14 @@ export class InMemoryPackageRepository implements PackageRepository {
       }),
     )
 
-    return packagesPreviews
+    return FilteredPackagesData.create({
+      packages: packagesPreview,
+      meta: {
+        pageIndex: page,
+        perPage: 20,
+        totalCount: filteredPackages.length,
+      },
+    })
   }
 
   async findManyByCustomerId(id: string) {

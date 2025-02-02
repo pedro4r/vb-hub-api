@@ -52,9 +52,11 @@ describe('Fetch Recent Check-ins Details (E2E)', () => {
 
     const customer1 = await customerFactory.makePrismaCustomer({
       parcelForwardingId: parcelForwarding.id,
+      phone: '11999999999',
     })
     const customer2 = await customerFactory.makePrismaCustomer({
       parcelForwardingId: parcelForwarding.id,
+      phone: '11888888888',
     })
 
     const attachment1 = await attachmentFactory.makePrismaAttachment()

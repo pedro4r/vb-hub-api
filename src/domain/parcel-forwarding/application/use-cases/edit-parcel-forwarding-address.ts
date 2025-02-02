@@ -14,7 +14,7 @@ interface EditParcelForwardingAddressUseCaseRequest {
   state: string
   zipcode: string
   country: string
-  phoneNumber?: string | null
+  phone?: string | null
 }
 
 type EditParcelForwardingAddressUseCaseResponse = Either<

@@ -14,7 +14,7 @@ describe('Create Address', () => {
     const result = await sut.execute({
       customerId: '1',
       recipientName: 'John Doe',
-      phoneNumber: '123456789',
+      phone: '123456789',
       email: 'johndoe@example.com',
       taxId: '123456789',
       address: '123 Main St',

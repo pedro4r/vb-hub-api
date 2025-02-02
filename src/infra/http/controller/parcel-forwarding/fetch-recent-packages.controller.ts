@@ -11,8 +11,9 @@ import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
-import { FetchRecentPackagesUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-packages'
+
 import { PackagePresenter } from '../../presenters/package-presenter'
+import { FilterPackagesUseCase } from '@/domain/parcel-forwarding/application/use-cases/filter-packages'
 
 const pageQueryParamSchema = z
   .string()
@@ -27,7 +28,7 @@ type PageQueryParamSchema = z.infer<typeof pageQueryParamSchema>
 
 @Controller('/packages')
 export class FetchRecentPackagesController {
-  constructor(private fetchRecentPackages: FetchRecentPackagesUseCase) {}
+  constructor(private fetchRecentPackages: FilterPackagesUseCase) {}
 
   @Get()
   async handle(
@@ -53,9 +54,7 @@ export class FetchRecentPackagesController {
       }
     }
 
-    const packagesPreviews = result.value.packagePreview.map(
-      PackagePresenter.toHTTP,
-    )
+    const packagesPreviews = PackagePresenter.toHTTP(result.value.packagesData)
 
     return {
       packagesPreviews,

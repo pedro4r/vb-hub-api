@@ -11,7 +11,7 @@ export function makePackage(
   override: Partial<PackageProps> = {},
   id?: UniqueEntityID,
 ) {
-  const address = Package.create(
+  const pkg = Package.create(
     {
       customerId: new UniqueEntityID('customer-1'),
       parcelForwardingId: new UniqueEntityID('parcel-forwarding-1'),
@@ -22,7 +22,7 @@ export function makePackage(
     id,
   )
 
-  return address
+  return pkg
 }
 
 @Injectable()

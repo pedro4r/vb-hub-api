@@ -6,7 +6,7 @@ export class ShippingAddressPresenter {
       id: shippingAddress.id.toString(),
       recipientName: shippingAddress.recipientName,
       taxId: shippingAddress.taxId,
-      phoneNumber: shippingAddress.phoneNumber,
+      phone: shippingAddress.phone,
       email: shippingAddress.email,
       address: shippingAddress.address.address,
       complement: shippingAddress.address.complement,

@@ -11,7 +11,7 @@ interface EditShippingAddressUseCaseRequest {
   customerId: string
   recipientName: string
   email?: string | null
-  phoneNumber?: string | null
+  phone?: string | null
   taxId?: string | null
   address: string
   complement?: string | null
@@ -42,7 +42,7 @@ export class EditShippingAddressUseCase {
     state,
     zipcode,
     country,
-    phoneNumber,
+    phone,
     email,
     taxId,
   }: EditShippingAddressUseCaseRequest): Promise<EditShippingAddressUseCaseResponse> {
@@ -62,7 +62,7 @@ export class EditShippingAddressUseCase {
     }
 
     shippingAddress.recipientName = recipientName
-    shippingAddress.phoneNumber = phoneNumber
+    shippingAddress.phone = phone
     shippingAddress.email = email
     shippingAddress.taxId = taxId
 

@@ -1,4 +1,4 @@
-import { PackageShippingAddress } from '../../enterprise/entities/package-shipping-address'
+import { PackageShippingAddress } from '../../enterprise/entities/value-objects/package-shipping-address'
 
 export abstract class PackageShippingAddressRepository {
   abstract findById(

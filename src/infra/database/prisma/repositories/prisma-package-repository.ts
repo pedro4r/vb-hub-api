@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { PackageRepository } from '@/domain/customer/application/repositories/package-repository'
-import { Package } from '@/domain/customer/enterprise/entities/package'
+import {
+  Package,
+  PackageStatus,
+} from '@/domain/customer/enterprise/entities/package'
 import { PrismaPackageMapper } from '../mappers/prisma-package-mapper'
 import { PackageShippingAddressRepository } from '@/domain/customer/application/repositories/package-shipping-address-repository'
 import { PackagePreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-preview'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { PackageDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/package-details'
+import { FilteredPackagesData } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/filtered-packages'
 
 @Injectable()
 export class PrismaPackageRepository implements PackageRepository {
@@ -122,19 +126,55 @@ export class PrismaPackageRepository implements PackageRepository {
     return packages.map((pkg) => PrismaPackageMapper.toDomain(pkg))
   }
 
-  async findManyRecentByParcelForwardingId(
-    parcelForwardingId: string,
-    page: number,
+  async findManyByFilter(
+    parcelForwardingId,
+    page,
+    customersId,
+    packageStatus,
+    startDate,
+    endDate,
   ) {
+    const totalPackages = await this.prisma.package.count({
+      where: {
+        parcelForwardingId,
+        customerId: customersId?.length
+          ? {
+              in: customersId,
+            }
+          : undefined,
+        status: packageStatus ?? undefined,
+        createdAt:
+          startDate || endDate
+            ? {
+                ...(startDate ? { gte: startDate } : {}),
+                ...(endDate ? { lte: endDate } : {}),
+              }
+            : undefined,
+      },
+    })
+
     const packages = await this.prisma.package.findMany({
       orderBy: {
         createdAt: 'desc',
       },
       where: {
         parcelForwardingId,
+        customerId: customersId?.length
+          ? {
+              in: customersId,
+            }
+          : undefined,
+        status: packageStatus ?? undefined, // Inclui apenas se definido
+        createdAt:
+          startDate || endDate
+            ? {
+                ...(startDate ? { gte: startDate } : {}),
+                ...(endDate ? { lte: endDate } : {}),
+              }
+            : undefined,
       },
-      take: 20,
-      skip: (page - 1) * 20,
+      take: 8,
+      skip: (page - 1) * 8,
     })
 
     const packagesPreviews = await Promise.all(
@@ -162,6 +202,7 @@ export class PrismaPackageRepository implements PackageRepository {
           customerLastName: customer.lastName,
           hasBattery: packageDomain.hasBattery,
           weight: packageDomain.weight,
+          packageStatus: PackageStatus[packageDomain.status],
           trackingNumber: packageDomain.trackingNumber,
           createdAt: packageDomain.createdAt,
           updatedAt: packageDomain.updatedAt,
@@ -169,6 +210,13 @@ export class PrismaPackageRepository implements PackageRepository {
       }),
     )
 
-    return packagesPreviews
+    return FilteredPackagesData.create({
+      packages: packagesPreviews,
+      meta: {
+        pageIndex: page,
+        perPage: 8,
+        totalCount: totalPackages,
+      },
+    })
   }
 }

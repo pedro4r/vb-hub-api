@@ -11,6 +11,7 @@ interface RegisterCustomerUseCaseRequest {
   firstName: string
   lastName: string
   email: string
+  phone: string
   password: string
 }
 
@@ -51,6 +52,7 @@ export class RegisterCustomerUseCase {
     firstName,
     lastName,
     email,
+    phone,
     password,
   }: RegisterCustomerUseCaseRequest): Promise<RegisterCustomerUseCaseResponse> {
     const customerWithSameEmail =
@@ -68,6 +70,7 @@ export class RegisterCustomerUseCase {
       firstName,
       lastName,
       email,
+      phone,
       password: hashedPassword,
       createdAt: new Date(),
     })

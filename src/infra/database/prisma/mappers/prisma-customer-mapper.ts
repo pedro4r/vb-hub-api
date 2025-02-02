@@ -10,6 +10,7 @@ export class PrismaCustomerMapper {
         lastName: raw.lastName,
         hubId: raw.hubId,
         parcelForwardingId: new UniqueEntityID(raw.parcelForwardingId),
+        phone: raw.phone,
         email: raw.email,
         password: raw.password,
         createdAt: raw.createdAt,
@@ -26,6 +27,7 @@ export class PrismaCustomerMapper {
       parcelForwardingId: customer.parcelForwardingId.toString(),
       hubId: customer.hubId,
       email: customer.email,
+      phone: customer.phone,
       password: customer.password,
     }
   }

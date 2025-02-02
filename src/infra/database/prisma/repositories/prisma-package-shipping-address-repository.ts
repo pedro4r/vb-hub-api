@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma.service'
 import { ShippingAddressRepository } from '@/domain/customer/application/repositories/shipping-address-repository'
 import { PackageShippingAddressRepository } from '@/domain/customer/application/repositories/package-shipping-address-repository'
 import { PrismaPackageShippingAddressMapper } from '../mappers/prisma-package-shipping-address-mapper'
-import { PackageShippingAddress } from '@/domain/customer/enterprise/entities/package-shipping-address'
+import { PackageShippingAddress } from '@/domain/customer/enterprise/entities/value-objects/package-shipping-address'
 
 @Injectable()
 export class PrismaPackageShippingAddressRepository

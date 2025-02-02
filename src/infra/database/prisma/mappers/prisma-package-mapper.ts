@@ -10,6 +10,7 @@ export class PrismaPackageMapper {
         parcelForwardingId: new UniqueEntityID(raw.parcelForwardingId),
         shippingAddressId: new UniqueEntityID(raw.packageShippingAddressId),
         weight: raw.weight,
+        status: Package.mapStatus(raw.status),
         hasBattery: raw.hasBattery,
       },
       new UniqueEntityID(raw.id),
@@ -23,6 +24,7 @@ export class PrismaPackageMapper {
       parcelForwardingId: pkg.parcelForwardingId.toString(),
       packageShippingAddressId: pkg.shippingAddressId.toString(),
       weight: pkg.weight ?? null,
+      status: pkg.getStatusAsCode(),
       hasBattery: pkg.hasBattery,
       trackingNumber: pkg.trackingNumber ?? null,
     }

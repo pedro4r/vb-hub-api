@@ -3,7 +3,7 @@ import { ShippingAddressRepository } from '@/domain/customer/application/reposit
 
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { PackageShippingAddress } from '@/domain/customer/enterprise/entities/package-shipping-address'
+import { PackageShippingAddress } from '@/domain/customer/enterprise/entities/value-objects/package-shipping-address'
 
 export class InMemoryPackageShippingAddressRepository
   implements PackageShippingAddressRepository

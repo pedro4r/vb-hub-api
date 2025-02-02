@@ -21,7 +21,6 @@ import { DeleteCheckInUseCase } from '@/domain/parcel-forwarding/application/use
 import { GetCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-check-in'
 import { EditCheckInUseCase } from '@/domain/parcel-forwarding/application/use-cases/edit-check-in'
 import { FilterCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/filter-check-ins-details'
-import { FetchRecentPackagesUseCase } from '@/domain/parcel-forwarding/application/use-cases/fetch-recent-packages'
 import { GetPackageUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package'
 import { GetPackageCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-package-check-ins-details'
 import { TestController } from './parcel-forwarding/test-route.controller'
@@ -46,6 +45,7 @@ import { CheckInEmailBodyTemplates } from '@/core/email/templates/check-in'
 import { FilterCheckInsController } from './parcel-forwarding/filter-check-ins.controller'
 import { FilterCheckInsUseCase } from '@/domain/parcel-forwarding/application/use-cases/filter-check-ins'
 import { CheckInAttachmentDetailsPresenter } from '../presenters/check-in-attachment-presenter'
+import { FilterPackagesUseCase } from '@/domain/parcel-forwarding/application/use-cases/filter-packages'
 
 @Module({
   imports: [
@@ -86,7 +86,7 @@ import { CheckInAttachmentDetailsPresenter } from '../presenters/check-in-attach
     GetCheckInUseCase,
     EditCheckInUseCase,
     FilterCheckInsDetailsUseCase,
-    FetchRecentPackagesUseCase,
+    FilterPackagesUseCase,
     GetPackageUseCase,
     GetPackageCheckInsDetailsUseCase,
     GetCustomerByHubIdUseCase,

@@ -7,6 +7,7 @@ export interface CustomerProps {
   firstName: string
   lastName: string
   email: string
+  phone: string
   password: string
   createdAt: Date
 }
@@ -44,6 +45,14 @@ export class Customer extends Entity<CustomerProps> {
     this.props.email = email
   }
 
+  get phone() {
+    return this.props.phone
+  }
+
+  set phone(phone: string) {
+    this.props.phone = phone
+  }
+
   get password() {
     return this.props.password
   }
@@ -60,5 +69,11 @@ export class Customer extends Entity<CustomerProps> {
     const customer = new Customer(props, id)
 
     return customer
+  }
+
+  toCustomerInfo(): Omit<CustomerProps, 'password'> {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _, ...customerInfo } = this.props
+    return customerInfo
   }
 }
