@@ -20,8 +20,10 @@ import { CheckInAttachmentsRepository } from '@/domain/parcel-forwarding/applica
 import { PrismaCheckInAttachmentsRepository } from './prisma/repositories/prisma-check-in-attachments-repository'
 import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
 import { PrismaCustomerRepository } from './prisma/repositories/prisma-customers-repository'
+import { EnvModule } from '../env/env.module'
 
 @Module({
+  imports: [EnvModule],
   providers: [
     PrismaService,
     {

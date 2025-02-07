@@ -2,9 +2,63 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AttachmentDTO {
+  url: String!
+}
+
+type CheckInAttachmentDetailsDTO {
+  attachment: AttachmentDTO!
+  checkInId: String!
+  createdAt: String!
+  customerFirstName: String!
+  customerId: String!
+  customerLastName: String!
+  hubId: Int!
+  packageId: String
+  parcelForwardingId: String!
+  status: String!
+  updatedAt: String
+  weight: Int
+}
+
+type CheckInPreviewDTO {
+  checkInId: String!
+  createdAt: String!
+  customerFirstName: String!
+  customerId: String!
+  customerLastName: String!
+  hubId: Int!
+  packageId: String
+  parcelForwardingId: String!
+  status: String!
+  updatedAt: String
+  weight: Int
+}
+
 type CheckInStatusMetricsDTO {
   metrics: JSON!
   totalCount: Int!
+}
+
+type CombinedFilterResponseDTO {
+  checkInsData: FilteredCheckInsDataDTO
+  checkInsDetailsData: FilteredCheckInAttachmentsDataDTO
+  packagesData: FilteredPackagesDataDTO
+}
+
+type FilteredCheckInAttachmentsDataDTO {
+  checkInsAttachments: [CheckInAttachmentDetailsDTO!]!
+  meta: Meta!
+}
+
+type FilteredCheckInsDataDTO {
+  checkIns: [CheckInPreviewDTO!]!
+  meta: Meta!
+}
+
+type FilteredPackagesDataDTO {
+  meta: Meta!
+  packages: [PackagePreviewDTO!]!
 }
 
 """
@@ -17,8 +71,30 @@ type Message {
   timestamp: String
 }
 
+type Meta {
+  pageIndex: Int!
+  perPage: Int!
+  totalCount: Int!
+}
+
+type PackagePreviewDTO {
+  createdAt: String!
+  customerFirstName: String!
+  customerId: String!
+  customerLastName: String!
+  hasBattery: Boolean!
+  hubId: Int!
+  packageId: String!
+  packageStatus: String!
+  parcelForwardingId: String!
+  trackingNumber: String
+  updatedAt: String
+  weight: Int
+}
+
 type Query {
   getCheckInsStatusMetrics(metrics: [String!]): CheckInStatusMetricsDTO!
+  getCustomerProfile(checkInsAttachmentsPage: Float!, checkInsPage: Float!, hubId: Float, packagesPage: Float!): CombinedFilterResponseDTO!
   goodbye: Message!
   hello: String!
 }

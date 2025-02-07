@@ -74,13 +74,32 @@ Content-Type: application/json
 
 ###
 
+###
+
+# @name customer_profile_checkin_status_only
+POST {{baseUrl}}/graphql
+Content-Type: application/json
+
+{
+  "query": "query ($hubId: Float!, $checkInsPage: Float!, $packagesPage: Float!, $checkInsAttachmentsPage: Float!) { getCustomerProfile(hubId: $hubId, checkInsPage: $checkInsPage, packagesPage: $packagesPage, checkInsAttachmentsPage: $checkInsAttachmentsPage) { checkInsData { checkIns { hubId } } packagesData { packages { weight } } checkInsDetailsData { checkInsAttachments { hubId, attachment { url } } } } }",
+  "variables": {
+    "hubId": 1,
+    "checkInsPage": 1,
+    "packagesPage": 1,
+    "checkInsAttachmentsPage": 1
+  }
+}
+
+
+###
+
 # @name authenticate
 POST {{baseUrl}}/sessions/login
 Content-Type: application/json
 
 {
-  "email": "voabox@voabox.com",
-  "password": "Abc123456@"
+  "email": "contato@voabox.com",
+  "password": "123456"
 }
 
 ###

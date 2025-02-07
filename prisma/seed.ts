@@ -20,7 +20,7 @@ async function main() {
       name: 'Parcel Forwarding 1',
       initials: faker.string.fromCharacters('ABCDEF', 3),
       email: 'contato@voabox.com',
-      password: 'contato@voabox.com',
+      password: hashedPassword,
     },
   })
 

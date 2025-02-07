@@ -6,6 +6,7 @@ import { UseCasesModule } from './use-case.module'
 import { CheckInsStatusMetricsResolver } from './resolvers/check-in-status-metrics.resolver'
 import { HelloResolver } from './resolvers/hello.resolver'
 import { GoodbyeResolver } from './resolvers/goodbye.resolver'
+import { CustomerProfileResolver } from './resolvers/customer-profile.resolver'
 
 @Module({
   imports: [
@@ -18,6 +19,11 @@ import { GoodbyeResolver } from './resolvers/goodbye.resolver'
     }),
     UseCasesModule,
   ],
-  providers: [HelloResolver, GoodbyeResolver, CheckInsStatusMetricsResolver],
+  providers: [
+    HelloResolver,
+    GoodbyeResolver,
+    CheckInsStatusMetricsResolver,
+    CustomerProfileResolver,
+  ],
 })
 export class ResolverModule {}
