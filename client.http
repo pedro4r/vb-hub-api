@@ -81,7 +81,7 @@ POST {{baseUrl}}/graphql
 Content-Type: application/json
 
 {
-  "query": "query ($hubId: Float!, $checkInsPage: Float!, $packagesPage: Float!, $checkInsAttachmentsPage: Float!) { getCustomerProfile(hubId: $hubId, checkInsPage: $checkInsPage, packagesPage: $packagesPage, checkInsAttachmentsPage: $checkInsAttachmentsPage) { checkInsData { checkIns { hubId } } packagesData { packages { weight } } checkInsDetailsData { checkInsAttachments { hubId, attachment { url } } } } }",
+  "query": "query ($hubId: Float!, $checkInsPage: Float!, $packagesPage: Float!, $checkInsAttachmentsPage: Float!) { getCustomerProfile(hubId: $hubId, checkInsPage: $checkInsPage, packagesPage: $packagesPage, checkInsAttachmentsPage: $checkInsAttachmentsPage) { checkInsData { checkIns { hubId } } packagesData { packages { weight } } checkInsDetailsData { checkInsAttachments { hubId, attachment { url } } } customerDetails { firstName, phone, email } shippingAddressesList { recipientName, phone, email, taxId, address { address } } declarationModelsList { title, items { description, value, quantity } }} }",
   "variables": {
     "hubId": 1,
     "checkInsPage": 1,

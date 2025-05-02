@@ -29,7 +29,7 @@ describe('Get Customer By HubId', () => {
     })
 
     expect(result.value).toEqual({
-      customerPreview: expect.objectContaining({
+      customerDetails: expect.objectContaining({
         customerId: new UniqueEntityID('customer-1'),
         firstName: expect.any(String),
       }),

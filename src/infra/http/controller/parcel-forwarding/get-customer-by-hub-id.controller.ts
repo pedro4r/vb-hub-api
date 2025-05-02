@@ -10,7 +10,7 @@ import { UserPayload } from '@/infra/auth/jwt.strategy'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { GetCustomerByHubIdUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-customer-by-hub-id'
-import { CustomerPreviewPresenter } from '../../presenters/customer-preview-presenter'
+import { CustomerDetailsPresenter } from '../../presenters/customer-details-presenter'
 
 @Controller('/customer/:id')
 export class GetCustomerByHubIdController {
@@ -38,12 +38,12 @@ export class GetCustomerByHubIdController {
       }
     }
 
-    const customerPreview = CustomerPreviewPresenter.toHTTP(
-      result.value.customerPreview,
+    const customerDetails = CustomerDetailsPresenter.toHTTP(
+      result.value.customerDetails,
     )
 
     return {
-      customerPreview,
+      customerDetails,
     }
   }
 }

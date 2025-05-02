@@ -1,8 +1,8 @@
 import { ValueObject } from '@/core/entities/value-object'
-import { CustomerPreview } from './customer-preview'
+import { CustomerDetails } from './customer-details'
 
 export interface FetchCustomersByNameDataProps {
-  customers: CustomerPreview[]
+  customers: CustomerDetails[]
   meta: {
     pageIndex: number
     perPage: number

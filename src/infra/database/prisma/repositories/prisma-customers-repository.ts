@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
 import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
 import { Customer } from '@/domain/customer/enterprise/entities/customer'
-import { CustomerPreview } from '@/domain/customer/enterprise/entities/value-objects/customer-preview'
+import { CustomerDetails } from '@/domain/customer/enterprise/entities/value-objects/customer-details'
 import { PrismaCustomerMapper } from '../mappers/prisma-customer-mapper'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { FetchCustomerByNameData } from '@/domain/customer/enterprise/entities/value-objects/fetch-customers-by-name-data'
@@ -63,11 +63,13 @@ export class PrismaCustomerRepository implements CustomerRepository {
 
     return FetchCustomerByNameData.create({
       customers: customersToDomain.map((customer) =>
-        CustomerPreview.create({
+        CustomerDetails.create({
           hubId: customer.hubId,
           parcelForwardingId: customer.parcelForwardingId,
           firstName: customer.firstName,
           lastName: customer.lastName,
+          phone: customer.phone,
+          email: customer.email,
           customerId: customer.id,
           createdAt: customer.createdAt,
         }),
@@ -100,7 +102,7 @@ export class PrismaCustomerRepository implements CustomerRepository {
     return customer ? PrismaCustomerMapper.toDomain(customer) : null
   }
 
-  async findByHubId(hubId: number): Promise<CustomerPreview | null> {
+  async findByHubId(hubId: number): Promise<CustomerDetails | null> {
     const customer = await this.prisma.customer.findUnique({
       where: {
         hubId,
@@ -109,16 +111,18 @@ export class PrismaCustomerRepository implements CustomerRepository {
 
     if (!customer) return null
 
-    const customerPreview = CustomerPreview.create({
+    const customerDetails = CustomerDetails.create({
       customerId: new UniqueEntityID(customer.id),
       hubId: customer.hubId,
       firstName: customer.firstName,
       lastName: customer.lastName,
+      phone: customer.phone,
+      email: customer.email,
       parcelForwardingId: new UniqueEntityID(customer.parcelForwardingId),
       createdAt: customer.createdAt,
     })
 
-    return customerPreview
+    return customerDetails
   }
 
   async create(customer: Customer): Promise<void> {

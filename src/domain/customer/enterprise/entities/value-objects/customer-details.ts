@@ -1,49 +1,48 @@
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { ValueObject } from '@/core/entities/value-object'
-import { CheckInAttachmentDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-attachment-details'
-import { CheckInPreview } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-preview'
-import { PackageShippingAddress } from './package-shipping-address'
-import { Package } from '../package'
-import { Customer } from '../customer'
-import { DeclarationModel } from '../declaration-model'
 
 export interface CustomerDetailsProps {
+  customerId: UniqueEntityID
   parcelForwardingId: UniqueEntityID
-  customerInfo: Customer
-  checkInsList: CheckInPreview[]
-  checkInsAttachmentsDetails: CheckInAttachmentDetails[]
-  packagesList: Package[]
-  packageShippingAddresses: PackageShippingAddress[]
-  declarationModels: DeclarationModel[]
+  hubId: number
+  firstName: string
+  lastName: string
+  phone: string
+  email: string
+  createdAt: Date
 }
 
 export class CustomerDetails extends ValueObject<CustomerDetailsProps> {
+  get hubId() {
+    return this.props.hubId
+  }
+
   get parcelForwardingId() {
     return this.props.parcelForwardingId
   }
 
-  get customerInfo() {
-    return this.props.customerInfo.toCustomerInfo()
+  get firstName() {
+    return this.props.firstName
   }
 
-  get checkInsList() {
-    return this.props.checkInsList
+  get lastName() {
+    return this.props.lastName
   }
 
-  get checkInsAttachmentsDetails() {
-    return this.props.checkInsAttachmentsDetails
+  get phone() {
+    return this.props.phone
   }
 
-  get packagesList() {
-    return this.props.packagesList
+  get email() {
+    return this.props.email
   }
 
-  get packageShippingAddresses() {
-    return this.props.packageShippingAddresses
+  get customerId() {
+    return this.props.customerId
   }
 
-  get declarationModels() {
-    return this.props.declarationModels
+  get createdAt() {
+    return this.props.createdAt
   }
 
   static create(props: CustomerDetailsProps) {

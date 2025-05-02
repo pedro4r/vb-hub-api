@@ -6,6 +6,9 @@ import { JwtAuthGuard } from '@/infra/auth/jwt-auth.guard'
 import { CombinedFilterResponseDTO } from '../schemas/customer/customer-profile-dto'
 import { FieldNode, GraphQLResolveInfo, Kind } from 'graphql'
 import { FilterCheckInsDetailsUseCase } from '@/domain/parcel-forwarding/application/use-cases/filter-check-ins-details'
+import { GetCustomerByHubIdUseCase } from '@/domain/parcel-forwarding/application/use-cases/get-customer-by-hub-id'
+import { FetchShippingAddressUseCase } from '@/domain/customer/application/use-cases/fetch-shipping-address'
+import { FetchDeclarationModelsUseCase } from '@/domain/customer/application/use-cases/fetch-declaration-model'
 
 @Resolver(() => CombinedFilterResponseDTO)
 export class CustomerProfileResolver {
@@ -13,6 +16,9 @@ export class CustomerProfileResolver {
     private readonly filterCheckInsUseCase: FilterCheckInsUseCase,
     private readonly filterCheckInsDetailsUseCase: FilterCheckInsDetailsUseCase,
     private readonly filterPackagesUseCase: FilterPackagesUseCase,
+    private readonly getCustomerByHubIdUseCase: GetCustomerByHubIdUseCase,
+    private readonly fetchShippingAddressUseCase: FetchShippingAddressUseCase,
+    private readonly fetchDeclarationModelsUseCase: FetchDeclarationModelsUseCase,
   ) {}
 
   @Query(() => CombinedFilterResponseDTO)
@@ -26,7 +32,7 @@ export class CustomerProfileResolver {
     packagesPage: number,
     @Args('checkInsAttachmentsPage', { type: () => Number })
     checkInsAttachmentsPage: number,
-    @Args('hubId', { type: () => Number, nullable: true }) hubId?: number,
+    @Args('hubId', { type: () => Number }) hubId: number,
   ): Promise<CombinedFilterResponseDTO> {
     const user = context.req.user
     if (!user) {
@@ -45,51 +51,99 @@ export class CustomerProfileResolver {
       )
       .map((selection: FieldNode) => selection.name.value)
 
-    const checkInsPromise = fields.includes('checkInsData')
-      ? this.filterCheckInsUseCase.execute({
-          parcelForwardingId: user.sub,
-          hubId,
-          page: checkInsPage,
-        })
-      : Promise.resolve(undefined)
+    try {
+      const customerResult = await this.getCustomerByHubIdUseCase.execute({
+        parcelForwardingId: user.sub,
+        hubId,
+      })
 
-    const checkInsDetailsPromise = fields.includes('checkInsDetailsData')
-      ? this.filterCheckInsDetailsUseCase.execute({
-          parcelForwardingId: user.sub,
-          hubId,
-          page: checkInsAttachmentsPage,
-        })
-      : Promise.resolve(undefined)
+      if (customerResult.isLeft()) {
+        throw new Error('Customer not found')
+      }
 
-    const packagesPromise = fields.includes('packagesData')
-      ? this.filterPackagesUseCase.execute({
-          parcelForwardingId: user.sub,
-          hubId,
-          page: packagesPage,
-        })
-      : Promise.resolve(undefined)
+      const shippingAddressesPromise = fields.includes('shippingAddressesList')
+        ? this.fetchShippingAddressUseCase.execute({
+            customerId:
+              customerResult.value.customerDetails.customerId.toString(),
+          })
+        : Promise.resolve(undefined)
 
-    const [checkInsResult, checkInsDetailsResult, packagesResult] =
-      await Promise.all([
+      const declarationModelsPromise = fields.includes('declarationModelsList')
+        ? this.fetchDeclarationModelsUseCase.execute({
+            customerId:
+              customerResult.value.customerDetails.customerId.toString(),
+          })
+        : Promise.resolve(undefined)
+
+      const checkInsPromise = fields.includes('checkInsData')
+        ? this.filterCheckInsUseCase.execute({
+            parcelForwardingId: user.sub,
+            hubId,
+            page: checkInsPage,
+          })
+        : Promise.resolve(undefined)
+
+      const checkInsDetailsPromise = fields.includes('checkInsDetailsData')
+        ? this.filterCheckInsDetailsUseCase.execute({
+            parcelForwardingId: user.sub,
+            hubId,
+            page: checkInsAttachmentsPage,
+          })
+        : Promise.resolve(undefined)
+
+      const packagesPromise = fields.includes('packagesData')
+        ? this.filterPackagesUseCase.execute({
+            parcelForwardingId: user.sub,
+            hubId,
+            page: packagesPage,
+          })
+        : Promise.resolve(undefined)
+
+      const [
+        checkInsResult,
+        checkInsDetailsResult,
+        packagesResult,
+        shippingAddressesResult,
+        declarationModelsResult,
+      ] = await Promise.all([
         checkInsPromise,
         checkInsDetailsPromise,
         packagesPromise,
+        shippingAddressesPromise,
+        declarationModelsPromise,
       ])
 
-    const checkInsData = checkInsResult?.isRight()
-      ? checkInsResult.value.checkInsData
-      : undefined
-    const checkInsDetailsData = checkInsDetailsResult?.isRight()
-      ? checkInsDetailsResult.value.checkInsAttachmentData
-      : undefined
-    const packagesData = packagesResult?.isRight()
-      ? packagesResult.value.packagesData
-      : undefined
+      const customerDetails = customerResult?.isRight()
+        ? customerResult.value.customerDetails
+        : undefined
+      const checkInsData = checkInsResult?.isRight()
+        ? checkInsResult.value.checkInsData
+        : undefined
+      const checkInsDetailsData = checkInsDetailsResult?.isRight()
+        ? checkInsDetailsResult.value.checkInsAttachmentData
+        : undefined
+      const packagesData = packagesResult?.isRight()
+        ? packagesResult.value.packagesData
+        : undefined
+      const shippingAddressesList = shippingAddressesResult?.isRight()
+        ? shippingAddressesResult.value.shippingAddresses
+        : undefined
 
-    return CombinedFilterResponseDTO.fromDomain(
-      packagesData,
-      checkInsData,
-      checkInsDetailsData,
-    )
+      const declarationModelsList = declarationModelsResult?.isRight()
+        ? declarationModelsResult.value.declarationModels
+        : undefined
+
+      return CombinedFilterResponseDTO.fromDomain(
+        customerDetails,
+        packagesData,
+        checkInsData,
+        checkInsDetailsData,
+        shippingAddressesList,
+        declarationModelsList,
+      )
+    } catch (error) {
+      console.error(error)
+      throw new Error('An error occurred while fetching the customer profile')
+    }
   }
 }

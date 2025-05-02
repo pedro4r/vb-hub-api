@@ -2,7 +2,7 @@ import { Either, left, right } from '@/core/either'
 import { NotAllowedError } from '@/core/errors/errors/not-allowed-error'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { Injectable } from '@nestjs/common'
-import { CustomerPreview } from '@/domain/customer/enterprise/entities/value-objects/customer-preview'
+import { CustomerDetails } from '@/domain/customer/enterprise/entities/value-objects/customer-details'
 import { CustomerRepository } from '@/domain/customer/application/repositories/customer-repository'
 
 interface GetCustomerByHubIdUseCaseRequest {
@@ -13,7 +13,7 @@ interface GetCustomerByHubIdUseCaseRequest {
 type GetCustomerByHubIdUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {
-    customerPreview: CustomerPreview
+    customerDetails: CustomerDetails
   }
 >
 
@@ -25,16 +25,16 @@ export class GetCustomerByHubIdUseCase {
     hubId,
     parcelForwardingId,
   }: GetCustomerByHubIdUseCaseRequest): Promise<GetCustomerByHubIdUseCaseResponse> {
-    const customerPreview = await this.customerRepository.findByHubId(hubId)
+    const customerDetails = await this.customerRepository.findByHubId(hubId)
 
-    if (!customerPreview) {
+    if (!customerDetails) {
       return left(new ResourceNotFoundError())
     }
 
-    if (parcelForwardingId !== customerPreview.parcelForwardingId.toString()) {
+    if (parcelForwardingId !== customerDetails.parcelForwardingId.toString()) {
       return left(new NotAllowedError())
     }
 
-    return right({ customerPreview })
+    return right({ customerDetails })
   }
 }

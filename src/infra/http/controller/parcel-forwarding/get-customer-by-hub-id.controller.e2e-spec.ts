@@ -53,7 +53,7 @@ describe('Get Customer by Hub ID (E2E)', () => {
 
     expect(response.status).toBe(200)
     expect(response.body).toEqual({
-      customerPreview: expect.objectContaining({
+      customerDetails: expect.objectContaining({
         firstName: expect.any(String),
         lastName: expect.any(String),
         hubId: expect.any(Number),
