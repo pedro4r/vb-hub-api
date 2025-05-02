@@ -8,9 +8,6 @@ export class CheckInAttachmentDetailsPresenter {
   toHTTP(checkInsAttachmentData: FilteredCheckInAttachmentsData) {
     const checkInsAttachments = checkInsAttachmentData.checkInsAttachments.map(
       (checkInAttachment) => {
-        const r2DevURL = this.envService.get('CLOUDFLARE_DEV_URL')
-
-        const attachmentUrl = `${r2DevURL}/${checkInAttachment.attachment.url}`
         return {
           checkInId: checkInAttachment.checkInId.toString(),
           parcelForwardingId: checkInAttachment.parcelForwardingId.toString(),
@@ -23,7 +20,7 @@ export class CheckInAttachmentDetailsPresenter {
             : null,
           details: checkInAttachment.details ?? null,
           status: checkInAttachment.status,
-          attachmentUrl,
+          attachmentUrl: checkInAttachment.attachment.url,
           weight: checkInAttachment.weight ?? null,
           createdAt: checkInAttachment.createdAt,
           updatedAt: checkInAttachment.updatedAt ?? null,

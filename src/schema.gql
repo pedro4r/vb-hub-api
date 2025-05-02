@@ -2,9 +2,100 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type AddressDTO {
+  address: String!
+  city: String!
+  complement: String
+  country: String!
+  state: String!
+  zipcode: String!
+}
+
+type AttachmentDTO {
+  url: String!
+}
+
+type CheckInAttachmentDetailsDTO {
+  attachment: AttachmentDTO!
+  checkInId: String!
+  createdAt: String!
+  customerFirstName: String!
+  customerId: String!
+  customerLastName: String!
+  hubId: Int!
+  packageId: String
+  parcelForwardingId: String!
+  status: String!
+  updatedAt: String
+  weight: Int
+}
+
+type CheckInPreviewDTO {
+  checkInId: String!
+  createdAt: String!
+  customerFirstName: String!
+  customerId: String!
+  customerLastName: String!
+  hubId: Int!
+  packageId: String
+  parcelForwardingId: String!
+  status: String!
+  updatedAt: String
+  weight: Int
+}
+
 type CheckInStatusMetricsDTO {
   metrics: JSON!
   totalCount: Int!
+}
+
+type CombinedFilterResponseDTO {
+  checkInsData: FilteredCheckInsDataDTO
+  checkInsDetailsData: FilteredCheckInAttachmentsDataDTO
+  customerDetails: CustomerDetailsDTO
+  declarationModelsList: [DeclarationModelDTO!]
+  packagesData: FilteredPackagesDataDTO
+  shippingAddressesList: [ShippingAddressDTO!]
+}
+
+type CustomerDetailsDTO {
+  createdAt: String!
+  customerId: String!
+  email: String!
+  firstName: String!
+  hubId: Int!
+  lastName: String!
+  parcelForwardingId: String!
+  phone: String!
+}
+
+type DeclarationModelDTO {
+  customerId: String!
+  items: [DeclarationModelItemDTO!]!
+  title: String!
+}
+
+type DeclarationModelItemDTO {
+  declarationModelId: String!
+  description: String!
+  id: String!
+  quantity: Int!
+  value: Int!
+}
+
+type FilteredCheckInAttachmentsDataDTO {
+  checkInsAttachments: [CheckInAttachmentDetailsDTO!]!
+  meta: Meta!
+}
+
+type FilteredCheckInsDataDTO {
+  checkIns: [CheckInPreviewDTO!]!
+  meta: Meta!
+}
+
+type FilteredPackagesDataDTO {
+  meta: Meta!
+  packages: [PackagePreviewDTO!]!
 }
 
 """
@@ -17,8 +108,41 @@ type Message {
   timestamp: String
 }
 
+type Meta {
+  pageIndex: Int!
+  perPage: Int!
+  totalCount: Int!
+}
+
+type PackagePreviewDTO {
+  createdAt: String!
+  customerFirstName: String!
+  customerId: String!
+  customerLastName: String!
+  hasBattery: Boolean!
+  hubId: Int!
+  packageId: String!
+  packageStatus: String!
+  parcelForwardingId: String!
+  trackingNumber: String
+  updatedAt: String
+  weight: Int
+}
+
 type Query {
   getCheckInsStatusMetrics(metrics: [String!]): CheckInStatusMetricsDTO!
+  getCustomerProfile(checkInsAttachmentsPage: Float!, checkInsPage: Float!, hubId: Float!, packagesPage: Float!): CombinedFilterResponseDTO!
   goodbye: Message!
   hello: String!
+}
+
+type ShippingAddressDTO {
+  address: AddressDTO!
+  createdAt: String!
+  customerId: String!
+  email: String
+  phone: String
+  recipientName: String!
+  taxId: String
+  updatedAt: String
 }

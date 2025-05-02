@@ -41,6 +41,7 @@ export class FilterCheckInsUseCase {
     page,
   }: FilterCheckInsUseCaseRequest): Promise<FilterCheckInsUseCaseResponse> {
     const customersId: UniqueEntityID[] = []
+
     if (hubId) {
       const customerData = await this.customerRepository.findByHubId(hubId)
       // Check if the customer is associated with the parcel forwarding

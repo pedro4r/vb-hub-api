@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { UniqueEntityID } from '../src/core/entities/unique-entity-id'
 import { faker } from '@faker-js/faker'
 import { PrismaClient } from '@prisma/client'
@@ -20,7 +21,7 @@ async function main() {
       name: 'Parcel Forwarding 1',
       initials: faker.string.fromCharacters('ABCDEF', 3),
       email: 'contato@voabox.com',
-      password: 'contato@voabox.com',
+      password: hashedPassword,
     },
   })
 

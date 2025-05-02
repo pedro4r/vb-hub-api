@@ -20,11 +20,13 @@ import {
 } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-ins-status-metrics'
 import { FilteredCheckInAttachmentsData } from '@/domain/customer/enterprise/entities/value-objects/filtered-check-in-attachments'
 import { CheckInAttachmentDetails } from '@/domain/parcel-forwarding/enterprise/entities/value-objects/check-in-attachment-details'
+import { EnvService } from '@/infra/env/env.service'
 
 @Injectable()
 export class PrismaCheckInsRepository implements CheckInsRepository {
   constructor(
     private prisma: PrismaService,
+    private envService: EnvService,
     private checkInAttachmentsRepository: CheckInAttachmentsRepository,
   ) {}
 
@@ -555,8 +557,11 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       },
     })
 
+    const r2DevURL = this.envService.get('CLOUDFLARE_DEV_URL')
+
     const checkInsAttachmentsDetails = await Promise.all(
       checkInAttachments.map(async (checkInAttachment) => {
+        checkInAttachment.Attachment.url = `${r2DevURL}/${checkInAttachment.Attachment.url}`
         const attachmentDomain = PrismaAttachmentMapper.toDomain(
           checkInAttachment.Attachment,
         )

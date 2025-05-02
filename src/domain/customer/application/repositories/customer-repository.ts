@@ -1,5 +1,5 @@
 import { Customer } from '../../enterprise/entities/customer'
-import { CustomerPreview } from '../../enterprise/entities/value-objects/customer-preview'
+import { CustomerDetails } from '../../enterprise/entities/value-objects/customer-details'
 import { FetchCustomerByNameData } from '../../enterprise/entities/value-objects/fetch-customers-by-name-data'
 
 export abstract class CustomerRepository {
@@ -11,7 +11,7 @@ export abstract class CustomerRepository {
   ): Promise<FetchCustomerByNameData>
 
   abstract findById(id: string): Promise<Customer | null>
-  abstract findByHubId(hubId: number): Promise<CustomerPreview | null>
+  abstract findByHubId(hubId: number): Promise<CustomerDetails | null>
 
   abstract create(customer: Customer): Promise<void>
   abstract countParcelForwardingCustomers(
